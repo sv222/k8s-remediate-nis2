@@ -22,9 +22,9 @@ It is a small Go CLI. It is not a scanner. Run your scanner first, then give
 the report to this tool. It is complementary to Prowler and kube-bench.
 
 - Input: Prowler JSON and kube-bench JSON.
-- Output: Kyverno `ClusterPolicy` files, Terraform files, `mapping.md`, and
+- Output: Kyverno `ValidatingPolicy` files (Kyverno 1.17 or later), Terraform files, `mapping.md`, and
   optionally `evidence.md`.
-- Only `FAIL` findings are processed.
+- Prowler `FAIL` findings and kube-bench manual `WARN` results are processed.
 
 ## Install
 
@@ -140,7 +140,7 @@ listed in `mapping.md` as `no mapping` or `guidance only`.
 
 Run `kube-bench --json > bench.json`, then
 `k8s-remediate-nis2 remediate --kube-bench bench.json`. You get Kyverno
-`ClusterPolicy` files for privileged containers (5.2.2), host network (5.2.5)
+`ValidatingPolicy` files for privileged containers (5.2.2), host network (5.2.5)
 and root containers (5.2.7). The policies start in `Audit` mode.
 
 ### How do I fix ec2_securitygroup_allow_ingress_from_internet_to_any_port?
@@ -192,7 +192,7 @@ remediation/
 ## Safety notes
 
 - Kyverno policies start in `Audit` mode. Read the policy reports, then change
-  `validationFailureAction` to `Enforce`.
+  `validationActions` to `Deny`.
 - Policies skip `kube-system`, `kube-public`, `kube-node-lease` and `kyverno`.
 - Review all generated Terraform before you run `terraform apply`.
 - The security group snippet only adds a narrow rule. You must set

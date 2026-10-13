@@ -1,7 +1,7 @@
 # NIS2/DORA remediation: require pods to run as non-root (CIS Kubernetes pod security).
-# Starts in Audit mode. Review the policy reports, then change validationFailureAction to Enforce.
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
+# Needs Kyverno 1.17 or later. Starts in Audit mode. Review the policy reports, then change validationActions to Deny.
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
 metadata:
   name: nis2-require-nonroot
   annotations:
@@ -9,40 +9,29 @@ metadata:
     policies.kyverno.io/category: Pod Security Standards (Restricted)
     policies.kyverno.io/severity: medium
 spec:
-  validationFailureAction: Audit
-  background: true
-  rules:
-    - name: require-nonroot
-      match:
-        any:
-          - resources:
-              kinds: [Pod]
-      exclude:
-        any:
-          - resources:
-              namespaces: [kube-system, kube-public, kube-node-lease, kyverno]
-      validate:
-        message: "Pods must not run as root: set runAsNonRoot to true at pod level or on every container"
-        anyPattern:
-          - spec:
-              securityContext:
-                runAsNonRoot: "true"
-              =(ephemeralContainers):
-                - =(securityContext):
-                    =(runAsNonRoot): "true"
-              =(initContainers):
-                - =(securityContext):
-                    =(runAsNonRoot): "true"
-              containers:
-                - =(securityContext):
-                    =(runAsNonRoot): "true"
-          - spec:
-              =(ephemeralContainers):
-                - securityContext:
-                    runAsNonRoot: "true"
-              =(initContainers):
-                - securityContext:
-                    runAsNonRoot: "true"
-              containers:
-                - securityContext:
-                    runAsNonRoot: "true"
+  validationActions: [Audit]
+  evaluation:
+    background:
+      enabled: true
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
+  matchConditions:
+    - name: skip-system-namespaces
+      expression: "!(object.metadata.namespace in ['kube-system', 'kube-public', 'kube-node-lease', 'kyverno'])"
+  variables:
+    - name: podNonRoot
+      expression: "object.spec.?securityContext.?runAsNonRoot.orValue(false)"
+    - name: initContainers
+      expression: "object.spec.?initContainers.orValue([])"
+    - name: ephemeralContainers
+      expression: "object.spec.?ephemeralContainers.orValue([])"
+  validations:
+    - expression: >-
+        object.spec.containers.all(c, c.?securityContext.?runAsNonRoot.orValue(variables.podNonRoot) == true) &&
+        variables.initContainers.all(c, c.?securityContext.?runAsNonRoot.orValue(variables.podNonRoot) == true) &&
+        variables.ephemeralContainers.all(c, c.?securityContext.?runAsNonRoot.orValue(variables.podNonRoot) == true)
+      message: "Pods must not run as root: set runAsNonRoot to true at pod level or on every container"

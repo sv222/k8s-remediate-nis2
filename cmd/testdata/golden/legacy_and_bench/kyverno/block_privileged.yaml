@@ -1,7 +1,7 @@
 # NIS2/DORA remediation: disallow privileged containers (CIS Kubernetes pod security).
-# Starts in Audit mode. Review the policy reports, then change validationFailureAction to Enforce.
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
+# Needs Kyverno 1.17 or later. Starts in Audit mode. Review the policy reports, then change validationActions to Deny.
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
 metadata:
   name: nis2-block-privileged
   annotations:
@@ -9,28 +9,27 @@ metadata:
     policies.kyverno.io/category: Pod Security Standards (Baseline)
     policies.kyverno.io/severity: high
 spec:
-  validationFailureAction: Audit
-  background: true
-  rules:
-    - name: block-privileged
-      match:
-        any:
-          - resources:
-              kinds: [Pod]
-      exclude:
-        any:
-          - resources:
-              namespaces: [kube-system, kube-public, kube-node-lease, kyverno]
-      validate:
-        message: "Privileged containers are prohibited"
-        pattern:
-          spec:
-            =(ephemeralContainers):
-              - =(securityContext):
-                  =(privileged): "false"
-            =(initContainers):
-              - =(securityContext):
-                  =(privileged): "false"
-            containers:
-              - =(securityContext):
-                  =(privileged): "false"
+  validationActions: [Audit]
+  evaluation:
+    background:
+      enabled: true
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
+  matchConditions:
+    - name: skip-system-namespaces
+      expression: "!(object.metadata.namespace in ['kube-system', 'kube-public', 'kube-node-lease', 'kyverno'])"
+  variables:
+    - name: initContainers
+      expression: "object.spec.?initContainers.orValue([])"
+    - name: ephemeralContainers
+      expression: "object.spec.?ephemeralContainers.orValue([])"
+  validations:
+    - expression: >-
+        object.spec.containers.all(c, c.?securityContext.?privileged.orValue(false) == false) &&
+        variables.initContainers.all(c, c.?securityContext.?privileged.orValue(false) == false) &&
+        variables.ephemeralContainers.all(c, c.?securityContext.?privileged.orValue(false) == false)
+      message: "Privileged containers are prohibited"

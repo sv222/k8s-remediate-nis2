@@ -7,6 +7,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed
+
+- Kyverno templates use `ValidatingPolicy` (`policies.kyverno.io/v1`). Kyverno 1.19 deprecates `ClusterPolicy` and Kyverno 1.20 removes it.
+- The kube-bench pod security controls are processed when they are reported as manual `WARN`.
+- kube-bench benchmark IDs cover the current CIS, EKS, AKS, GKE and RKE2 benchmark versions.
+- Prowler 5 security group checks for all ports, SSH, RDP and high-risk ports and the S3 public write checks are mapped.
+
 ## [0.1.0] - 2026-10-13
 
 ### Added

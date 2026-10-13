@@ -163,10 +163,12 @@ func TestSecurityGroupNeverOpensToInternet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	checked := 0
 	for _, e := range entries {
-		if e.CheckID != "ec2_securitygroup_allow_ingress_from_internet_to_any_port" {
+		if len(e.Templates) != 1 || e.Templates[0] != "terraform/sg_restrict_ingress.tf" {
 			continue
 		}
+		checked++
 		files, err := Render(e, finding.Finding{ResourceID: "sg-0a1b2c3d4e5f60718"})
 		if err != nil {
 			t.Fatal(err)
@@ -186,6 +188,9 @@ func TestSecurityGroupNeverOpensToInternet(t *testing.T) {
 		if !strings.Contains(rule, "aws_vpc_security_group_ingress_rule") {
 			t.Errorf("unexpected resource type:\n%s", rule)
 		}
+	}
+	if checked < 5 {
+		t.Errorf("checked %d security group entries, want at least 5", checked)
 	}
 }
 
@@ -207,12 +212,12 @@ func TestEveryMappedTemplateRenders(t *testing.T) {
 					t.Errorf("%s: invalid YAML: %v", f.RelPath, err)
 					continue
 				}
-				if doc["kind"] != "ClusterPolicy" {
-					t.Errorf("%s: kind = %v", f.RelPath, doc["kind"])
+				if doc["apiVersion"] != "policies.kyverno.io/v1" || doc["kind"] != "ValidatingPolicy" {
+					t.Errorf("%s: apiVersion = %v, kind = %v", f.RelPath, doc["apiVersion"], doc["kind"])
 				}
 				spec := doc["spec"].(map[string]any)
-				if spec["validationFailureAction"] != "Audit" {
-					t.Errorf("%s: validationFailureAction = %v, want Audit", f.RelPath, spec["validationFailureAction"])
+				if actions, _ := spec["validationActions"].([]any); len(actions) != 1 || actions[0] != "Audit" {
+					t.Errorf("%s: validationActions = %v, want [Audit]", f.RelPath, spec["validationActions"])
 				}
 				for _, ns := range []string{"kube-system", "kube-public", "kube-node-lease", "kyverno"} {
 					if !strings.Contains(f.Content, ns) {

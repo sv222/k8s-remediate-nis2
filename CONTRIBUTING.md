@@ -22,7 +22,7 @@ Run `gofmt -l .` and `go mod tidy` before you open a pull request.
    `cmd/testdata/golden`.
 4. Run `go test ./...` and check the output.
 
-Kyverno templates must start in `Audit` mode.
+Kyverno templates must be `ValidatingPolicy` (`policies.kyverno.io/v1`) and start in `Audit` mode.
 
 ## Mapping review
 
