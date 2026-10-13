@@ -1,0 +1,26 @@
+{
+  "Controls": [
+    {
+      "id": "1",
+      "text": "Control Plane Components",
+      "tests": [
+        {
+          "section": "1.1",
+          "results": [
+            {
+              "test_number": "1.1.12",
+              "status": "FAIL",
+              "test_desc": "Ensure that the etcd pod specification file permissions are set to 644 or more restrictive",
+              "audit": "/bin/sh -c 'stat -c %a /var/lib/etcd'"
+            },
+            {
+              "test_number": "1.2.1",
+              "status": "PASS",
+              "test_desc": "Ensure anonymous auth disabled"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
