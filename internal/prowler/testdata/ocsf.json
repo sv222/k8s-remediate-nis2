@@ -1,97 +1,193 @@
 [
   {
-    "message": "S3 Bucket company-frontend-assets does not have Public Access Block enabled for IgnorePublicAcls and RestrictPublicBuckets.",
+    "message": "Block Public Access is not configured for the S3 Bucket acme-customer-exports.",
     "metadata": {
       "event_code": "s3_bucket_level_public_access_block",
-      "product": {"name": "Prowler", "uid": "prowler", "vendor_name": "Prowler", "version": "5.3.0"},
-      "profiles": ["cloud", "datetime"],
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.45.0"
+      },
+      "profiles": [
+        "cloud",
+        "datetime"
+      ],
       "tenant_uid": "",
-      "version": "1.3.0"
-    },
-    "severity_id": 3,
-    "severity": "Medium",
-    "status": "New",
-    "status_code": "FAIL",
-    "status_detail": "Block Public Access is not configured for the S3 Bucket company-frontend-assets.",
-    "status_id": 1,
-    "unmapped": {"categories": ["internet-exposed"], "compliance": {}},
-    "activity_name": "Create",
-    "activity_id": 1,
-    "finding_info": {
-      "created_time": 1760343242,
-      "created_time_dt": "2026-10-13T08:14:02.381532",
-      "desc": "Check S3 Bucket Level Public Access Block.",
-      "product_uid": "prowler",
-      "title": "Check S3 Bucket Level Public Access Block.",
-      "types": ["Data Protection"],
-      "uid": "prowler-aws-s3_bucket_level_public_access_block-123456789012-eu-central-1-company-frontend-assets"
-    },
-    "resources": [
-      {
-        "cloud_partition": "aws",
-        "region": "eu-central-1",
-        "data": {"details": "", "metadata": {"name": "company-frontend-assets"}},
-        "group": {"name": "s3"},
-        "labels": [],
-        "name": "company-frontend-assets",
-        "type": "AwsS3Bucket",
-        "uid": "arn:aws:s3:::company-frontend-assets"
-      }
-    ],
-    "category_name": "Findings",
-    "category_uid": 2,
-    "class_name": "Detection Finding",
-    "class_uid": 2004,
-    "cloud": {
-      "account": {"name": "", "type": "AWS Account", "type_id": 10, "uid": "123456789012", "labels": []},
-      "org": {"name": "", "uid": ""},
-      "provider": "aws",
-      "region": "eu-central-1"
-    },
-    "remediation": {"desc": "Enable Block Public Access at bucket level.", "references": []},
-    "risk_details": "Public access policies may be applied to sensitive data buckets.",
-    "time": 1760343242,
-    "time_dt": "2026-10-13T08:14:02.381532",
-    "type_uid": 200401,
-    "type_name": "Detection Finding: Create"
-  },
-  {
-    "message": "Security group sg-0a1b2c3d4e5f60718 has all ports open to the Internet.",
-    "metadata": {
-      "event_code": "ec2_securitygroup_allow_ingress_from_internet_to_any_port",
-      "product": {"name": "Prowler", "uid": "prowler", "vendor_name": "Prowler", "version": "5.3.0"},
-      "profiles": ["cloud", "datetime"],
-      "tenant_uid": "",
-      "version": "1.3.0"
+      "version": "1.5.0"
     },
     "severity_id": 4,
     "severity": "High",
     "status": "New",
     "status_code": "FAIL",
-    "status_detail": "Security group sg-0a1b2c3d4e5f60718 has all ports open to the Internet.",
+    "status_detail": "Block Public Access is not configured for the S3 Bucket acme-customer-exports.",
     "status_id": 1,
-    "unmapped": {"categories": ["internet-exposed"], "compliance": {}},
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "internet-exposed"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://www.trendmicro.com/trendaivisiononecloudriskmanagement/knowledge-base/aws/S3/bucket-public-access-block.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html"
+      ],
+      "notes": "",
+      "compliance": {
+        "CIS-5.0": [
+          "2.1.4"
+        ],
+        "CIS-4.0.1": [
+          "2.1.4"
+        ],
+        "NIST-CSF-2.0": [
+          "ac_3"
+        ],
+        "CIS-2.0": [
+          "2.1.4"
+        ],
+        "CIS-1.4": [
+          "2.1.5"
+        ],
+        "KISA-ISMS-P-2023-korean": [
+          "2.6.1",
+          "2.6.2",
+          "2.10.2"
+        ],
+        "CIS-7.0": [
+          "3.1.4"
+        ],
+        "SecNumCloud-3.2": [
+          "9.7"
+        ],
+        "CIS-3.0": [
+          "2.1.4"
+        ],
+        "CIS-1.5": [
+          "2.1.5"
+        ],
+        "AWS-AI-Security-Framework-1.0": [
+          "AISF-DATA-04"
+        ],
+        "C5-2025": [
+          "PS-03.02B",
+          "IAM-10.01B",
+          "COS-02.01B"
+        ],
+        "CIS-6.0": [
+          "3.1.4"
+        ],
+        "KISA-ISMS-P-2023": [
+          "2.6.1",
+          "2.6.2",
+          "2.10.2"
+        ],
+        "AWS-Account-Security-Onboarding": [
+          "S3 Block Public Access"
+        ],
+        "AWS-Foundational-Technical-Review": [
+          "S3-001"
+        ],
+        "MITRE-ATTACK": [
+          "T1530"
+        ],
+        "AWS-Foundational-Security-Best-Practices": [
+          "S3.8"
+        ],
+        "CCC-v2025.10": [
+          "CCC.Logging.CN05.AR01"
+        ]
+      },
+      "scan_id": "01a136e2-3403-72d4-840f-8d53dbd50eed",
+      "provider_uid": "000000000000",
+      "provider": "aws"
+    },
     "activity_name": "Create",
     "activity_id": 1,
     "finding_info": {
-      "created_time": 1760343242,
-      "created_time_dt": "2026-10-13T08:14:02.381532",
-      "desc": "Ensure there are no Security Groups allowing ingress from 0.0.0.0/0 or ::/0 to any port.",
-      "product_uid": "prowler",
-      "title": "Ensure there are no Security Groups allowing ingress from 0.0.0.0/0 or ::/0 to any port.",
-      "types": ["Infrastructure Security"],
-      "uid": "prowler-aws-ec2_securitygroup_allow_ingress_from_internet_to_any_port-123456789012-eu-central-1-sg-0a1b2c3d4e5f60718"
+      "analytic": {
+        "category": "s3",
+        "name": "S3 bucket has Block Public Access with IgnorePublicAcls and RestrictPublicBuckets enabled at bucket or account level",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "s3_bucket_level_public_access_block"
+      },
+      "created_time": 1791922156,
+      "created_time_dt": "2026-10-13T20:09:16.547082",
+      "desc": "**Amazon S3 buckets** are evaluated for **Block Public Access** settings, ensuring `ignore_public_acls` and `restrict_public_buckets` are enabled at the bucket or account scope.\n\n*Account-wide protections, when present, are treated as effective for the bucket.*",
+      "attacks": [
+        {
+          "tactic": {
+            "name": "Collection"
+          },
+          "technique": {
+            "name": "Data from Cloud Storage",
+            "src_url": "https://attack.mitre.org/techniques/T1530/",
+            "uid": "T1530"
+          }
+        }
+      ],
+      "title": "S3 bucket has Block Public Access with IgnorePublicAcls and RestrictPublicBuckets enabled at bucket or account level",
+      "types": [
+        "Software and Configuration Checks/AWS Security Best Practices/Network Reachability",
+        "Software and Configuration Checks/Industry and Regulatory Standards/AWS Foundational Security Best Practices",
+        "Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark",
+        "Effects/Data Exposure"
+      ],
+      "uid": "prowler-aws-s3_bucket_level_public_access_block-000000000000-us-east-1-acme-customer-exports"
     },
     "resources": [
       {
         "cloud_partition": "aws",
-        "region": "eu-central-1",
-        "data": {"details": "app-servers", "metadata": {"id": "sg-0a1b2c3d4e5f60718"}},
-        "group": {"name": "ec2"},
+        "region": "us-east-1",
+        "data": {
+          "details": "",
+          "metadata": {
+            "arn": "arn:aws:s3:::acme-customer-exports",
+            "name": "acme-customer-exports",
+            "owner_id": "000000000000",
+            "owner": null,
+            "versioning": false,
+            "logging": false,
+            "public_access_block": {
+              "block_public_acls": false,
+              "ignore_public_acls": false,
+              "block_public_policy": false,
+              "restrict_public_buckets": false
+            },
+            "acl_grantees": [
+              {
+                "display_name": "floci",
+                "ID": "000000000000",
+                "type": "CanonicalUser",
+                "URI": null,
+                "permission": "FULL_CONTROL"
+              }
+            ],
+            "policy": {},
+            "encryption": "AES256",
+            "region": "us-east-1",
+            "logging_target_bucket": null,
+            "ownership": null,
+            "object_lock": false,
+            "mfa_delete": false,
+            "tags": [],
+            "lifecycle": [],
+            "replication_rules": [],
+            "versioning_retrieved": true,
+            "replication_retrieved": true,
+            "notification_config": {},
+            "object_sampling": null
+          }
+        },
+        "group": {
+          "name": "s3"
+        },
         "labels": [],
-        "name": "sg-0a1b2c3d4e5f60718",
-        "type": "AwsEc2SecurityGroup",
-        "uid": "arn:aws:ec2:eu-central-1:123456789012:security-group/sg-0a1b2c3d4e5f60718"
+        "name": "acme-customer-exports",
+        "type": "AwsS3Bucket",
+        "uid": "arn:aws:s3:::acme-customer-exports"
       }
     ],
     "category_name": "Findings",
@@ -99,55 +195,230 @@
     "class_name": "Detection Finding",
     "class_uid": 2004,
     "cloud": {
-      "account": {"name": "", "type": "AWS Account", "type_id": 10, "uid": "123456789012", "labels": []},
-      "org": {"name": "", "uid": ""},
+      "account": {
+        "name": "",
+        "type": "AWS Account",
+        "type_id": 10,
+        "uid": "000000000000",
+        "labels": []
+      },
+      "org": {
+        "name": "",
+        "ou_uid": "",
+        "ou_name": "",
+        "uid": ""
+      },
       "provider": "aws",
-      "region": "eu-central-1"
+      "region": "us-east-1"
     },
-    "remediation": {"desc": "Restrict ingress to required ports and trusted sources.", "references": []},
-    "risk_details": "The security group can be accessed from any IP address on the Internet.",
-    "time": 1760343242,
-    "time_dt": "2026-10-13T08:14:02.381532",
+    "remediation": {
+      "desc": "Enable **Block Public Access** at account and bucket levels with `block_public_acls`, `ignore_public_acls`, `block_public_policy`, and `restrict_public_buckets` set to `true`. Apply **least privilege** and **defense in depth**. *If public access is required*, narrowly scope policies to fixed principals and conditions.",
+      "references": [
+        "https://hub.prowler.com/check/s3_bucket_level_public_access_block"
+      ]
+    },
+    "risk_details": "Absent **S3 Block Public Access**, public ACLs or broad policies can grant Internet or cross-account access.\n- Data disclosure (confidentiality)\n- Object overwrite or uploads (integrity)\n- Deletion or outages from misuse (availability)",
+    "time": 1791922156,
+    "time_dt": "2026-10-13T20:09:16.547082",
     "type_uid": 200401,
     "type_name": "Detection Finding: Create"
   },
   {
-    "message": "Block Public Access is configured for the S3 Bucket company-logs.",
+    "message": "Block Public Access is not configured for the S3 Bucket acme-public-logs.",
     "metadata": {
       "event_code": "s3_bucket_level_public_access_block",
-      "product": {"name": "Prowler", "uid": "prowler", "vendor_name": "Prowler", "version": "5.3.0"},
-      "profiles": ["cloud", "datetime"],
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.45.0"
+      },
+      "profiles": [
+        "cloud",
+        "datetime"
+      ],
       "tenant_uid": "",
-      "version": "1.3.0"
+      "version": "1.5.0"
     },
-    "severity_id": 3,
-    "severity": "Medium",
+    "severity_id": 4,
+    "severity": "High",
     "status": "New",
-    "status_code": "PASS",
-    "status_detail": "Block Public Access is configured for the S3 Bucket company-logs.",
+    "status_code": "FAIL",
+    "status_detail": "Block Public Access is not configured for the S3 Bucket acme-public-logs.",
     "status_id": 1,
-    "unmapped": {"categories": [], "compliance": {}},
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "internet-exposed"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://www.trendmicro.com/trendaivisiononecloudriskmanagement/knowledge-base/aws/S3/bucket-public-access-block.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html"
+      ],
+      "notes": "",
+      "compliance": {
+        "CIS-5.0": [
+          "2.1.4"
+        ],
+        "CIS-4.0.1": [
+          "2.1.4"
+        ],
+        "NIST-CSF-2.0": [
+          "ac_3"
+        ],
+        "CIS-2.0": [
+          "2.1.4"
+        ],
+        "CIS-1.4": [
+          "2.1.5"
+        ],
+        "KISA-ISMS-P-2023-korean": [
+          "2.6.1",
+          "2.6.2",
+          "2.10.2"
+        ],
+        "CIS-7.0": [
+          "3.1.4"
+        ],
+        "SecNumCloud-3.2": [
+          "9.7"
+        ],
+        "CIS-3.0": [
+          "2.1.4"
+        ],
+        "CIS-1.5": [
+          "2.1.5"
+        ],
+        "AWS-AI-Security-Framework-1.0": [
+          "AISF-DATA-04"
+        ],
+        "C5-2025": [
+          "PS-03.02B",
+          "IAM-10.01B",
+          "COS-02.01B"
+        ],
+        "CIS-6.0": [
+          "3.1.4"
+        ],
+        "KISA-ISMS-P-2023": [
+          "2.6.1",
+          "2.6.2",
+          "2.10.2"
+        ],
+        "AWS-Account-Security-Onboarding": [
+          "S3 Block Public Access"
+        ],
+        "AWS-Foundational-Technical-Review": [
+          "S3-001"
+        ],
+        "MITRE-ATTACK": [
+          "T1530"
+        ],
+        "AWS-Foundational-Security-Best-Practices": [
+          "S3.8"
+        ],
+        "CCC-v2025.10": [
+          "CCC.Logging.CN05.AR01"
+        ]
+      },
+      "scan_id": "01a136e2-3403-72d4-840f-8d53dbd50eed",
+      "provider_uid": "000000000000",
+      "provider": "aws"
+    },
     "activity_name": "Create",
     "activity_id": 1,
     "finding_info": {
-      "created_time": 1760343242,
-      "created_time_dt": "2026-10-13T08:14:02.381532",
-      "desc": "Check S3 Bucket Level Public Access Block.",
-      "product_uid": "prowler",
-      "title": "Check S3 Bucket Level Public Access Block.",
-      "types": ["Data Protection"],
-      "uid": "prowler-aws-s3_bucket_level_public_access_block-123456789012-eu-central-1-company-logs"
+      "analytic": {
+        "category": "s3",
+        "name": "S3 bucket has Block Public Access with IgnorePublicAcls and RestrictPublicBuckets enabled at bucket or account level",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "s3_bucket_level_public_access_block"
+      },
+      "created_time": 1791922156,
+      "created_time_dt": "2026-10-13T20:09:16.547082",
+      "desc": "**Amazon S3 buckets** are evaluated for **Block Public Access** settings, ensuring `ignore_public_acls` and `restrict_public_buckets` are enabled at the bucket or account scope.\n\n*Account-wide protections, when present, are treated as effective for the bucket.*",
+      "attacks": [
+        {
+          "tactic": {
+            "name": "Collection"
+          },
+          "technique": {
+            "name": "Data from Cloud Storage",
+            "src_url": "https://attack.mitre.org/techniques/T1530/",
+            "uid": "T1530"
+          }
+        }
+      ],
+      "title": "S3 bucket has Block Public Access with IgnorePublicAcls and RestrictPublicBuckets enabled at bucket or account level",
+      "types": [
+        "Software and Configuration Checks/AWS Security Best Practices/Network Reachability",
+        "Software and Configuration Checks/Industry and Regulatory Standards/AWS Foundational Security Best Practices",
+        "Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark",
+        "Effects/Data Exposure"
+      ],
+      "uid": "prowler-aws-s3_bucket_level_public_access_block-000000000000-us-east-1-acme-public-logs"
     },
     "resources": [
       {
         "cloud_partition": "aws",
-        "region": "eu-central-1",
-        "data": {"details": "", "metadata": {"name": "company-logs"}},
-        "group": {"name": "s3"},
+        "region": "us-east-1",
+        "data": {
+          "details": "",
+          "metadata": {
+            "arn": "arn:aws:s3:::acme-public-logs",
+            "name": "acme-public-logs",
+            "owner_id": "000000000000",
+            "owner": null,
+            "versioning": false,
+            "logging": false,
+            "public_access_block": {
+              "block_public_acls": false,
+              "ignore_public_acls": false,
+              "block_public_policy": false,
+              "restrict_public_buckets": false
+            },
+            "acl_grantees": [
+              {
+                "display_name": "floci",
+                "ID": "000000000000",
+                "type": "CanonicalUser",
+                "URI": null,
+                "permission": "FULL_CONTROL"
+              },
+              {
+                "display_name": null,
+                "ID": null,
+                "type": "Group",
+                "URI": "http://acs.amazonaws.com/groups/global/AllUsers",
+                "permission": "READ"
+              }
+            ],
+            "policy": {},
+            "encryption": "AES256",
+            "region": "us-east-1",
+            "logging_target_bucket": null,
+            "ownership": null,
+            "object_lock": false,
+            "mfa_delete": false,
+            "tags": [],
+            "lifecycle": [],
+            "replication_rules": [],
+            "versioning_retrieved": true,
+            "replication_retrieved": true,
+            "notification_config": {},
+            "object_sampling": null
+          }
+        },
+        "group": {
+          "name": "s3"
+        },
         "labels": [],
-        "name": "company-logs",
+        "name": "acme-public-logs",
         "type": "AwsS3Bucket",
-        "uid": "arn:aws:s3:::company-logs"
+        "uid": "arn:aws:s3:::acme-public-logs"
       }
     ],
     "category_name": "Findings",
@@ -155,15 +426,2656 @@
     "class_name": "Detection Finding",
     "class_uid": 2004,
     "cloud": {
-      "account": {"name": "", "type": "AWS Account", "type_id": 10, "uid": "123456789012", "labels": []},
-      "org": {"name": "", "uid": ""},
+      "account": {
+        "name": "",
+        "type": "AWS Account",
+        "type_id": 10,
+        "uid": "000000000000",
+        "labels": []
+      },
+      "org": {
+        "name": "",
+        "ou_uid": "",
+        "ou_name": "",
+        "uid": ""
+      },
       "provider": "aws",
-      "region": "eu-central-1"
+      "region": "us-east-1"
     },
-    "remediation": {"desc": "", "references": []},
-    "risk_details": "Public access policies may be applied to sensitive data buckets.",
-    "time": 1760343242,
-    "time_dt": "2026-10-13T08:14:02.381532",
+    "remediation": {
+      "desc": "Enable **Block Public Access** at account and bucket levels with `block_public_acls`, `ignore_public_acls`, `block_public_policy`, and `restrict_public_buckets` set to `true`. Apply **least privilege** and **defense in depth**. *If public access is required*, narrowly scope policies to fixed principals and conditions.",
+      "references": [
+        "https://hub.prowler.com/check/s3_bucket_level_public_access_block"
+      ]
+    },
+    "risk_details": "Absent **S3 Block Public Access**, public ACLs or broad policies can grant Internet or cross-account access.\n- Data disclosure (confidentiality)\n- Object overwrite or uploads (integrity)\n- Deletion or outages from misuse (availability)",
+    "time": 1791922156,
+    "time_dt": "2026-10-13T20:09:16.547082",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "S3 Bucket acme-public-logs has public access due to bucket ACL.",
+    "metadata": {
+      "event_code": "s3_bucket_public_access",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.45.0"
+      },
+      "profiles": [
+        "cloud",
+        "datetime"
+      ],
+      "tenant_uid": "",
+      "version": "1.5.0"
+    },
+    "severity_id": 5,
+    "severity": "Critical",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "S3 Bucket acme-public-logs has public access due to bucket ACL.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "internet-exposed"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://docs.aws.amazon.com/id_id/kitchensink/latest/testguide/access-control-block-public-access.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html"
+      ],
+      "notes": "",
+      "compliance": {
+        "SOC2": [
+          "cc_6_1"
+        ],
+        "RBI-Cyber-Security-Framework": [
+          "annex_i_1_3"
+        ],
+        "NIST-800-53-Revision-5": [
+          "ac_2_6",
+          "ac_3",
+          "ac_3_7",
+          "ac_4_21",
+          "ac_6",
+          "ac_17_b",
+          "ac_17_1",
+          "ac_17_4_a",
+          "ac_17_9",
+          "ac_17_10",
+          "cm_6_a",
+          "cm_9_b",
+          "mp_2",
+          "sc_7_2",
+          "sc_7_3",
+          "sc_7_7",
+          "sc_7_9_a",
+          "sc_7_11",
+          "sc_7_12",
+          "sc_7_16",
+          "sc_7_20",
+          "sc_7_21",
+          "sc_7_24_b",
+          "sc_7_25",
+          "sc_7_26",
+          "sc_7_27",
+          "sc_7_28",
+          "sc_7_a",
+          "sc_7_b",
+          "sc_7_c",
+          "sc_25"
+        ],
+        "FedRamp-Moderate-Revision-4": [
+          "ac-3",
+          "ac-4",
+          "ac-6",
+          "ac-17-1",
+          "ac-21-b",
+          "cm-2",
+          "sc-4",
+          "sc-7-3",
+          "sc-7"
+        ],
+        "GxP-21-CFR-Part-11": [
+          "11.10-c",
+          "11.10-d",
+          "11.10-g",
+          "11.10-k"
+        ],
+        "NIST-800-53-Revision-4": [
+          "ac_3",
+          "ac_4",
+          "ac_6",
+          "ac_21",
+          "sc_7_3",
+          "sc_7"
+        ],
+        "NIST-CSF-2.0": [
+          "ra_1",
+          "ac_3",
+          "ds_5",
+          "ip_1"
+        ],
+        "HIPAA": [
+          "164_308_a_1_ii_b",
+          "164_308_a_3_i",
+          "164_312_a_1",
+          "164_312_a_2_i"
+        ],
+        "AWS-Audit-Manager-Control-Tower-Guardrails": [
+          "4.1.1"
+        ],
+        "KISA-ISMS-P-2023-korean": [
+          "2.6.1",
+          "2.6.2",
+          "2.10.2"
+        ],
+        "SecNumCloud-3.2": [
+          "9.7"
+        ],
+        "PCI-4.0": [
+          "1.2.8.33",
+          "1.2.8.34",
+          "1.3.1.37",
+          "1.3.1.38",
+          "1.3.2.37",
+          "1.3.2.38",
+          "1.4.2.35",
+          "1.4.2.36",
+          "1.5.1.33",
+          "1.5.1.34",
+          "10.3.2.21",
+          "10.3.2.23",
+          "10.3.3.23",
+          "10.3.4.8",
+          "3.5.1.3.26",
+          "3.5.1.3.28",
+          "A1.1.2.17",
+          "A1.1.2.19",
+          "A1.1.3.33",
+          "A1.1.3.34",
+          "A1.2.1.31",
+          "A3.4.1.19",
+          "A3.4.1.21"
+        ],
+        "AWS-AI-Security-Framework-1.0": [
+          "AISF-DATA-04"
+        ],
+        "FFIEC": [
+          "d3-pc-im-b-1"
+        ],
+        "C5-2025": [
+          "PS-03.02B",
+          "IAM-10.01B",
+          "COS-02.01B"
+        ],
+        "NIST-CSF-1.1": [
+          "ac_3",
+          "ac_5",
+          "ds_5",
+          "ip_8",
+          "pt_3"
+        ],
+        "KISA-ISMS-P-2023": [
+          "2.6.1",
+          "2.6.2",
+          "2.10.2"
+        ],
+        "AWS-Account-Security-Onboarding": [
+          "S3 Block Public Access"
+        ],
+        "AWS-Well-Architected-Framework-Security-Pillar": [
+          "SEC03-BP07"
+        ],
+        "AWS-Foundational-Technical-Review": [
+          "S3-001"
+        ],
+        "ISO27001-2022": [
+          "A.8.1"
+        ],
+        "NIST-800-171-Revision-2": [
+          "3_1_1",
+          "3_1_2",
+          "3_1_3",
+          "3_3_8",
+          "3_4_6",
+          "3_13_2",
+          "3_13_5"
+        ],
+        "ENS-RD2022": [
+          "op.exp.8.r4.aws.ct.2"
+        ],
+        "MITRE-ATTACK": [
+          "T1530"
+        ],
+        "CISA": [
+          "your-systems-3",
+          "your-data-2"
+        ],
+        "CCC-v2025.10": [
+          "CCC.Core.CN05.AR01",
+          "CCC.Core.CN05.AR04",
+          "CCC.Core.CN05.AR05",
+          "CCC.AuditLog.CN10.AR01",
+          "CCC.AuditLog.CN10.AR02",
+          "CCC.Logging.CN05.AR01",
+          "CCC.Logging.CN05.AR02"
+        ],
+        "FedRAMP-Low-Revision-4": [
+          "ac-3",
+          "ac-17",
+          "cm-2",
+          "sc-7"
+        ]
+      },
+      "scan_id": "01a136e2-3403-72d4-840f-8d53dbd50eed",
+      "provider_uid": "000000000000",
+      "provider": "aws"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "s3",
+        "name": "S3 bucket is not publicly accessible to Everyone or Authenticated Users",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "s3_bucket_public_access"
+      },
+      "created_time": 1791922156,
+      "created_time_dt": "2026-10-13T20:09:16.547082",
+      "desc": "**Amazon S3 buckets** are evaluated for **public access** via ACLs and bucket policies. The check identifies account or bucket `PublicAccessBlock` protections (`IgnorePublicAcls`, `RestrictPublicBuckets`) and flags buckets granting group access to `AllUsers` or `AuthenticatedUsers`, or with a public bucket policy.",
+      "attacks": [
+        {
+          "tactic": {
+            "name": "Collection"
+          },
+          "technique": {
+            "name": "Data from Cloud Storage",
+            "src_url": "https://attack.mitre.org/techniques/T1530/",
+            "uid": "T1530"
+          }
+        }
+      ],
+      "title": "S3 bucket is not publicly accessible to Everyone or Authenticated Users",
+      "types": [
+        "Software and Configuration Checks/AWS Security Best Practices/Network Reachability",
+        "Software and Configuration Checks/Industry and Regulatory Standards/AWS Foundational Security Best Practices",
+        "Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark",
+        "Effects/Data Exposure"
+      ],
+      "uid": "prowler-aws-s3_bucket_public_access-000000000000-us-east-1-acme-public-logs"
+    },
+    "resources": [
+      {
+        "cloud_partition": "aws",
+        "region": "us-east-1",
+        "data": {
+          "details": "",
+          "metadata": {
+            "arn": "arn:aws:s3:::acme-public-logs",
+            "name": "acme-public-logs",
+            "owner_id": "000000000000",
+            "owner": null,
+            "versioning": false,
+            "logging": false,
+            "public_access_block": {
+              "block_public_acls": false,
+              "ignore_public_acls": false,
+              "block_public_policy": false,
+              "restrict_public_buckets": false
+            },
+            "acl_grantees": [
+              {
+                "display_name": "floci",
+                "ID": "000000000000",
+                "type": "CanonicalUser",
+                "URI": null,
+                "permission": "FULL_CONTROL"
+              },
+              {
+                "display_name": null,
+                "ID": null,
+                "type": "Group",
+                "URI": "http://acs.amazonaws.com/groups/global/AllUsers",
+                "permission": "READ"
+              }
+            ],
+            "policy": {},
+            "encryption": "AES256",
+            "region": "us-east-1",
+            "logging_target_bucket": null,
+            "ownership": null,
+            "object_lock": false,
+            "mfa_delete": false,
+            "tags": [],
+            "lifecycle": [],
+            "replication_rules": [],
+            "versioning_retrieved": true,
+            "replication_retrieved": true,
+            "notification_config": {},
+            "object_sampling": null
+          }
+        },
+        "group": {
+          "name": "s3"
+        },
+        "labels": [],
+        "name": "acme-public-logs",
+        "type": "AwsS3Bucket",
+        "uid": "arn:aws:s3:::acme-public-logs"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "cloud": {
+      "account": {
+        "name": "",
+        "type": "AWS Account",
+        "type_id": 10,
+        "uid": "000000000000",
+        "labels": []
+      },
+      "org": {
+        "name": "",
+        "ou_uid": "",
+        "ou_name": "",
+        "uid": ""
+      },
+      "provider": "aws",
+      "region": "us-east-1"
+    },
+    "remediation": {
+      "desc": "Enforce defense in depth: enable **S3 Block Public Access** at org/account and bucket levels (`BlockPublicAcls`, `IgnorePublicAcls`, `BlockPublicPolicy`, `RestrictPublicBuckets`). Apply **least privilege** with explicit principals; avoid ACLs via Object Ownership. Use private access patterns (e.g., CloudFront OAC or presigned URLs) and monitor with analyzers.",
+      "references": [
+        "https://hub.prowler.com/check/s3_bucket_public_access"
+      ]
+    },
+    "risk_details": "Publicly accessible buckets jeopardize **confidentiality** through unauthenticated reads, **integrity** through write or ACL changes, and **availability** via object deletion or overwrite. Attackers can mass-exfiltrate data, host malware, or pivot after discovering secrets stored in objects.",
+    "time": 1791922156,
+    "time_dt": "2026-10-13T20:09:16.547082",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "S3 Bucket acme-public-logs is listable by anyone due to the bucket ACL: AllUsers having the READ permission.",
+    "metadata": {
+      "event_code": "s3_bucket_public_list_acl",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.45.0"
+      },
+      "profiles": [
+        "cloud",
+        "datetime"
+      ],
+      "tenant_uid": "",
+      "version": "1.5.0"
+    },
+    "severity_id": 5,
+    "severity": "Critical",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "S3 Bucket acme-public-logs is listable by anyone due to the bucket ACL: AllUsers having the READ permission.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "internet-exposed"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html",
+        "https://www.trendmicro.com/trendaivisiononecloudriskmanagement-staging/knowledge-base/aws/S3/s3-bucket-public-read-access.html"
+      ],
+      "notes": "",
+      "compliance": {
+        "ProwlerThreatScore-1.0": [
+          "2.2.16"
+        ],
+        "NIST-CSF-2.0": [
+          "ds_5"
+        ],
+        "AWS-Audit-Manager-Control-Tower-Guardrails": [
+          "4.1.1"
+        ],
+        "KISA-ISMS-P-2023-korean": [
+          "2.5.6",
+          "2.6.2",
+          "2.10.2"
+        ],
+        "C5-2025": [
+          "PS-03.02B"
+        ],
+        "KISA-ISMS-P-2023": [
+          "2.5.6",
+          "2.6.2",
+          "2.10.2"
+        ],
+        "AWS-Foundational-Technical-Review": [
+          "S3-001"
+        ],
+        "CCC-v2025.10": [
+          "CCC.Core.CN05.AR01",
+          "CCC.AuditLog.CN10.AR01",
+          "CCC.AuditLog.CN10.AR02",
+          "CCC.Logging.CN05.AR01",
+          "CCC.Logging.CN05.AR02"
+        ]
+      },
+      "scan_id": "01a136e2-3403-72d4-840f-8d53dbd50eed",
+      "provider_uid": "000000000000",
+      "provider": "aws"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "s3",
+        "name": "S3 bucket is not publicly listable by Everyone or any authenticated AWS user",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "s3_bucket_public_list_acl"
+      },
+      "created_time": 1791922156,
+      "created_time_dt": "2026-10-13T20:09:16.547082",
+      "desc": "**Amazon S3 buckets** are evaluated for **public listing via ACLs**. Grants of `READ`, `READ_ACP`, or `FULL_CONTROL` to the `AllUsers` or `AuthenticatedUsers` groups are identified. Effective **Block Public Access** at account or bucket level (notably `IgnorePublicAcls` and `RestrictPublicBuckets`) is considered in the evaluation.",
+      "title": "S3 bucket is not publicly listable by Everyone or any authenticated AWS user",
+      "types": [
+        "Software and Configuration Checks/AWS Security Best Practices/Network Reachability",
+        "Software and Configuration Checks/Industry and Regulatory Standards/AWS Foundational Security Best Practices",
+        "Effects/Data Exposure",
+        "TTPs/Initial Access/Unauthorized Access"
+      ],
+      "uid": "prowler-aws-s3_bucket_public_list_acl-000000000000-us-east-1-acme-public-logs"
+    },
+    "resources": [
+      {
+        "cloud_partition": "aws",
+        "region": "us-east-1",
+        "data": {
+          "details": "",
+          "metadata": {
+            "arn": "arn:aws:s3:::acme-public-logs",
+            "name": "acme-public-logs",
+            "owner_id": "000000000000",
+            "owner": null,
+            "versioning": false,
+            "logging": false,
+            "public_access_block": {
+              "block_public_acls": false,
+              "ignore_public_acls": false,
+              "block_public_policy": false,
+              "restrict_public_buckets": false
+            },
+            "acl_grantees": [
+              {
+                "display_name": "floci",
+                "ID": "000000000000",
+                "type": "CanonicalUser",
+                "URI": null,
+                "permission": "FULL_CONTROL"
+              },
+              {
+                "display_name": null,
+                "ID": null,
+                "type": "Group",
+                "URI": "http://acs.amazonaws.com/groups/global/AllUsers",
+                "permission": "READ"
+              }
+            ],
+            "policy": {},
+            "encryption": "AES256",
+            "region": "us-east-1",
+            "logging_target_bucket": null,
+            "ownership": null,
+            "object_lock": false,
+            "mfa_delete": false,
+            "tags": [],
+            "lifecycle": [],
+            "replication_rules": [],
+            "versioning_retrieved": true,
+            "replication_retrieved": true,
+            "notification_config": {},
+            "object_sampling": null
+          }
+        },
+        "group": {
+          "name": "s3"
+        },
+        "labels": [],
+        "name": "acme-public-logs",
+        "type": "AwsS3Bucket",
+        "uid": "arn:aws:s3:::acme-public-logs"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "cloud": {
+      "account": {
+        "name": "",
+        "type": "AWS Account",
+        "type_id": 10,
+        "uid": "000000000000",
+        "labels": []
+      },
+      "org": {
+        "name": "",
+        "ou_uid": "",
+        "ou_name": "",
+        "uid": ""
+      },
+      "provider": "aws",
+      "region": "us-east-1"
+    },
+    "remediation": {
+      "desc": "Enable account-level **S3 Block Public Access** (`BlockPublicAcls`, `IgnorePublicAcls`, `BlockPublicPolicy`, `RestrictPublicBuckets`).\n- Remove ACL grants to `AllUsers`/`AuthenticatedUsers`; apply **least privilege** with IAM/bucket policies.\n- Favor private patterns (VPC endpoints, CloudFront OAC, presigned URLs) and disable ACLs via Object Ownership.",
+      "references": [
+        "https://hub.prowler.com/check/s3_bucket_public_list_acl"
+      ]
+    },
+    "risk_details": "**Public listability** reveals object names, counts, and structure, enabling reconnaissance and targeted scraping. `READ_ACP` exposes permission details for further abuse. With `FULL_CONTROL`, attackers could alter ACLs and disrupt access, undermining **confidentiality** and risking **integrity** and **availability**.",
+    "time": 1791922156,
+    "time_dt": "2026-10-13T20:09:16.547082",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "S3 Bucket acme-pubpolicy allows public write access in the bucket policy.",
+    "metadata": {
+      "event_code": "s3_bucket_policy_public_write_access",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.45.0"
+      },
+      "profiles": [
+        "cloud",
+        "datetime"
+      ],
+      "tenant_uid": "",
+      "version": "1.5.0"
+    },
+    "severity_id": 5,
+    "severity": "Critical",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "S3 Bucket acme-pubpolicy allows public write access in the bucket policy.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "internet-exposed"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_s3_rw-bucket.html"
+      ],
+      "notes": "",
+      "compliance": {
+        "RBI-Cyber-Security-Framework": [
+          "annex_i_1_3"
+        ],
+        "NIST-800-53-Revision-5": [
+          "ac_2_6",
+          "ac_3",
+          "ac_3_7",
+          "ac_4_21",
+          "ac_6",
+          "ac_17_b",
+          "ac_17_1",
+          "ac_17_4_a",
+          "ac_17_9",
+          "ac_17_10",
+          "cm_6_a",
+          "cm_9_b",
+          "mp_2",
+          "sc_7_2",
+          "sc_7_3",
+          "sc_7_7",
+          "sc_7_9_a",
+          "sc_7_11",
+          "sc_7_12",
+          "sc_7_16",
+          "sc_7_20",
+          "sc_7_21",
+          "sc_7_24_b",
+          "sc_7_25",
+          "sc_7_26",
+          "sc_7_27",
+          "sc_7_28",
+          "sc_7_a",
+          "sc_7_b",
+          "sc_7_c",
+          "sc_25"
+        ],
+        "FedRamp-Moderate-Revision-4": [
+          "ac-3",
+          "ac-4",
+          "ac-6",
+          "ac-17-1",
+          "ac-21-b",
+          "cm-2",
+          "sc-4",
+          "sc-7-3",
+          "sc-7"
+        ],
+        "GxP-21-CFR-Part-11": [
+          "11.10-c",
+          "11.10-d",
+          "11.10-g",
+          "11.10-k"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "2.2.15"
+        ],
+        "NIST-800-53-Revision-4": [
+          "ac_3",
+          "ac_4",
+          "ac_6",
+          "ac_21",
+          "sc_7_3",
+          "sc_7"
+        ],
+        "HIPAA": [
+          "164_308_a_1_ii_b",
+          "164_308_a_3_i",
+          "164_312_a_1"
+        ],
+        "AWS-Audit-Manager-Control-Tower-Guardrails": [
+          "4.1.2"
+        ],
+        "KISA-ISMS-P-2023-korean": [
+          "2.5.6",
+          "2.6.2",
+          "2.10.2"
+        ],
+        "CIS-7.0": [
+          "2.21"
+        ],
+        "AWS-AI-Security-Framework-1.0": [
+          "AISF-DATA-04"
+        ],
+        "FFIEC": [
+          "d3-pc-im-b-1"
+        ],
+        "C5-2025": [
+          "PS-03.02B",
+          "IAM-10.01B"
+        ],
+        "NIST-CSF-1.1": [
+          "ac_3",
+          "ac_5",
+          "ds_5",
+          "ip_8",
+          "pt_3"
+        ],
+        "KISA-ISMS-P-2023": [
+          "2.5.6",
+          "2.6.2",
+          "2.10.2"
+        ],
+        "AWS-Well-Architected-Framework-Security-Pillar": [
+          "SEC03-BP07"
+        ],
+        "AWS-Foundational-Technical-Review": [
+          "S3-001"
+        ],
+        "ISO27001-2022": [
+          "A.8.1"
+        ],
+        "PCI-3.2.1": [
+          "1.2",
+          "1.2.1",
+          "1.2.1.a",
+          "1.2.1.b",
+          "1.2.1.c",
+          "1.3",
+          "1.3.1",
+          "1.3.2",
+          "1.3.4",
+          "1.3.6",
+          "7.2",
+          "7.2.1"
+        ],
+        "NIST-800-171-Revision-2": [
+          "3_1_1",
+          "3_1_2",
+          "3_1_3",
+          "3_3_8",
+          "3_4_6",
+          "3_13_2",
+          "3_13_5"
+        ],
+        "ENS-RD2022": [
+          "op.acc.4.aws.iam.1",
+          "op.exp.8.r4.aws.ct.2"
+        ],
+        "MITRE-ATTACK": [
+          "T1485",
+          "T1486"
+        ],
+        "AWS-Foundational-Security-Best-Practices": [
+          "S3.3"
+        ],
+        "CISA": [
+          "your-systems-3",
+          "your-data-2"
+        ],
+        "CCC-v2025.10": [
+          "CCC.Core.CN05.AR05",
+          "CCC.AuditLog.CN10.AR02"
+        ],
+        "FedRAMP-Low-Revision-4": [
+          "ac-3",
+          "ac-17",
+          "cm-2",
+          "sc-7"
+        ]
+      },
+      "scan_id": "01a136e2-3403-72d4-840f-8d53dbd50eed",
+      "provider_uid": "000000000000",
+      "provider": "aws"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "s3",
+        "name": "S3 bucket policy does not allow public write access",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "s3_bucket_policy_public_write_access"
+      },
+      "created_time": 1791922156,
+      "created_time_dt": "2026-10-13T20:09:16.547082",
+      "desc": "**Amazon S3 bucket policies** are evaluated for **public write permissions** (e.g., `s3:PutObject`, `s3:Delete*`, or `s3:*`). Account or bucket **Public Access Block** that restricts public buckets is considered when determining exposure.",
+      "attacks": [
+        {
+          "tactic": {
+            "name": "Impact"
+          },
+          "technique": {
+            "name": "Data Destruction",
+            "src_url": "https://attack.mitre.org/techniques/T1485/",
+            "uid": "T1485"
+          }
+        },
+        {
+          "tactic": {
+            "name": "Impact"
+          },
+          "technique": {
+            "name": "Data Encrypted for Impact",
+            "src_url": "https://attack.mitre.org/techniques/T1486/",
+            "uid": "T1486"
+          }
+        }
+      ],
+      "title": "S3 bucket policy does not allow public write access",
+      "types": [
+        "Software and Configuration Checks/AWS Security Best Practices",
+        "Software and Configuration Checks/Industry and Regulatory Standards/AWS Foundational Security Best Practices",
+        "Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark",
+        "Effects/Data Destruction",
+        "TTPs/Initial Access"
+      ],
+      "uid": "prowler-aws-s3_bucket_policy_public_write_access-000000000000-us-east-1-acme-pubpolicy"
+    },
+    "resources": [
+      {
+        "cloud_partition": "aws",
+        "region": "us-east-1",
+        "data": {
+          "details": "",
+          "metadata": {
+            "arn": "arn:aws:s3:::acme-pubpolicy",
+            "name": "acme-pubpolicy",
+            "owner_id": "000000000000",
+            "owner": null,
+            "versioning": false,
+            "logging": false,
+            "public_access_block": {
+              "block_public_acls": false,
+              "ignore_public_acls": false,
+              "block_public_policy": false,
+              "restrict_public_buckets": false
+            },
+            "acl_grantees": [
+              {
+                "display_name": "floci",
+                "ID": "000000000000",
+                "type": "CanonicalUser",
+                "URI": null,
+                "permission": "FULL_CONTROL"
+              }
+            ],
+            "policy": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": "*",
+                  "Action": "s3:PutObject",
+                  "Resource": "arn:aws:s3:::acme-pubpolicy/*"
+                }
+              ]
+            },
+            "encryption": "AES256",
+            "region": "us-east-1",
+            "logging_target_bucket": null,
+            "ownership": null,
+            "object_lock": false,
+            "mfa_delete": false,
+            "tags": [],
+            "lifecycle": [],
+            "replication_rules": [],
+            "versioning_retrieved": true,
+            "replication_retrieved": true,
+            "notification_config": {},
+            "object_sampling": null
+          }
+        },
+        "group": {
+          "name": "s3"
+        },
+        "labels": [],
+        "name": "acme-pubpolicy",
+        "type": "AwsS3Bucket",
+        "uid": "arn:aws:s3:::acme-pubpolicy"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "cloud": {
+      "account": {
+        "name": "",
+        "type": "AWS Account",
+        "type_id": 10,
+        "uid": "000000000000",
+        "labels": []
+      },
+      "org": {
+        "name": "",
+        "ou_uid": "",
+        "ou_name": "",
+        "uid": ""
+      },
+      "provider": "aws",
+      "region": "us-east-1"
+    },
+    "remediation": {
+      "desc": "Restrict writes to trusted principals using **least privilege**; avoid `Principal: \"*\"`. Enable **Public Access Block** at account and bucket levels for defense in depth. Prefer IAM roles over broad bucket policies, require private access paths, and enable versioning to recover from unwanted changes.",
+      "references": [
+        "https://hub.prowler.com/check/s3_bucket_policy_public_write_access"
+      ]
+    },
+    "risk_details": "Public write access lets anyone upload, overwrite, or delete objects, undermining **integrity** and **availability**. Attackers can plant malware, stage phishing content, poison data, or wipe buckets, causing outages and potential legal and cost impacts from storage abuse and content hosting.",
+    "time": 1791922156,
+    "time_dt": "2026-10-13T20:09:16.547082",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Server Side Encryption is not configured with kms for S3 Bucket acme-backup-dump.",
+    "metadata": {
+      "event_code": "s3_bucket_kms_encryption",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.45.0"
+      },
+      "profiles": [
+        "cloud",
+        "datetime"
+      ],
+      "tenant_uid": "",
+      "version": "1.5.0"
+    },
+    "severity_id": 3,
+    "severity": "Medium",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Server Side Encryption is not configured with kms for S3 Bucket acme-backup-dump.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "encryption"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/default-bucket-encryption.html",
+        "https://www.trendmicro.com/trendaivisiononecloudriskmanagement-staging/knowledge-base/aws/S3/encrypted-with-kms-customer-master-keys.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html"
+      ],
+      "notes": "",
+      "compliance": {
+        "SOC2": [
+          "pi_1_4"
+        ],
+        "NIST-CSF-2.0": [
+          "ds_1",
+          "ds_3",
+          "ds_5",
+          "pt_4"
+        ],
+        "KISA-ISMS-P-2023-korean": [
+          "2.7.2",
+          "2.10.2"
+        ],
+        "SecNumCloud-3.2": [
+          "10.1"
+        ],
+        "PCI-4.0": [
+          "3.5.1.31",
+          "8.3.2.50"
+        ],
+        "AWS-AI-Security-Framework-1.0": [
+          "AISF-INFRA-05",
+          "AISF-DATA-04"
+        ],
+        "C5-2025": [
+          "OIS-08.02B",
+          "OPS-31.01B",
+          "IAM-07.03B",
+          "CRY-01.02AC",
+          "CRY-05.02B",
+          "CRY-05.01AC",
+          "PSS-12.02B"
+        ],
+        "KISA-ISMS-P-2023": [
+          "2.7.2",
+          "2.10.2"
+        ],
+        "AWS-Foundational-Technical-Review": [
+          "S3-001"
+        ],
+        "ISO27001-2022": [
+          "A.8.11",
+          "A.8.24"
+        ],
+        "PCI-3.2.1": [
+          "3.4",
+          "3.4.1",
+          "3.4.1.a",
+          "3.4.1.c",
+          "3.4.a",
+          "3.4.b",
+          "3.4.d",
+          "8.2",
+          "8.2.1",
+          "8.2.1.a"
+        ],
+        "AWS-Foundational-Security-Best-Practices": [
+          "S3.17"
+        ],
+        "CCC-v2025.10": [
+          "CCC.Core.CN02.AR01",
+          "CCC.ObjStor.CN01.AR01",
+          "CCC.ObjStor.CN01.AR02",
+          "CCC.ObjStor.CN01.AR03",
+          "CCC.ObjStor.CN01.AR04"
+        ]
+      },
+      "scan_id": "01a136e2-3403-72d4-840f-8d53dbd50eed",
+      "provider_uid": "000000000000",
+      "provider": "aws"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "s3",
+        "name": "S3 bucket has server-side encryption with AWS KMS",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "s3_bucket_kms_encryption"
+      },
+      "created_time": 1791922156,
+      "created_time_dt": "2026-10-13T20:09:16.547082",
+      "desc": "**Amazon S3 buckets** use server-side encryption with **AWS KMS** keys, including dual-layer `aws:kms:dsse`. The evaluation identifies buckets whose default encryption is `aws:kms` or `aws:kms:dsse` rather than SSE-S3.",
+      "title": "S3 bucket has server-side encryption with AWS KMS",
+      "types": [
+        "Software and Configuration Checks/AWS Security Best Practices",
+        "Software and Configuration Checks/Industry and Regulatory Standards/AWS Foundational Security Best Practices",
+        "Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark",
+        "Effects/Data Exposure"
+      ],
+      "uid": "prowler-aws-s3_bucket_kms_encryption-000000000000-us-east-1-acme-backup-dump"
+    },
+    "resources": [
+      {
+        "cloud_partition": "aws",
+        "region": "us-east-1",
+        "data": {
+          "details": "",
+          "metadata": {
+            "arn": "arn:aws:s3:::acme-backup-dump",
+            "name": "acme-backup-dump",
+            "owner_id": "000000000000",
+            "owner": null,
+            "versioning": false,
+            "logging": false,
+            "public_access_block": {
+              "block_public_acls": false,
+              "ignore_public_acls": false,
+              "block_public_policy": false,
+              "restrict_public_buckets": false
+            },
+            "acl_grantees": [
+              {
+                "display_name": "floci",
+                "ID": "000000000000",
+                "type": "CanonicalUser",
+                "URI": null,
+                "permission": "FULL_CONTROL"
+              }
+            ],
+            "policy": {},
+            "encryption": "AES256",
+            "region": "us-east-1",
+            "logging_target_bucket": null,
+            "ownership": null,
+            "object_lock": false,
+            "mfa_delete": false,
+            "tags": [],
+            "lifecycle": [],
+            "replication_rules": [],
+            "versioning_retrieved": true,
+            "replication_retrieved": true,
+            "notification_config": {},
+            "object_sampling": null
+          }
+        },
+        "group": {
+          "name": "s3"
+        },
+        "labels": [],
+        "name": "acme-backup-dump",
+        "type": "AwsS3Bucket",
+        "uid": "arn:aws:s3:::acme-backup-dump"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "cloud": {
+      "account": {
+        "name": "",
+        "type": "AWS Account",
+        "type_id": 10,
+        "uid": "000000000000",
+        "labels": []
+      },
+      "org": {
+        "name": "",
+        "ou_uid": "",
+        "ou_name": "",
+        "uid": ""
+      },
+      "provider": "aws",
+      "region": "us-east-1"
+    },
+    "remediation": {
+      "desc": "Enable default **SSE-KMS** (or **DSSE-KMS** for highly sensitive data). Use a customer-managed key, enforce **least privilege** and separation of duties for key usage, and require KMS encryption via bucket policy (specify `aws:kms` and a designated key). Monitor key activity in **CloudTrail** and consider **S3 Bucket Keys** to control cost.",
+      "references": [
+        "https://hub.prowler.com/check/s3_bucket_kms_encryption"
+      ]
+    },
+    "risk_details": "Without **KMS-based encryption**, data relies only on SSE-S3, reducing **confidentiality** controls. Missing key policies and grants weakens **least privilege**, cross-account scoping, and the ability to disable or rotate keys. Lack of **KMS audit trails** obscures key usage, hindering detection of misuse and **defense in depth**.",
+    "time": 1791922156,
+    "time_dt": "2026-10-13T20:09:16.547082",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Security group acme-open-rdp (sg-1534e2968c20202a0) has all ports open to the Internet.",
+    "metadata": {
+      "event_code": "ec2_securitygroup_allow_ingress_from_internet_to_all_ports",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.45.0"
+      },
+      "profiles": [
+        "cloud",
+        "datetime"
+      ],
+      "tenant_uid": "",
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Security group acme-open-rdp (sg-1534e2968c20202a0) has all ports open to the Internet.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "internet-exposed"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html",
+        "https://www.trendmicro.com/trendaivisiononecloudriskmanagement/knowledge-base/aws/EC2/security-group-ingress-any.html"
+      ],
+      "notes": "",
+      "compliance": {
+        "CIS-5.0": [
+          "5.3",
+          "5.4"
+        ],
+        "SOC2": [
+          "cc_6_6"
+        ],
+        "CIS-4.0.1": [
+          "5.3",
+          "5.4"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "2.1.4"
+        ],
+        "NIST-CSF-2.0": [
+          "ac_3",
+          "ac_5",
+          "ds_5",
+          "ip_1",
+          "pt_4"
+        ],
+        "CIS-2.0": [
+          "5.2",
+          "5.3"
+        ],
+        "CIS-1.4": [
+          "5.2"
+        ],
+        "KISA-ISMS-P-2023-korean": [
+          "2.6.1",
+          "2.6.2",
+          "2.6.4",
+          "2.6.6",
+          "2.10.2"
+        ],
+        "CIS-7.0": [
+          "6.3",
+          "6.4"
+        ],
+        "SecNumCloud-3.2": [
+          "13.2"
+        ],
+        "CIS-3.0": [
+          "5.2",
+          "5.3"
+        ],
+        "CIS-1.5": [
+          "5.2",
+          "5.3"
+        ],
+        "C5-2025": [
+          "PI-01.01AC"
+        ],
+        "CIS-6.0": [
+          "6.3",
+          "6.4"
+        ],
+        "KISA-ISMS-P-2023": [
+          "2.6.1",
+          "2.6.2",
+          "2.6.4",
+          "2.6.6",
+          "2.10.2"
+        ],
+        "AWS-Well-Architected-Framework-Security-Pillar": [
+          "SEC05-BP03"
+        ],
+        "AWS-Foundational-Technical-Review": [
+          "NETSEC-001"
+        ],
+        "ISO27001-2022": [
+          "A.8.20",
+          "A.8.21",
+          "A.8.22"
+        ],
+        "PCI-3.2.1": [
+          "1.1",
+          "1.1.4",
+          "1.1.4.c",
+          "1.2",
+          "1.2.1",
+          "1.2.1.a",
+          "1.2.1.b",
+          "1.2.1.c",
+          "1.2.3",
+          "1.2.3.b",
+          "1.3",
+          "1.3.2",
+          "1.3.5"
+        ],
+        "ENS-RD2022": [
+          "mp.com.1.aws.sg.2"
+        ],
+        "MITRE-ATTACK": [
+          "T1199",
+          "T1048",
+          "T1499",
+          "T1498",
+          "T1046"
+        ],
+        "CISA": [
+          "your-systems-3",
+          "your-data-2"
+        ],
+        "CCC-v2025.10": [
+          "CCC.Core.CN01.AR02",
+          "CCC.Core.CN05.AR01",
+          "CCC.Core.CN05.AR05"
+        ]
+      },
+      "scan_id": "01a136e2-3403-72d4-840f-8d53dbd50eed",
+      "provider_uid": "000000000000",
+      "provider": "aws"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "ec2",
+        "name": "Security group does not have all ports open to the Internet",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "ec2_securitygroup_allow_ingress_from_internet_to_all_ports"
+      },
+      "created_time": 1791922156,
+      "created_time_dt": "2026-10-13T20:09:16.547082",
+      "desc": "**EC2 security groups** with **inbound rules** permitting Internet sources (`0.0.0.0/0`, `::/0`) to `all ports` across any protocol",
+      "attacks": [
+        {
+          "tactic": {
+            "name": "Initial Access"
+          },
+          "technique": {
+            "name": "Trusted Relationship",
+            "src_url": "https://attack.mitre.org/techniques/T1199/",
+            "uid": "T1199"
+          }
+        },
+        {
+          "tactic": {
+            "name": "Exfiltration"
+          },
+          "technique": {
+            "name": "Exfiltration Over Alternative Protocol",
+            "src_url": "https://attack.mitre.org/techniques/T1048/",
+            "uid": "T1048"
+          }
+        },
+        {
+          "tactic": {
+            "name": "Impact"
+          },
+          "technique": {
+            "name": "Endpoint Denial of Service",
+            "src_url": "https://attack.mitre.org/techniques/T1499/",
+            "uid": "T1499"
+          }
+        },
+        {
+          "tactic": {
+            "name": "Impact"
+          },
+          "technique": {
+            "name": "Network Denial of Service",
+            "src_url": "https://attack.mitre.org/techniques/T1498/",
+            "uid": "T1498"
+          }
+        },
+        {
+          "tactic": {
+            "name": "Discovery"
+          },
+          "technique": {
+            "name": "Network Service Discovery",
+            "src_url": "https://attack.mitre.org/techniques/T1046/",
+            "uid": "T1046"
+          }
+        }
+      ],
+      "title": "Security group does not have all ports open to the Internet",
+      "types": [
+        "Software and Configuration Checks/AWS Security Best Practices/Network Reachability",
+        "Software and Configuration Checks/Industry and Regulatory Standards/AWS Foundational Security Best Practices",
+        "Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark",
+        "TTPs/Initial Access/Unauthorized Access",
+        "Effects/Data Exposure"
+      ],
+      "uid": "prowler-aws-ec2_securitygroup_allow_ingress_from_internet_to_all_ports-000000000000-us-east-1-sg-1534e2968c20202a0"
+    },
+    "resources": [
+      {
+        "cloud_partition": "aws",
+        "region": "us-east-1",
+        "data": {
+          "details": "acme-open-rdp",
+          "metadata": {
+            "name": "acme-open-rdp",
+            "region": "us-east-1",
+            "arn": "arn:aws:ec2:us-east-1:000000000000:security-group/sg-1534e2968c20202a0",
+            "id": "sg-1534e2968c20202a0",
+            "vpc_id": "vpc-default-us-east-1",
+            "associated_sgs": [],
+            "network_interfaces": [],
+            "ingress_rules": [
+              {
+                "IpProtocol": "tcp",
+                "FromPort": 0,
+                "ToPort": 65535,
+                "UserIdGroupPairs": [],
+                "IpRanges": [
+                  {
+                    "CidrIp": "0.0.0.0/0"
+                  }
+                ],
+                "Ipv6Ranges": [],
+                "PrefixListIds": []
+              }
+            ],
+            "egress_rules": [
+              {
+                "IpProtocol": "-1",
+                "UserIdGroupPairs": [],
+                "IpRanges": [
+                  {
+                    "CidrIp": "0.0.0.0/0"
+                  }
+                ],
+                "Ipv6Ranges": [],
+                "PrefixListIds": []
+              }
+            ],
+            "tags": []
+          }
+        },
+        "group": {
+          "name": "ec2"
+        },
+        "labels": [],
+        "name": "sg-1534e2968c20202a0",
+        "type": "AwsEc2SecurityGroup",
+        "uid": "arn:aws:ec2:us-east-1:000000000000:security-group/sg-1534e2968c20202a0"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "cloud": {
+      "account": {
+        "name": "",
+        "type": "AWS Account",
+        "type_id": 10,
+        "uid": "000000000000",
+        "labels": []
+      },
+      "org": {
+        "name": "",
+        "ou_uid": "",
+        "ou_name": "",
+        "uid": ""
+      },
+      "provider": "aws",
+      "region": "us-east-1"
+    },
+    "remediation": {
+      "desc": "Enforce **least privilege** on ingress: allow only required ports from trusted sources, avoid `0.0.0.0/0` and `::/0`. Prefer private access (VPN, bastion, or Session Manager), use security group references, and layer **defense in depth** with network ACLs. Periodically review and remove unused rules.",
+      "references": [
+        "https://hub.prowler.com/check/ec2_securitygroup_allow_ingress_from_internet_to_all_ports"
+      ]
+    },
+    "risk_details": "Opening every port to the Internet enables broad scanning and exploit attempts, leading to **unauthorized access**, **remote code execution**, and **data exfiltration**, with easier lateral movement into the VPC. Confidentiality, integrity, and availability are all at risk.",
+    "time": 1791922156,
+    "time_dt": "2026-10-13T20:09:16.547082",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Security group acme-open-ssh (sg-a899c3f6063affe1f) has SSH port 22 open to the Internet.",
+    "metadata": {
+      "event_code": "ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_22",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.45.0"
+      },
+      "profiles": [
+        "cloud",
+        "datetime"
+      ],
+      "tenant_uid": "",
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Security group acme-open-ssh (sg-a899c3f6063affe1f) has SSH port 22 open to the Internet.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "internet-exposed"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html",
+        "https://www.trendmicro.com/trendaivisiononecloudriskmanagement/knowledge-base/aws/EC2/unrestricted-ssh-access.html"
+      ],
+      "notes": "",
+      "compliance": {
+        "CIS-5.0": [
+          "5.3",
+          "5.4"
+        ],
+        "SOC2": [
+          "cc_6_6",
+          "cc_7_2"
+        ],
+        "CIS-4.0.1": [
+          "5.3",
+          "5.4"
+        ],
+        "RBI-Cyber-Security-Framework": [
+          "annex_i_5_1",
+          "annex_i_7_3"
+        ],
+        "NIST-800-53-Revision-5": [
+          "ac_17_b",
+          "ac_17_1",
+          "ac_17_9",
+          "ac_17_10",
+          "cm_9_b",
+          "sc_7_7",
+          "sc_7_11",
+          "sc_7_12",
+          "sc_7_16",
+          "sc_7_21",
+          "sc_7_24_b",
+          "sc_7_25",
+          "sc_7_26",
+          "sc_7_27",
+          "sc_7_28",
+          "sc_7_a",
+          "sc_7_c"
+        ],
+        "FedRamp-Moderate-Revision-4": [
+          "ac-4",
+          "ac-17-1",
+          "cm-2",
+          "sc-4",
+          "sc-7-3",
+          "sc-7"
+        ],
+        "GxP-21-CFR-Part-11": [
+          "11.10-d",
+          "11.10-g"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "2.1.4",
+          "2.1.7"
+        ],
+        "NIST-800-53-Revision-4": [
+          "ac_4",
+          "sc_7_3",
+          "sc_7"
+        ],
+        "NIST-CSF-2.0": [
+          "ac_3"
+        ],
+        "CIS-2.0": [
+          "5.2",
+          "5.3"
+        ],
+        "HIPAA": [
+          "164_308_a_1_ii_b",
+          "164_312_e_1"
+        ],
+        "AWS-Audit-Manager-Control-Tower-Guardrails": [
+          "2.0.2"
+        ],
+        "CIS-1.4": [
+          "5.2"
+        ],
+        "KISA-ISMS-P-2023-korean": [
+          "2.6.1",
+          "2.6.2",
+          "2.6.6",
+          "2.10.2"
+        ],
+        "CIS-7.0": [
+          "6.3",
+          "6.4"
+        ],
+        "SecNumCloud-3.2": [
+          "13.2"
+        ],
+        "CIS-3.0": [
+          "5.2",
+          "5.3"
+        ],
+        "CIS-1.5": [
+          "5.2",
+          "5.3"
+        ],
+        "PCI-4.0": [
+          "1.2.8.17",
+          "1.3.1.19",
+          "1.3.2.19",
+          "1.4.2.18",
+          "1.5.1.17",
+          "A1.1.3.17"
+        ],
+        "FFIEC": [
+          "d3-pc-am-b-10",
+          "d3-pc-im-b-1",
+          "d3-pc-im-b-2",
+          "d3-pc-im-b-6",
+          "d4-c-co-b-2"
+        ],
+        "C5-2025": [
+          "PI-01.01AC"
+        ],
+        "CIS-6.0": [
+          "6.3",
+          "6.4"
+        ],
+        "NIST-CSF-1.1": [
+          "ae_1",
+          "ac_3",
+          "ac_5",
+          "ds_7",
+          "pt_4"
+        ],
+        "KISA-ISMS-P-2023": [
+          "2.6.1",
+          "2.6.2",
+          "2.6.6",
+          "2.10.2"
+        ],
+        "AWS-Well-Architected-Framework-Security-Pillar": [
+          "SEC05-BP03"
+        ],
+        "AWS-Foundational-Technical-Review": [
+          "NETSEC-001"
+        ],
+        "ISO27001-2022": [
+          "A.8.20",
+          "A.8.21",
+          "A.8.22"
+        ],
+        "PCI-3.2.1": [
+          "1.2",
+          "1.2.1",
+          "1.2.1.a",
+          "1.2.1.b",
+          "1.2.1.c",
+          "1.3",
+          "1.3.1",
+          "2.2",
+          "2.2.2"
+        ],
+        "NIST-800-171-Revision-2": [
+          "3_1_1",
+          "3_1_2",
+          "3_1_3",
+          "3_1_14",
+          "3_1_20",
+          "3_4_7",
+          "3_13_1",
+          "3_13_2",
+          "3_13_5",
+          "3_13_6"
+        ],
+        "MITRE-ATTACK": [
+          "T1199",
+          "T1048",
+          "T1499",
+          "T1498",
+          "T1046"
+        ],
+        "AWS-Foundational-Security-Best-Practices": [
+          "EC2.13"
+        ],
+        "CISA": [
+          "your-systems-3",
+          "your-data-2"
+        ],
+        "CCC-v2025.10": [
+          "CCC.Core.CN01.AR02"
+        ],
+        "ISO27001-2013": [
+          "A.12.6.C",
+          "A.13.1.C"
+        ],
+        "FedRAMP-Low-Revision-4": [
+          "ac-17",
+          "cm-2",
+          "sc-7"
+        ]
+      },
+      "scan_id": "01a136e2-3403-72d4-840f-8d53dbd50eed",
+      "provider_uid": "000000000000",
+      "provider": "aws"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "ec2",
+        "name": "Security group does not allow ingress from 0.0.0.0/0 or ::/0 to TCP port 22 (SSH)",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_22"
+      },
+      "created_time": 1791922156,
+      "created_time_dt": "2026-10-13T20:09:16.547082",
+      "desc": "**EC2 security groups** are assessed for **inbound SSH exposure** by locating ingress rules that allow `TCP 22` from the Internet (`0.0.0.0/0` or `::/0`).\n\nOnly groups in use are considered; sets already flagged for all-port exposure are not repeated.",
+      "attacks": [
+        {
+          "tactic": {
+            "name": "Initial Access"
+          },
+          "technique": {
+            "name": "Trusted Relationship",
+            "src_url": "https://attack.mitre.org/techniques/T1199/",
+            "uid": "T1199"
+          }
+        },
+        {
+          "tactic": {
+            "name": "Exfiltration"
+          },
+          "technique": {
+            "name": "Exfiltration Over Alternative Protocol",
+            "src_url": "https://attack.mitre.org/techniques/T1048/",
+            "uid": "T1048"
+          }
+        },
+        {
+          "tactic": {
+            "name": "Impact"
+          },
+          "technique": {
+            "name": "Endpoint Denial of Service",
+            "src_url": "https://attack.mitre.org/techniques/T1499/",
+            "uid": "T1499"
+          }
+        },
+        {
+          "tactic": {
+            "name": "Impact"
+          },
+          "technique": {
+            "name": "Network Denial of Service",
+            "src_url": "https://attack.mitre.org/techniques/T1498/",
+            "uid": "T1498"
+          }
+        },
+        {
+          "tactic": {
+            "name": "Discovery"
+          },
+          "technique": {
+            "name": "Network Service Discovery",
+            "src_url": "https://attack.mitre.org/techniques/T1046/",
+            "uid": "T1046"
+          }
+        }
+      ],
+      "title": "Security group does not allow ingress from 0.0.0.0/0 or ::/0 to TCP port 22 (SSH)",
+      "types": [
+        "Software and Configuration Checks/AWS Security Best Practices/Network Reachability",
+        "Software and Configuration Checks/Industry and Regulatory Standards/AWS Foundational Security Best Practices",
+        "Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark",
+        "TTPs/Initial Access/Unauthorized Access"
+      ],
+      "uid": "prowler-aws-ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_22-000000000000-us-east-1-sg-a899c3f6063affe1f"
+    },
+    "resources": [
+      {
+        "cloud_partition": "aws",
+        "region": "us-east-1",
+        "data": {
+          "details": "acme-open-ssh",
+          "metadata": {
+            "name": "acme-open-ssh",
+            "region": "us-east-1",
+            "arn": "arn:aws:ec2:us-east-1:000000000000:security-group/sg-a899c3f6063affe1f",
+            "id": "sg-a899c3f6063affe1f",
+            "vpc_id": "vpc-default-us-east-1",
+            "associated_sgs": [],
+            "network_interfaces": [],
+            "ingress_rules": [
+              {
+                "IpProtocol": "tcp",
+                "FromPort": 22,
+                "ToPort": 22,
+                "UserIdGroupPairs": [],
+                "IpRanges": [
+                  {
+                    "CidrIp": "0.0.0.0/0"
+                  }
+                ],
+                "Ipv6Ranges": [],
+                "PrefixListIds": []
+              }
+            ],
+            "egress_rules": [
+              {
+                "IpProtocol": "-1",
+                "UserIdGroupPairs": [],
+                "IpRanges": [
+                  {
+                    "CidrIp": "0.0.0.0/0"
+                  }
+                ],
+                "Ipv6Ranges": [],
+                "PrefixListIds": []
+              }
+            ],
+            "tags": []
+          }
+        },
+        "group": {
+          "name": "ec2"
+        },
+        "labels": [],
+        "name": "sg-a899c3f6063affe1f",
+        "type": "AwsEc2SecurityGroup",
+        "uid": "arn:aws:ec2:us-east-1:000000000000:security-group/sg-a899c3f6063affe1f"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "cloud": {
+      "account": {
+        "name": "",
+        "type": "AWS Account",
+        "type_id": 10,
+        "uid": "000000000000",
+        "labels": []
+      },
+      "org": {
+        "name": "",
+        "ou_uid": "",
+        "ou_name": "",
+        "uid": ""
+      },
+      "provider": "aws",
+      "region": "us-east-1"
+    },
+    "remediation": {
+      "desc": "Apply **least privilege** to SSH:\n- Disallow `0.0.0.0/0` and `::/0`; allow only trusted IPs or VPN ranges\n- Prefer **private access** via bastion hosts or AWS Systems Manager Session Manager\n- Enforce **key-based auth**, disable passwords, rotate keys\n- Add **network segmentation** and monitoring for **defense in depth**",
+      "references": [
+        "https://hub.prowler.com/check/ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_22"
+      ]
+    },
+    "risk_details": "Exposed **SSH** invites Internet-scale **brute force** and **credential stuffing**. A successful login grants **remote shell**, enabling data theft (confidentiality), code or config tampering (integrity), and cryptomining or service disruption (availability), plus **lateral movement** within the environment.",
+    "time": 1791922156,
+    "time_dt": "2026-10-13T20:09:16.547082",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "EKS cluster acme-eks is publicly accessible.",
+    "metadata": {
+      "event_code": "eks_cluster_not_publicly_accessible",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.45.0"
+      },
+      "profiles": [
+        "cloud",
+        "datetime"
+      ],
+      "tenant_uid": "",
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "EKS cluster acme-eks is publicly accessible.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "internet-exposed",
+        "cluster-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://docs.aws.amazon.com/eks/latest/eksctl/vpc-cluster-access.html",
+        "https://docs.aws.amazon.com/eks/latest/userguide/config-cluster-endpoint.html",
+        "https://www.trendmicro.com/trendaivisiononecloudriskmanagement/knowledge-base/aws/EKS/endpoint-access.html"
+      ],
+      "notes": "",
+      "compliance": {
+        "ProwlerThreatScore-1.0": [
+          "2.1.9"
+        ],
+        "KISA-ISMS-P-2023-korean": [
+          "2.6.1",
+          "2.10.2"
+        ],
+        "PCI-4.0": [
+          "1.2.8.12",
+          "1.3.1.13",
+          "1.3.2.13",
+          "1.4.2.13",
+          "1.5.1.12",
+          "A1.1.3.12"
+        ],
+        "AWS-AI-Security-Framework-1.0": [
+          "AISF-RUNTIME-01"
+        ],
+        "C5-2025": [
+          "PS-03.02B",
+          "IAM-10.01B",
+          "COS-02.01B"
+        ],
+        "NIST-CSF-1.1": [
+          "ip_8"
+        ],
+        "KISA-ISMS-P-2023": [
+          "2.6.1",
+          "2.10.2"
+        ],
+        "AWS-Well-Architected-Framework-Security-Pillar": [
+          "SEC03-BP07",
+          "SEC05-BP01"
+        ],
+        "ISO27001-2022": [
+          "A.8.1"
+        ],
+        "PCI-3.2.1": [
+          "1.3",
+          "2.2",
+          "2.2.2",
+          "7.2",
+          "7.2.1"
+        ],
+        "NIST-800-171-Revision-2": [
+          "3_1_1",
+          "3_1_2",
+          "3_1_3"
+        ],
+        "AWS-Foundational-Security-Best-Practices": [
+          "EKS.1"
+        ]
+      },
+      "scan_id": "01a136e2-3403-72d4-840f-8d53dbd50eed",
+      "provider_uid": "000000000000",
+      "provider": "aws"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "eks",
+        "name": "EKS cluster endpoint is not publicly accessible from 0.0.0.0/0",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "eks_cluster_not_publicly_accessible"
+      },
+      "created_time": 1791922156,
+      "created_time_dt": "2026-10-13T20:09:16.547082",
+      "desc": "**Amazon EKS** cluster API server endpoint is evaluated for **unrestricted Internet access**, specifically when the public endpoint permits connections from `0.0.0.0/0` instead of private access or limited CIDR ranges.",
+      "title": "EKS cluster endpoint is not publicly accessible from 0.0.0.0/0",
+      "types": [
+        "Software and Configuration Checks/AWS Security Best Practices/Network Reachability",
+        "Software and Configuration Checks/Industry and Regulatory Standards/AWS Foundational Security Best Practices",
+        "TTPs/Initial Access/Unauthorized Access",
+        "Effects/Data Exposure"
+      ],
+      "uid": "prowler-aws-eks_cluster_not_publicly_accessible-000000000000-us-east-1-acme-eks"
+    },
+    "resources": [
+      {
+        "cloud_partition": "aws",
+        "region": "us-east-1",
+        "data": {
+          "details": "",
+          "metadata": {
+            "name": "acme-eks",
+            "arn": "arn:aws:eks:us-east-1:000000000000:cluster/acme-eks",
+            "region": "us-east-1",
+            "version": "1.29",
+            "logging": {
+              "types": [
+                "api",
+                "audit",
+                "authenticator",
+                "controllerManager",
+                "scheduler"
+              ],
+              "enabled": false
+            },
+            "security_group_id": "sg-cf0a3d67edca0e778",
+            "endpoint_public_access": true,
+            "endpoint_private_access": false,
+            "public_access_cidrs": [
+              "0.0.0.0/0"
+            ],
+            "encryptionConfig": null,
+            "deletion_protection": null,
+            "addons": {},
+            "addons_discovery_failed": false,
+            "tags": [
+              {}
+            ]
+          }
+        },
+        "group": {
+          "name": "eks"
+        },
+        "labels": [],
+        "name": "acme-eks",
+        "type": "AwsEksCluster",
+        "uid": "arn:aws:eks:us-east-1:000000000000:cluster/acme-eks"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "cloud": {
+      "account": {
+        "name": "",
+        "type": "AWS Account",
+        "type_id": 10,
+        "uid": "000000000000",
+        "labels": []
+      },
+      "org": {
+        "name": "",
+        "ou_uid": "",
+        "ou_name": "",
+        "uid": ""
+      },
+      "provider": "aws",
+      "region": "us-east-1"
+    },
+    "remediation": {
+      "desc": "Prefer **private endpoint access** and avoid broad exposure. *If public access is required*, restrict to trusted admin CIDRs (not `0.0.0.0/0`), reach the API via **VPN/Direct Connect or bastions**, and enforce **least privilege** with IAM/RBAC. Apply **defense in depth** through network segmentation and continuous monitoring.",
+      "references": [
+        "https://hub.prowler.com/check/eks_cluster_not_publicly_accessible"
+      ]
+    },
+    "risk_details": "An openly reachable API endpoint enables Internet-wide probing, brute force, and enumeration, increasing exposure to RBAC misconfigurations or API flaws. Successful access can drive secret exfiltration (confidentiality), workload tampering (integrity), and control-plane disruption or scaling abuse (availability, cost).",
+    "time": 1791922156,
+    "time_dt": "2026-10-13T20:09:16.547082",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "EBS Default Encryption is not activated.",
+    "metadata": {
+      "event_code": "ec2_ebs_default_encryption",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.45.0"
+      },
+      "profiles": [
+        "cloud",
+        "datetime"
+      ],
+      "tenant_uid": "",
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "EBS Default Encryption is not activated.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "encryption"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://aws.amazon.com/premiumsupport/knowledge-center/ebs-automatic-encryption/",
+        "https://docs.aws.amazon.com/ebs/latest/userguide/encryption-by-default.html",
+        "https://www.trendmicro.com/trendaivisiononecloudriskmanagement/knowledge-base/aws/EBS/configure-default-encryption.html"
+      ],
+      "notes": "",
+      "compliance": {
+        "RBI-Cyber-Security-Framework": [
+          "annex_i_1_3"
+        ],
+        "NIST-800-53-Revision-5": [
+          "au_9_3",
+          "cm_6_a",
+          "cm_9_b",
+          "cp_9_d",
+          "sc_8_3",
+          "sc_8_4",
+          "sc_13_a",
+          "sc_28_1",
+          "si_19_4"
+        ],
+        "GxP-21-CFR-Part-11": [
+          "11.10-g",
+          "11.30"
+        ],
+        "NIST-800-53-Revision-4": [
+          "sc_28"
+        ],
+        "HIPAA": [
+          "164_308_a_1_ii_b",
+          "164_308_a_4_ii_a",
+          "164_312_a_2_iv",
+          "164_312_e_2_ii"
+        ],
+        "AWS-Audit-Manager-Control-Tower-Guardrails": [
+          "1.0.3"
+        ],
+        "KISA-ISMS-P-2023-korean": [
+          "2.7.1",
+          "2.10.2"
+        ],
+        "CIS-7.0": [
+          "6.1.1"
+        ],
+        "SecNumCloud-3.2": [
+          "10.1"
+        ],
+        "AWS-AI-Security-Framework-1.0": [
+          "AISF-INFRA-05"
+        ],
+        "FFIEC": [
+          "d3-pc-am-b-12"
+        ],
+        "C5-2025": [
+          "OPS-31.01B",
+          "IAM-07.03B",
+          "CRY-01.02AC",
+          "CRY-05.01AC",
+          "PSS-12.02B"
+        ],
+        "KISA-ISMS-P-2023": [
+          "2.7.1",
+          "2.10.2"
+        ],
+        "AWS-Well-Architected-Framework-Security-Pillar": [
+          "SEC08-BP02"
+        ],
+        "GxP-EU-Annex-11": [
+          "7.1-data-storage-damage-protection"
+        ],
+        "ISO27001-2022": [
+          "A.8.11",
+          "A.8.24"
+        ],
+        "PCI-3.2.1": [
+          "3.4",
+          "3.4.1",
+          "3.4.1.a",
+          "3.4.1.c",
+          "3.4.a",
+          "3.4.b",
+          "8.2",
+          "8.2.1",
+          "8.2.1.a"
+        ],
+        "MITRE-ATTACK": [
+          "T1119"
+        ],
+        "AWS-Foundational-Security-Best-Practices": [
+          "EC2.7"
+        ],
+        "CISA": [
+          "your-systems-3",
+          "your-data-1"
+        ],
+        "CCC-v2025.10": [
+          "CCC.Core.CN02.AR01"
+        ]
+      },
+      "scan_id": "01a136e2-3403-72d4-840f-8d53dbd50eed",
+      "provider_uid": "000000000000",
+      "provider": "aws"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "ec2",
+        "name": "EBS default encryption is enabled",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "ec2_ebs_default_encryption"
+      },
+      "created_time": 1791922156,
+      "created_time_dt": "2026-10-13T20:09:16.547082",
+      "desc": "**EBS** uses `encryption by default` at the account and region level, ensuring new volumes, snapshots, and AMI-backed volumes are automatically encrypted with a chosen **KMS key**",
+      "attacks": [
+        {
+          "tactic": {
+            "name": "Collection"
+          },
+          "technique": {
+            "name": "Automated Collection",
+            "src_url": "https://attack.mitre.org/techniques/T1119/",
+            "uid": "T1119"
+          }
+        }
+      ],
+      "title": "EBS default encryption is enabled",
+      "types": [
+        "Software and Configuration Checks/AWS Security Best Practices",
+        "Software and Configuration Checks/Industry and Regulatory Standards/AWS Foundational Security Best Practices",
+        "Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark",
+        "Effects/Data Exposure"
+      ],
+      "uid": "prowler-aws-ec2_ebs_default_encryption-000000000000-us-east-1-000000000000"
+    },
+    "resources": [
+      {
+        "cloud_partition": "aws",
+        "region": "us-east-1",
+        "data": {
+          "details": "",
+          "metadata": {
+            "status": false,
+            "volumes": false,
+            "region": "us-east-1"
+          }
+        },
+        "group": {
+          "name": "ec2"
+        },
+        "labels": [],
+        "name": "000000000000",
+        "type": "AwsEc2Volume",
+        "uid": "arn:aws:ec2:us-east-1:000000000000:volume"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "cloud": {
+      "account": {
+        "name": "",
+        "type": "AWS Account",
+        "type_id": 10,
+        "uid": "000000000000",
+        "labels": []
+      },
+      "org": {
+        "name": "",
+        "ou_uid": "",
+        "ou_name": "",
+        "uid": ""
+      },
+      "provider": "aws",
+      "region": "us-east-1"
+    },
+    "remediation": {
+      "desc": "Enable `EBS encryption by default` in every region and select a **customer-managed KMS key**. Apply **least privilege** to key use, rotate keys, and monitor access. Enforce encrypted volume creation with organizational guardrails and secure templates as **defense in depth**.",
+      "references": [
+        "https://hub.prowler.com/check/ec2_ebs_default_encryption"
+      ]
+    },
+    "risk_details": "Without `encryption by default`, data on new **EBS volumes** and **snapshots** may be stored in plaintext. A compromised account or mis-shared snapshot can expose disk contents, enabling data exfiltration, offline analysis, and loss of **confidentiality**.",
+    "time": 1791922156,
+    "time_dt": "2026-10-13T20:09:16.547082",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "S3 Bucket acme-backup-dump has bucket ACLs enabled.",
+    "metadata": {
+      "event_code": "s3_bucket_acl_prohibited",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.45.0"
+      },
+      "profiles": [
+        "cloud",
+        "datetime"
+      ],
+      "tenant_uid": "",
+      "version": "1.5.0"
+    },
+    "severity_id": 3,
+    "severity": "Medium",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "S3 Bucket acme-backup-dump has bucket ACLs enabled.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "identity-access"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/about-object-ownership.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/ensure-object-ownership.html"
+      ],
+      "notes": "",
+      "compliance": {
+        "NIST-CSF-2.0": [
+          "ds_5"
+        ],
+        "KISA-ISMS-P-2023-korean": [
+          "2.6.2",
+          "2.10.2"
+        ],
+        "PCI-4.0": [
+          "7.2.1.24",
+          "7.2.2.24",
+          "7.2.5.18",
+          "7.3.1.18",
+          "7.3.2.18",
+          "7.3.3.18",
+          "8.2.7.18",
+          "8.2.8.20",
+          "8.3.4.18"
+        ],
+        "AWS-AI-Security-Framework-1.0": [
+          "AISF-DATA-04"
+        ],
+        "KISA-ISMS-P-2023": [
+          "2.6.2",
+          "2.10.2"
+        ],
+        "AWS-Well-Architected-Framework-Security-Pillar": [
+          "SEC05-BP02"
+        ],
+        "AWS-Foundational-Technical-Review": [
+          "S3-001"
+        ],
+        "AWS-Foundational-Security-Best-Practices": [
+          "S3.12"
+        ],
+        "CISA": [
+          "your-data-2"
+        ],
+        "CCC-v2025.10": [
+          "CCC.ObjStor.CN02.AR01",
+          "CCC.ObjStor.CN02.AR02"
+        ]
+      },
+      "scan_id": "01a136e2-3403-72d4-840f-8d53dbd50eed",
+      "provider_uid": "000000000000",
+      "provider": "aws"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "s3",
+        "name": "S3 bucket has bucket ACLs disabled",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "s3_bucket_acl_prohibited"
+      },
+      "created_time": 1791922156,
+      "created_time_dt": "2026-10-13T20:09:16.547082",
+      "desc": "**Amazon S3 buckets** are evaluated for **Object Ownership** set to `BucketOwnerEnforced`, which disables bucket and object ACLs. Buckets using any other ownership setting indicate that ACLs remain enabled.",
+      "title": "S3 bucket has bucket ACLs disabled",
+      "types": [
+        "Software and Configuration Checks/AWS Security Best Practices",
+        "Software and Configuration Checks/Industry and Regulatory Standards/AWS Foundational Security Best Practices",
+        "Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
+      ],
+      "uid": "prowler-aws-s3_bucket_acl_prohibited-000000000000-us-east-1-acme-backup-dump"
+    },
+    "resources": [
+      {
+        "cloud_partition": "aws",
+        "region": "us-east-1",
+        "data": {
+          "details": "",
+          "metadata": {
+            "arn": "arn:aws:s3:::acme-backup-dump",
+            "name": "acme-backup-dump",
+            "owner_id": "000000000000",
+            "owner": null,
+            "versioning": false,
+            "logging": false,
+            "public_access_block": {
+              "block_public_acls": false,
+              "ignore_public_acls": false,
+              "block_public_policy": false,
+              "restrict_public_buckets": false
+            },
+            "acl_grantees": [
+              {
+                "display_name": "floci",
+                "ID": "000000000000",
+                "type": "CanonicalUser",
+                "URI": null,
+                "permission": "FULL_CONTROL"
+              }
+            ],
+            "policy": {},
+            "encryption": "AES256",
+            "region": "us-east-1",
+            "logging_target_bucket": null,
+            "ownership": null,
+            "object_lock": false,
+            "mfa_delete": false,
+            "tags": [],
+            "lifecycle": [],
+            "replication_rules": [],
+            "versioning_retrieved": true,
+            "replication_retrieved": true,
+            "notification_config": {},
+            "object_sampling": null
+          }
+        },
+        "group": {
+          "name": "s3"
+        },
+        "labels": [],
+        "name": "acme-backup-dump",
+        "type": "AwsS3Bucket",
+        "uid": "arn:aws:s3:::acme-backup-dump"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "cloud": {
+      "account": {
+        "name": "",
+        "type": "AWS Account",
+        "type_id": 10,
+        "uid": "000000000000",
+        "labels": []
+      },
+      "org": {
+        "name": "",
+        "ou_uid": "",
+        "ou_name": "",
+        "uid": ""
+      },
+      "provider": "aws",
+      "region": "us-east-1"
+    },
+    "remediation": {
+      "desc": "Disable ACLs by setting **Object Ownership** to `BucketOwnerEnforced` and manage access with **IAM** and **bucket policies** under **least privilege**. Centralize authorization, review policies regularly, and use organizational guardrails to prevent re-enabling ACLs. *Migrate ACL-based grants into policies before the change.*",
+      "references": [
+        "https://hub.prowler.com/check/s3_bucket_acl_prohibited"
+      ]
+    },
+    "risk_details": "With **ACLs enabled**, access can bypass centralized policy controls, impacting confidentiality and integrity.\n- Unintended public or cross-account reads/writes\n- Object-writer ownership blocking bucket-owner governance\n- Per-object grants hinder auditing, enabling data exfiltration or tampering",
+    "time": 1791922156,
+    "time_dt": "2026-10-13T20:09:16.547082",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Block Public Access is configured for the S3 Bucket acme-customer-exports.",
+    "metadata": {
+      "event_code": "s3_bucket_level_public_access_block",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.45.0"
+      },
+      "profiles": [
+        "cloud",
+        "datetime"
+      ],
+      "tenant_uid": "",
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "PASS",
+    "status_detail": "Block Public Access is configured for the S3 Bucket acme-customer-exports.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "internet-exposed"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://www.trendmicro.com/trendaivisiononecloudriskmanagement/knowledge-base/aws/S3/bucket-public-access-block.html",
+        "https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-control-block-public-access.html"
+      ],
+      "notes": "",
+      "compliance": {
+        "CIS-5.0": [
+          "2.1.4"
+        ],
+        "CIS-4.0.1": [
+          "2.1.4"
+        ],
+        "NIST-CSF-2.0": [
+          "ac_3"
+        ],
+        "CIS-2.0": [
+          "2.1.4"
+        ],
+        "CIS-1.4": [
+          "2.1.5"
+        ],
+        "KISA-ISMS-P-2023-korean": [
+          "2.6.1",
+          "2.6.2",
+          "2.10.2"
+        ],
+        "CIS-7.0": [
+          "3.1.4"
+        ],
+        "SecNumCloud-3.2": [
+          "9.7"
+        ],
+        "CIS-3.0": [
+          "2.1.4"
+        ],
+        "CIS-1.5": [
+          "2.1.5"
+        ],
+        "AWS-AI-Security-Framework-1.0": [
+          "AISF-DATA-04"
+        ],
+        "C5-2025": [
+          "PS-03.02B",
+          "IAM-10.01B",
+          "COS-02.01B"
+        ],
+        "CIS-6.0": [
+          "3.1.4"
+        ],
+        "KISA-ISMS-P-2023": [
+          "2.6.1",
+          "2.6.2",
+          "2.10.2"
+        ],
+        "AWS-Account-Security-Onboarding": [
+          "S3 Block Public Access"
+        ],
+        "AWS-Foundational-Technical-Review": [
+          "S3-001"
+        ],
+        "MITRE-ATTACK": [
+          "T1530"
+        ],
+        "AWS-Foundational-Security-Best-Practices": [
+          "S3.8"
+        ],
+        "CCC-v2025.10": [
+          "CCC.Logging.CN05.AR01"
+        ]
+      },
+      "scan_id": "01a136ea-d09e-7c77-bf47-171c606fb6d8",
+      "provider_uid": "000000000000",
+      "provider": "aws"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "s3",
+        "name": "S3 bucket has Block Public Access with IgnorePublicAcls and RestrictPublicBuckets enabled at bucket or account level",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "s3_bucket_level_public_access_block"
+      },
+      "created_time": 1791922720,
+      "created_time_dt": "2026-10-13T20:18:40.926129",
+      "desc": "**Amazon S3 buckets** are evaluated for **Block Public Access** settings, ensuring `ignore_public_acls` and `restrict_public_buckets` are enabled at the bucket or account scope.\n\n*Account-wide protections, when present, are treated as effective for the bucket.*",
+      "attacks": [
+        {
+          "tactic": {
+            "name": "Collection"
+          },
+          "technique": {
+            "name": "Data from Cloud Storage",
+            "src_url": "https://attack.mitre.org/techniques/T1530/",
+            "uid": "T1530"
+          }
+        }
+      ],
+      "title": "S3 bucket has Block Public Access with IgnorePublicAcls and RestrictPublicBuckets enabled at bucket or account level",
+      "types": [
+        "Software and Configuration Checks/AWS Security Best Practices/Network Reachability",
+        "Software and Configuration Checks/Industry and Regulatory Standards/AWS Foundational Security Best Practices",
+        "Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark",
+        "Effects/Data Exposure"
+      ],
+      "uid": "prowler-aws-s3_bucket_level_public_access_block-000000000000-us-east-1-acme-customer-exports"
+    },
+    "resources": [
+      {
+        "cloud_partition": "aws",
+        "region": "us-east-1",
+        "data": {
+          "details": "",
+          "metadata": {
+            "arn": "arn:aws:s3:::acme-customer-exports",
+            "name": "acme-customer-exports",
+            "owner_id": "000000000000",
+            "owner": null,
+            "versioning": false,
+            "logging": false,
+            "public_access_block": {
+              "block_public_acls": true,
+              "ignore_public_acls": true,
+              "block_public_policy": true,
+              "restrict_public_buckets": true
+            },
+            "acl_grantees": [
+              {
+                "display_name": "floci",
+                "ID": "000000000000",
+                "type": "CanonicalUser",
+                "URI": null,
+                "permission": "FULL_CONTROL"
+              }
+            ],
+            "policy": {},
+            "encryption": "aws:kms",
+            "region": "us-east-1",
+            "logging_target_bucket": null,
+            "ownership": null,
+            "object_lock": false,
+            "mfa_delete": false,
+            "tags": [],
+            "lifecycle": [],
+            "replication_rules": [],
+            "versioning_retrieved": true,
+            "replication_retrieved": true,
+            "notification_config": {},
+            "object_sampling": null
+          }
+        },
+        "group": {
+          "name": "s3"
+        },
+        "labels": [],
+        "name": "acme-customer-exports",
+        "type": "AwsS3Bucket",
+        "uid": "arn:aws:s3:::acme-customer-exports"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "cloud": {
+      "account": {
+        "name": "",
+        "type": "AWS Account",
+        "type_id": 10,
+        "uid": "000000000000",
+        "labels": []
+      },
+      "org": {
+        "name": "",
+        "ou_uid": "",
+        "ou_name": "",
+        "uid": ""
+      },
+      "provider": "aws",
+      "region": "us-east-1"
+    },
+    "remediation": {
+      "desc": "Enable **Block Public Access** at account and bucket levels with `block_public_acls`, `ignore_public_acls`, `block_public_policy`, and `restrict_public_buckets` set to `true`. Apply **least privilege** and **defense in depth**. *If public access is required*, narrowly scope policies to fixed principals and conditions.",
+      "references": [
+        "https://hub.prowler.com/check/s3_bucket_level_public_access_block"
+      ]
+    },
+    "risk_details": "Absent **S3 Block Public Access**, public ACLs or broad policies can grant Internet or cross-account access.\n- Data disclosure (confidentiality)\n- Object overwrite or uploads (integrity)\n- Deletion or outages from misuse (availability)",
+    "time": 1791922720,
+    "time_dt": "2026-10-13T20:18:40.926129",
     "type_uid": 200401,
     "type_name": "Detection Finding: Create"
   }

@@ -1,14 +1,132 @@
 [
   {
     "SchemaVersion": "2018-10-08",
-    "Id": "prowler-rds_instance_minor_version_upgrade_enabled-123456789012-eu-west-1-b1ade474a",
-    "ProductArn": "arn:aws:securityhub:eu-west-1::product/prowler/prowler",
+    "Id": "prowler-ec2_ebs_default_encryption-000000000000-us-east-1-8569a9db8",
+    "ProductArn": "arn:aws:securityhub:us-east-1::product/prowler/prowler",
     "RecordState": "ACTIVE",
-    "GeneratorId": "prowler-rds_instance_minor_version_upgrade_enabled",
-    "AwsAccountId": "123456789012",
-    "Severity": {"Label": "LOW"},
-    "Title": "Ensure RDS instances have minor version upgrade enabled.",
-    "Resources": [{"Type": "AwsRdsDbInstance", "Id": "rds-instance-id", "Partition": "aws", "Region": "eu-west-1"}],
-    "Compliance": {"Status": "FAILED"}
+    "ProductFields": {
+      "ProviderName": "Prowler",
+      "ProviderVersion": "5.45.0",
+      "ProwlerResourceName": "arn:aws:ec2:us-east-1:000000000000:volume",
+      "ProwlerAccountOrganizationalUnitId": "",
+      "ProwlerAccountOrganizationalUnitName": ""
+    },
+    "GeneratorId": "prowler-ec2_ebs_default_encryption",
+    "AwsAccountId": "000000000000",
+    "Types": [
+      "Software and Configuration Checks/AWS Security Best Practices",
+      "Software and Configuration Checks/Industry and Regulatory Standards/AWS Foundational Security Best Practices",
+      "Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark",
+      "Effects/Data Exposure"
+    ],
+    "FirstObservedAt": "2026-10-13T20:09:16Z",
+    "UpdatedAt": "2026-10-13T20:09:16Z",
+    "CreatedAt": "2026-10-13T20:09:16Z",
+    "Severity": {
+      "Label": "HIGH"
+    },
+    "Title": "EBS default encryption is enabled",
+    "Description": "EBS Default Encryption is not activated.",
+    "Resources": [
+      {
+        "Type": "AwsEc2Volume",
+        "Id": "arn:aws:ec2:us-east-1:000000000000:volume",
+        "Partition": "aws",
+        "Region": "us-east-1"
+      }
+    ],
+    "Compliance": {
+      "Status": "FAILED",
+      "RelatedRequirements": [
+        "RBI-Cyber-Security-Framework annex_i_1_3",
+        "NIST-800-53-Revision-5 au_9_3 cm_6_a cm_9_b cp_9_d sc_8_3 sc_8_",
+        "GxP-21-CFR-Part-11 11.10-g 11.30",
+        "NIST-800-53-Revision-4 sc_28",
+        "HIPAA 164_308_a_1_ii_b 164_308_a_4_ii_a 164_312_a_2_iv 164_312_",
+        "AWS-Audit-Manager-Control-Tower-Guardrails 1.0.3",
+        "KISA-ISMS-P-2023-korean 2.7.1 2.10.2",
+        "CIS-7.0 6.1.1",
+        "SecNumCloud-3.2 10.1",
+        "AWS-AI-Security-Framework-1.0 AISF-INFRA-05",
+        "FFIEC d3-pc-am-b-12",
+        "C5-2025 OPS-31.01B IAM-07.03B CRY-01.02AC CRY-05.01AC PSS-12.02B",
+        "KISA-ISMS-P-2023 2.7.1 2.10.2",
+        "AWS-Well-Architected-Framework-Security-Pillar SEC08-BP02",
+        "GxP-EU-Annex-11 7.1-data-storage-damage-protection",
+        "ISO27001-2022 A.8.11 A.8.24",
+        "PCI-3.2.1 3.4 3.4.1 3.4.1.a 3.4.1.c 3.4.a 3.4.b 8.2 8.2.1 8.2.1",
+        "MITRE-ATTACK T1119",
+        "AWS-Foundational-Security-Best-Practices EC2.7",
+        "CISA your-systems-3 your-data-1"
+      ],
+      "AssociatedStandards": [
+        {
+          "StandardsId": "RBI-Cyber-Security-Framework"
+        },
+        {
+          "StandardsId": "NIST-800-53-Revision-5"
+        },
+        {
+          "StandardsId": "GxP-21-CFR-Part-11"
+        },
+        {
+          "StandardsId": "NIST-800-53-Revision-4"
+        },
+        {
+          "StandardsId": "HIPAA"
+        },
+        {
+          "StandardsId": "AWS-Audit-Manager-Control-Tower-Guardrails"
+        },
+        {
+          "StandardsId": "KISA-ISMS-P-2023-korean"
+        },
+        {
+          "StandardsId": "CIS-7.0"
+        },
+        {
+          "StandardsId": "SecNumCloud-3.2"
+        },
+        {
+          "StandardsId": "AWS-AI-Security-Framework-1.0"
+        },
+        {
+          "StandardsId": "FFIEC"
+        },
+        {
+          "StandardsId": "C5-2025"
+        },
+        {
+          "StandardsId": "KISA-ISMS-P-2023"
+        },
+        {
+          "StandardsId": "AWS-Well-Architected-Framework-Security-Pillar"
+        },
+        {
+          "StandardsId": "GxP-EU-Annex-11"
+        },
+        {
+          "StandardsId": "ISO27001-2022"
+        },
+        {
+          "StandardsId": "PCI-3.2.1"
+        },
+        {
+          "StandardsId": "MITRE-ATTACK"
+        },
+        {
+          "StandardsId": "AWS-Foundational-Security-Best-Practices"
+        },
+        {
+          "StandardsId": "CISA"
+        }
+      ]
+    },
+    "Remediation": {
+      "Recommendation": {
+        "Text": "Enable `EBS encryption by default` in every region and select a **customer-managed KMS key**. Apply **least privilege** to key use, rotate keys, and monitor access. Enforce encrypted volume creation with organizational guardrails and secure templates as **defense in depth**.",
+        "Url": "https://hub.prowler.com/check/ec2_ebs_default_encryption"
+      }
+    }
   }
 ]
