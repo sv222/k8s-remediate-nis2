@@ -74,6 +74,11 @@ var remediateCmd = &cobra.Command{
 		if err := out.Write(outDir, files, rows); err != nil {
 			return err
 		}
+		if evidence {
+			if err := out.WriteEvidence(outDir, findings, rows, inputPaths()); err != nil {
+				return err
+			}
+		}
 		if len(files) == 0 {
 			os.Exit(1)
 		}

@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/nis2rem/k8s-remediate-nis2/internal/finding"
 	"github.com/nis2rem/k8s-remediate-nis2/internal/render"
 )
 
@@ -26,5 +27,25 @@ func TestWriteTree(t *testing.T) {
 	b, _ := os.ReadFile(filepath.Join(dir, "mapping.md"))
 	if !strings.Contains(string(b), "NIS2 Art.21(2)(d)") {
 		t.Errorf("mapping.md lacks article:\n%s", b)
+	}
+}
+
+func TestWriteEvidence(t *testing.T) {
+	dir := t.TempDir()
+	fs := []finding.Finding{{Scanner: "prowler", CheckID: "c", Status: "FAIL", ResourceID: "r"}}
+	rows := []SummaryRow{{Scanner: "prowler", CheckID: "c", ResourceID: "r", Status: "remediated"}}
+	if err := WriteEvidence(dir, fs, rows, []string{"testdata/v4.json"}); err != nil {
+		t.Fatal(err)
+	}
+	b, _ := os.ReadFile(filepath.Join(dir, "evidence.md"))
+	s := string(b)
+	for _, want := range []string{
+		"Technical Remediation & Evidence Assistant for NIS2/DORA",
+		"risk acceptance remains with the client's management",
+		"SHA-256",
+	} {
+		if !strings.Contains(s, want) {
+			t.Errorf("evidence.md missing %q", want)
+		}
 	}
 }

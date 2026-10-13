@@ -1,0 +1,23 @@
+[
+  {
+    "FindingID": "prowler-aws-s3-bucket-public-access-block-1234",
+    "CheckID": "s3_bucket_public_access_block",
+    "Status": "FAIL",
+    "ResourceID": "company-frontend-assets",
+    "ResourceArn": "arn:aws:s3:::company-frontend-assets",
+    "Region": "eu-central-1",
+    "Severity": "critical",
+    "Service": "s3",
+    "Description": "S3 Bucket does not have public access block fully applied"
+  },
+  {
+    "FindingID": "prowler-aws-ec2-security-group-open-5678",
+    "CheckID": "ec2_security_group_ingress_open_to_internet",
+    "Status": "PASS",
+    "ResourceID": "sg-0123",
+    "Region": "eu-central-1",
+    "Severity": "high",
+    "Service": "ec2",
+    "Description": "Security group open to internet"
+  }
+]
