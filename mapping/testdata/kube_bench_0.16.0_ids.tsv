@@ -26,6 +26,9 @@ cis-1.23	root	5.2.7
 cis-1.24	hostnet	5.2.5
 cis-1.24	privileged	5.2.2
 cis-1.24	root	5.2.7
+cis-1.24-microk8s	hostnet	5.2.5
+cis-1.24-microk8s	privileged	5.2.2
+cis-1.24-microk8s	root	5.2.7
 cis-1.5	hostnet	5.2.4
 cis-1.5	privileged	5.2.1
 cis-1.5	root	5.2.6

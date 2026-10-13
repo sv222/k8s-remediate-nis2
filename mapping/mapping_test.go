@@ -196,3 +196,20 @@ func TestKubeBenchCoversCurrentBenchmarks(t *testing.T) {
 		}
 	}
 }
+
+func TestKubeBenchMappingCoversEveryConfigRow(t *testing.T) {
+	data, err := os.ReadFile("testdata/kube_bench_0.16.0_ids.tsv")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, line := range strings.Split(strings.TrimSpace(string(data)), "\n") {
+		cols := strings.Split(line, "\t")
+		if len(cols) != 3 {
+			t.Fatalf("bad row %q", line)
+		}
+		_, ok, err := For(finding.Finding{Scanner: "kube-bench", CheckID: cols[2], Benchmark: cols[0]})
+		if err != nil || !ok {
+			t.Errorf("%s %s (%s) from the kube-bench 0.16.0 config is not mapped", cols[0], cols[2], cols[1])
+		}
+	}
+}
