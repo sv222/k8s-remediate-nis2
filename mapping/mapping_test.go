@@ -2,6 +2,7 @@ package mapping
 
 import (
 	"io/fs"
+	"os"
 	"strings"
 	"testing"
 
@@ -124,6 +125,26 @@ func TestValidateRejectsBadEntries(t *testing.T) {
 	for i, entries := range bad {
 		if err := validate(entries); err == nil {
 			t.Errorf("case %d: expected a validation error", i)
+		}
+	}
+}
+
+func TestProwlerCheckIDsExistInProwler5(t *testing.T) {
+	data, err := os.ReadFile("testdata/prowler_5.45.0_checks.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	known := map[string]bool{}
+	for _, id := range strings.Fields(string(data)) {
+		known[id] = true
+	}
+	entries, err := Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, e := range entries {
+		if e.Scanner == "prowler" && !known[e.CheckID] {
+			t.Errorf("check %s is not in `prowler aws --list-checks` of Prowler 5.45.0", e.CheckID)
 		}
 	}
 }

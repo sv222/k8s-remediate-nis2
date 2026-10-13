@@ -102,6 +102,12 @@ kube-bench mappings depend on the benchmark version in the report:
 | prowler | `s3_bucket_default_encryption` | NIS2 Art.21(2)(h), DORA Art.9, ISO27001:2022 A.8.24 | `terraform/s3_encryption__<bucket>.tf` |
 | prowler | `s3_bucket_kms_encryption` | NIS2 Art.21(2)(h), DORA Art.9, ISO27001:2022 A.8.24 | `terraform/s3_encryption_kms__<bucket>.tf`, `terraform/variables_kms_key.tf` |
 | prowler | `ec2_securitygroup_allow_ingress_from_internet_to_any_port` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20 | `terraform/sg_restrict_ingress__<sg-id>.tf`, `terraform/variables_sg_ingress.tf` |
+| prowler | `ec2_securitygroup_allow_ingress_from_internet_to_all_ports` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20 | `terraform/sg_restrict_ingress__<sg-id>.tf`, `terraform/variables_sg_ingress.tf` |
+| prowler | `ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_22` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20 | `terraform/sg_restrict_ingress__<sg-id>.tf`, `terraform/variables_sg_ingress.tf` |
+| prowler | `ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_3389` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20 | `terraform/sg_restrict_ingress__<sg-id>.tf`, `terraform/variables_sg_ingress.tf` |
+| prowler | `ec2_securitygroup_allow_ingress_from_internet_to_high_risk_tcp_ports` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20 | `terraform/sg_restrict_ingress__<sg-id>.tf`, `terraform/variables_sg_ingress.tf` |
+| prowler | `s3_bucket_public_write_acl` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.3 | `terraform/s3_public_access_block__<bucket>.tf` |
+| prowler | `s3_bucket_policy_public_write_access` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.3 | `terraform/s3_public_access_block__<bucket>.tf` |
 | prowler | `eks_cluster_not_publicly_accessible` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20 | none (guidance text in `mapping.md`) |
 | kube-bench | 5.2.2 (cis-1.8, cis-1.10), 5.2.1 (cis-1.6), 4.2.1 (eks-1.2.0): privileged containers | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.2 | `kyverno/block_privileged.yaml` |
 | kube-bench | 5.2.5 (cis-1.8, cis-1.10), 5.2.4 (cis-1.6), 4.2.4 (eks-1.2.0): host network | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.22 | `kyverno/block_hostnet.yaml` |

@@ -28,10 +28,44 @@ entries:
     shared_templates: ["terraform/variables_kms_key.tf"]
   - scanner: prowler
     check_id: ec2_securitygroup_allow_ingress_from_internet_to_any_port
+    title: Security group open to the internet on any port
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20"]
+    templates: ["terraform/sg_restrict_ingress.tf"]
+    shared_templates: ["terraform/variables_sg_ingress.tf"]
+  - scanner: prowler
+    check_id: ec2_securitygroup_allow_ingress_from_internet_to_all_ports
     title: Security group open to the internet on all ports
     articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20"]
     templates: ["terraform/sg_restrict_ingress.tf"]
     shared_templates: ["terraform/variables_sg_ingress.tf"]
+  - scanner: prowler
+    check_id: ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_22
+    title: Security group open to the internet on SSH (port 22)
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20"]
+    templates: ["terraform/sg_restrict_ingress.tf"]
+    shared_templates: ["terraform/variables_sg_ingress.tf"]
+  - scanner: prowler
+    check_id: ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_3389
+    title: Security group open to the internet on RDP (port 3389)
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20"]
+    templates: ["terraform/sg_restrict_ingress.tf"]
+    shared_templates: ["terraform/variables_sg_ingress.tf"]
+  - scanner: prowler
+    check_id: ec2_securitygroup_allow_ingress_from_internet_to_high_risk_tcp_ports
+    title: Security group open to the internet on high-risk TCP ports
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20"]
+    templates: ["terraform/sg_restrict_ingress.tf"]
+    shared_templates: ["terraform/variables_sg_ingress.tf"]
+  - scanner: prowler
+    check_id: s3_bucket_public_write_acl
+    title: S3 bucket ACL grants public write access
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.3"]
+    templates: ["terraform/s3_public_access_block.tf"]
+  - scanner: prowler
+    check_id: s3_bucket_policy_public_write_access
+    title: S3 bucket policy allows public write access
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.3"]
+    templates: ["terraform/s3_public_access_block.tf"]
   - scanner: prowler
     check_id: eks_cluster_not_publicly_accessible
     title: EKS API server endpoint open to the internet

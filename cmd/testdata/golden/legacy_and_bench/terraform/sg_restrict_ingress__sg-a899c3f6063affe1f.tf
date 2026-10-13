@@ -1,4 +1,4 @@
-# Remediation for: Security group open to the internet on all ports
+# Remediation for: Security group open to the internet on any port
 # Articles: NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20
 # This adds a narrow rule only. It does not remove existing rules.
 # Next step: delete every internet-open ingress rule of sg-a899c3f6063affe1f

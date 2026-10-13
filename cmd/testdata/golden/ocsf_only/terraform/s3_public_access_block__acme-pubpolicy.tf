@@ -1,0 +1,10 @@
+# Remediation for: S3 bucket policy allows public write access
+# Articles: NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.3
+resource "aws_s3_bucket_public_access_block" "remediation_acme-pubpolicy" {
+  bucket = "acme-pubpolicy"
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
