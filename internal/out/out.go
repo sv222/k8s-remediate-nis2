@@ -65,6 +65,9 @@ func Write(outDir string, files []render.RenderedFile, rows []SummaryRow) error 
 	var b strings.Builder
 	fmt.Fprintln(&b, "# Remediation mapping")
 	fmt.Fprintln(&b)
+	fmt.Fprintln(&b, "> **Technical Remediation & Evidence Assistant for NIS2/DORA.**",
+		"This tool does not certify compliance; risk acceptance remains with the client's management.")
+	fmt.Fprintln(&b)
 	fmt.Fprintln(&b, "| Scanner | Check | Resource | Articles | Generated | Status | Note |")
 	fmt.Fprintln(&b, "|---|---|---|---|---|---|---|")
 	for _, r := range rows {
