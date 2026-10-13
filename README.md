@@ -24,16 +24,13 @@ the report to this tool. It is complementary to Prowler and kube-bench.
 With Go:
 
 ```sh
-go install github.com/nis2rem/k8s-remediate-nis2/cmd/k8s-remediate-nis2@latest
+go install github.com/sv222/k8s-remediate-nis2/cmd/k8s-remediate-nis2@latest
 ```
-
-The module path in `go.mod` is a placeholder. Change it to your own path if
-you fork the project.
 
 Build from source:
 
 ```sh
-git clone https://github.com/nis2rem/k8s-remediate-nis2.git
+git clone https://github.com/sv222/k8s-remediate-nis2.git
 cd k8s-remediate-nis2
 make build
 ./bin/k8s-remediate-nis2 --version

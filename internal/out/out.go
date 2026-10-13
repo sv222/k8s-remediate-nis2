@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nis2rem/k8s-remediate-nis2/internal/finding"
-	"github.com/nis2rem/k8s-remediate-nis2/internal/render"
-	"github.com/nis2rem/k8s-remediate-nis2/internal/version"
+	"github.com/sv222/k8s-remediate-nis2/internal/finding"
+	"github.com/sv222/k8s-remediate-nis2/internal/render"
+	"github.com/sv222/k8s-remediate-nis2/internal/version"
 )
 
 const (

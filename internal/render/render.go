@@ -12,8 +12,8 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/nis2rem/k8s-remediate-nis2/internal/finding"
-	"github.com/nis2rem/k8s-remediate-nis2/mapping"
+	"github.com/sv222/k8s-remediate-nis2/internal/finding"
+	"github.com/sv222/k8s-remediate-nis2/mapping"
 )
 
 const (

@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/nis2rem/k8s-remediate-nis2/internal/version"
+	"github.com/sv222/k8s-remediate-nis2/internal/version"
 )
 
 func NewRootCmd() *cobra.Command {

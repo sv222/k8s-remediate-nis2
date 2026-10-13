@@ -8,12 +8,12 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/nis2rem/k8s-remediate-nis2/internal/finding"
-	"github.com/nis2rem/k8s-remediate-nis2/internal/kubebench"
-	"github.com/nis2rem/k8s-remediate-nis2/internal/out"
-	"github.com/nis2rem/k8s-remediate-nis2/internal/prowler"
-	"github.com/nis2rem/k8s-remediate-nis2/internal/render"
-	"github.com/nis2rem/k8s-remediate-nis2/mapping"
+	"github.com/sv222/k8s-remediate-nis2/internal/finding"
+	"github.com/sv222/k8s-remediate-nis2/internal/kubebench"
+	"github.com/sv222/k8s-remediate-nis2/internal/out"
+	"github.com/sv222/k8s-remediate-nis2/internal/prowler"
+	"github.com/sv222/k8s-remediate-nis2/internal/render"
+	"github.com/sv222/k8s-remediate-nis2/mapping"
 )
 
 type options struct {

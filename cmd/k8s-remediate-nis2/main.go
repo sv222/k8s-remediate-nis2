@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/nis2rem/k8s-remediate-nis2/cmd"
+	"github.com/sv222/k8s-remediate-nis2/cmd"
 )
 
 func main() {

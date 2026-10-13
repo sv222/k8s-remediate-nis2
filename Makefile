@@ -1,5 +1,5 @@
 VERSION ?= dev
-MODULE := github.com/nis2rem/k8s-remediate-nis2
+MODULE := github.com/sv222/k8s-remediate-nis2
 LDFLAGS := -s -w -X $(MODULE)/internal/version.Version=$(VERSION)
 
 .PHONY: build test vet fmt

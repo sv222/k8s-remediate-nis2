@@ -1,4 +1,4 @@
-module github.com/nis2rem/k8s-remediate-nis2
+module github.com/sv222/k8s-remediate-nis2
 
 go 1.23
 

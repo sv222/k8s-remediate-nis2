@@ -18,5 +18,5 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Terraform templates for S3 public access block, S3 encryption and security group ingress.
 - `mapping.md` summary and `evidence.md` report with input SHA-256 hashes.
 
-[Unreleased]: https://github.com/nis2rem/k8s-remediate-nis2/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/nis2rem/k8s-remediate-nis2/releases/tag/v0.1.0
+[Unreleased]: https://github.com/sv222/k8s-remediate-nis2/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/sv222/k8s-remediate-nis2/releases/tag/v0.1.0
