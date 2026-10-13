@@ -148,3 +148,51 @@ func TestProwlerCheckIDsExistInProwler5(t *testing.T) {
 		}
 	}
 }
+
+func TestKubeBenchIDsMatchKubeBenchConfig(t *testing.T) {
+	data, err := os.ReadFile("testdata/kube_bench_0.16.0_ids.tsv")
+	if err != nil {
+		t.Fatal(err)
+	}
+	real := map[string]bool{}
+	for _, line := range strings.Split(strings.TrimSpace(string(data)), "\n") {
+		real[line] = true
+	}
+	entries, err := Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, e := range entries {
+		if e.Scanner != "kube-bench" {
+			continue
+		}
+		var role string
+		switch {
+		case strings.Contains(e.Title, "Privileged"):
+			role = "privileged"
+		case strings.Contains(e.Title, "host network"):
+			role = "hostnet"
+		case strings.Contains(e.Title, "Root"):
+			role = "root"
+		default:
+			t.Fatalf("entry %q has no known role", e.Title)
+		}
+		for bench, id := range e.BenchmarkIDs {
+			if !real[bench+"\t"+role+"\t"+id] {
+				t.Errorf("%s %s (%s) is not in the kube-bench 0.16.0 config", bench, id, role)
+			}
+		}
+	}
+}
+
+func TestKubeBenchCoversCurrentBenchmarks(t *testing.T) {
+	for _, bench := range []string{"cis-1.7", "cis-1.8", "cis-1.9", "cis-1.10", "cis-1.11", "cis-1.12", "eks-1.5.0", "eks-1.7.0", "eks-1.8.0"} {
+		_, ok, err := For(finding.Finding{Scanner: "kube-bench", CheckID: "5.2.2", Benchmark: bench})
+		if bench[:3] == "eks" {
+			_, ok, err = For(finding.Finding{Scanner: "kube-bench", CheckID: "4.2.1", Benchmark: bench})
+		}
+		if err != nil || !ok {
+			t.Errorf("%s: privileged control not mapped (ok=%v err=%v)", bench, ok, err)
+		}
+	}
+}

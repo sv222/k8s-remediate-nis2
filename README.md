@@ -89,8 +89,11 @@ Example `mapping.md` from a run with one Prowler and one kube-bench report:
 Prowler AWS Security Finding Format (`json-asff`) is not supported. Re-run
 Prowler with `-M json-ocsf`.
 
-kube-bench mappings depend on the benchmark version in the report:
-`cis-1.6`, `cis-1.8`, `cis-1.10` and `eks-1.2.0`.
+kube-bench mappings depend on the benchmark version in the report. These
+versions are mapped: `cis-1.5` to `cis-1.12` (also `cis-1.20`, `cis-1.23`,
+`cis-1.24`, `cis-1.6-k3s`), `eks-1.0.1` to `eks-1.8.0`, `aks-1.0`, `aks-1.7`,
+`aks-1.8`, `gke-1.2.0` and `rke2-cis-1.7` to `rke2-cis-1.24`. The IDs are
+checked against the kube-bench 0.16.0 config.
 
 kube-bench marks the pod security controls (privileged, host network, root
 containers) as manual checks, so it reports them as `WARN`, never `FAIL`. The
@@ -114,9 +117,9 @@ mapped controls.
 | prowler | `s3_bucket_public_write_acl` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.3 | `terraform/s3_public_access_block__<bucket>.tf` |
 | prowler | `s3_bucket_policy_public_write_access` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.3 | `terraform/s3_public_access_block__<bucket>.tf` |
 | prowler | `eks_cluster_not_publicly_accessible` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20 | none (guidance text in `mapping.md`) |
-| kube-bench | 5.2.2 (cis-1.8, cis-1.10), 5.2.1 (cis-1.6), 4.2.1 (eks-1.2.0): privileged containers | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.2 | `kyverno/block_privileged.yaml` |
-| kube-bench | 5.2.5 (cis-1.8, cis-1.10), 5.2.4 (cis-1.6), 4.2.4 (eks-1.2.0): host network | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.22 | `kyverno/block_hostnet.yaml` |
-| kube-bench | 5.2.7 (cis-1.8, cis-1.10), 5.2.6 (cis-1.6), 4.2.6 (eks-1.2.0): root containers | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.2 | `kyverno/require_nonroot.yaml` |
+| kube-bench | 5.2.2 (cis-1.7 and later), 5.2.1 (cis-1.5, cis-1.6), 4.2.1 (eks, aks): privileged containers | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.2 | `kyverno/block_privileged.yaml` |
+| kube-bench | 5.2.5 (cis-1.7 and later), 5.2.4 (cis-1.5, cis-1.6), 4.2.4 (eks, aks): host network | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.22 | `kyverno/block_hostnet.yaml` |
+| kube-bench | 5.2.7 (cis-1.7 and later), 5.2.6 (cis-1.5, cis-1.6), 4.2.6 (eks-1.0.1 to eks-1.2.0): root containers | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.2 | `kyverno/require_nonroot.yaml` |
 
 The source of truth is `mapping/mappings.yaml`.
 
