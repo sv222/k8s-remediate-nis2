@@ -30,6 +30,7 @@ type Entry struct {
 	Templates       []string          `json:"templates"`
 	SharedTemplates []string          `json:"shared_templates"`
 	Guidance        string            `json:"guidance"`
+	Regional        bool              `json:"regional"`
 }
 
 var (

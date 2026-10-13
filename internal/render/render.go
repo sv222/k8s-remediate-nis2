@@ -27,6 +27,7 @@ var (
 
 	resourceIDRe = regexp.MustCompile(`^[A-Za-z0-9._:/@+=,-]+$`)
 	sanitizeRe   = regexp.MustCompile(`[^A-Za-z0-9_-]`)
+	regionRe     = regexp.MustCompile(`^[a-z]{2}(-[a-z0-9]+)+$`)
 )
 
 type RenderedFile struct {
@@ -39,6 +40,7 @@ type resourceData struct {
 	Articles            []string
 	ResourceID          string
 	SanitizedResourceID string
+	Region              string
 }
 
 func ValidateResourceID(id string) error {
@@ -104,11 +106,18 @@ func Render(e mapping.Entry, f finding.Finding) ([]RenderedFile, error) {
 		}
 		id := NormalizeResourceID(f.ResourceID)
 		data := resourceData{
-			Title:               e.Title,
-			Articles:            e.Articles,
-			ResourceID:          orPlaceholder(id),
-			SanitizedResourceID: SanitizeResourceID(id),
+			Title:      e.Title,
+			Articles:   e.Articles,
+			ResourceID: orPlaceholder(id),
 		}
+		if e.Regional {
+			if !regionRe.MatchString(f.Region) {
+				return nil, fmt.Errorf("%w: region %q is missing or malformed", ErrInvalidResourceID, f.Region)
+			}
+			data.Region = f.Region
+			id = id + "_" + f.Region
+		}
+		data.SanitizedResourceID = SanitizeResourceID(id)
 		for _, rel := range e.Templates {
 			content, err := execute(rel, data)
 			if err != nil {

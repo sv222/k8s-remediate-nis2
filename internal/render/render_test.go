@@ -200,7 +200,7 @@ func TestEveryMappedTemplateRenders(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, e := range entries {
-		files, err := Render(e, finding.Finding{ResourceID: "example-id"})
+		files, err := Render(e, finding.Finding{ResourceID: "example-id", Region: "us-east-1"})
 		if err != nil {
 			t.Errorf("%s: %v", e.Title, err)
 			continue
@@ -248,5 +248,118 @@ func TestAllTemplatesParseAndExecute(t *testing.T) {
 	})
 	if err != nil {
 		t.Fatal(err)
+	}
+}
+
+func entryFor(t *testing.T, check string) mapping.Entry {
+	t.Helper()
+	e, ok, err := mapping.For(finding.Finding{Scanner: "prowler", CheckID: check})
+	if err != nil || !ok {
+		t.Fatalf("%s: no mapping (ok=%v err=%v)", check, ok, err)
+	}
+	return e
+}
+
+func TestRegionalTemplateNeedsRegion(t *testing.T) {
+	e := entryFor(t, "ec2_ebs_default_encryption")
+	for _, region := range []string{"", "us east 1", "us-east-1\"}", "x"} {
+		_, err := Render(e, finding.Finding{ResourceID: "000000000000", Region: region})
+		if !errors.Is(err, ErrInvalidResourceID) {
+			t.Errorf("region %q: err = %v, want ErrInvalidResourceID", region, err)
+		}
+	}
+}
+
+func TestRegionalTemplateGetsOneFilePerRegion(t *testing.T) {
+	e := entryFor(t, "ec2_ebs_default_encryption")
+	seen := map[string]bool{}
+	for _, region := range []string{"us-east-1", "eu-west-1", "us-gov-west-1"} {
+		files, err := Render(e, finding.Finding{ResourceID: "000000000000", Region: region})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(files) != 1 || seen[files[0].RelPath] {
+			t.Fatalf("region %s: files = %+v", region, files)
+		}
+		seen[files[0].RelPath] = true
+		if !strings.Contains(files[0].Content, `region = "`+region+`"`) {
+			t.Errorf("region %s missing:\n%s", region, files[0].Content)
+		}
+		if !strings.Contains(files[0].RelPath, "000000000000_"+region) {
+			t.Errorf("path lacks region: %s", files[0].RelPath)
+		}
+	}
+}
+
+func TestRiskyTemplatesCarryLoudWarnings(t *testing.T) {
+	cases := map[string][]string{
+		"s3_bucket_secure_transport_policy": {"WARNING", "plain HTTP", "REPLACES the whole bucket policy", "s3_existing_bucket_policies"},
+		"s3_bucket_acl_prohibited":          {"WARNING", "disables all ACLs"},
+	}
+	for check, wants := range cases {
+		files, err := Render(entryFor(t, check), finding.Finding{ResourceID: "example-bucket", Region: "us-east-1"})
+		if err != nil {
+			t.Fatal(err)
+		}
+		head := strings.SplitN(files[0].Content, "\nresource ", 2)[0]
+		head = strings.SplitN(head, "\ndata ", 2)[0]
+		for _, w := range wants {
+			if !strings.Contains(head, w) {
+				t.Errorf("%s: header lacks %q:\n%s", check, w, head)
+			}
+		}
+	}
+}
+
+func TestNoTemplateWidensAccess(t *testing.T) {
+	entries, err := mapping.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, e := range entries {
+		files, err := Render(e, finding.Finding{ResourceID: "example-id", Region: "us-east-1"})
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, f := range files {
+			if !strings.HasPrefix(f.RelPath, "terraform/") {
+				continue
+			}
+			for _, bad := range []string{"0.0.0.0/0", "::/0", `"Allow"`, "public-read", `effect  = "Allow"`, `effect = "Allow"`} {
+				if strings.Contains(f.Content, bad) {
+					t.Errorf("%s contains %q", f.RelPath, bad)
+				}
+			}
+		}
+	}
+}
+
+func TestSecureTransportOnlyDenies(t *testing.T) {
+	files, err := Render(entryFor(t, "s3_bucket_secure_transport_policy"), finding.Finding{ResourceID: "example-bucket"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	c := files[0].Content
+	for _, w := range []string{`effect  = "Deny"`, `variable = "aws:SecureTransport"`, `values   = ["false"]`, `arn:${data.aws_partition.current.partition}:s3:::example-bucket/*`} {
+		if !strings.Contains(c, w) {
+			t.Errorf("missing %q:\n%s", w, c)
+		}
+	}
+	if strings.Count(c, "statement {") != 1 {
+		t.Errorf("want exactly one statement:\n%s", c)
+	}
+}
+
+func TestNetworkACLAndEKSAreGuidanceOnly(t *testing.T) {
+	for _, check := range []string{
+		"ec2_networkacl_allow_ingress_any_port",
+		"ec2_networkacl_allow_ingress_tcp_port_22",
+		"ec2_networkacl_allow_ingress_tcp_port_3389",
+		"eks_cluster_private_nodes_enabled",
+	} {
+		e := entryFor(t, check)
+		if len(e.Templates) != 0 || len(e.SharedTemplates) != 0 || e.Guidance == "" {
+			t.Errorf("%s: must be guidance only: %+v", check, e)
+		}
 	}
 }

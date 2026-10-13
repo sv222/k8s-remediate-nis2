@@ -71,6 +71,49 @@ entries:
     title: EKS API server endpoint open to the internet
     articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20"]
     guidance: "Change the existing aws_eks_cluster vpc_config: set endpoint_public_access = false and endpoint_private_access = true, or limit public_access_cidrs to admin ranges. Confirm private connectivity (VPN, Direct Connect or bastion) first, or kubectl access is lost."
+  - scanner: prowler
+    check_id: s3_bucket_secure_transport_policy
+    title: S3 bucket allows requests over plain HTTP
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "ISO27001:2022 A.8.24", "ISO27001:2022 A.8.20"]
+    templates: ["terraform/s3_secure_transport.tf"]
+    shared_templates: ["terraform/variables_s3_policy.tf"]
+  - scanner: prowler
+    check_id: s3_bucket_server_access_logging_enabled
+    title: S3 bucket without server access logging
+    articles: ["NIS2 Art.21(2)(b)", "DORA Art.10", "ISO27001:2022 A.8.15", "ISO27001:2022 A.8.16"]
+    templates: ["terraform/s3_server_access_logging.tf"]
+    shared_templates: ["terraform/variables_access_log.tf"]
+  - scanner: prowler
+    check_id: s3_bucket_acl_prohibited
+    title: S3 bucket has ACLs enabled
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.5.15", "ISO27001:2022 A.8.3"]
+    templates: ["terraform/s3_acl_prohibited.tf"]
+  - scanner: prowler
+    check_id: ec2_ebs_default_encryption
+    title: EBS default encryption is not enabled
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "ISO27001:2022 A.8.24"]
+    templates: ["terraform/ebs_default_encryption.tf"]
+    regional: true
+  - scanner: prowler
+    check_id: eks_cluster_private_nodes_enabled
+    title: EKS API server has no private endpoint access
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20"]
+    guidance: "No safe drop-in code exists because the cluster is not in your Terraform state. Enable endpoint_private_access on the existing aws_eks_cluster vpc_config, or run: aws eks update-cluster-config --name CLUSTER --resources-vpc-config endpointPrivateAccess=true,endpointPublicAccess=CURRENT_VALUE. Keep endpointPublicAccess at its current value, or API access may be lost. This check only needs private access to be on. Closing the public endpoint is a separate step (eks_cluster_not_publicly_accessible)."
+  - scanner: prowler
+    check_id: ec2_networkacl_allow_ingress_any_port
+    title: Network ACL allows every port from the internet
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20", "ISO27001:2022 A.8.22"]
+    guidance: "No code is generated on purpose. Network ACLs are stateless and cover whole subnets, so a wrong change drops traffic at once and can lock out users. Terraform also cannot edit an entry it does not manage. Review the entries (aws ec2 describe-network-acls), then replace the open allow entry with your trusted range: aws ec2 replace-network-acl-entry --network-acl-id ACL --ingress --rule-number N --protocol tcp --port-range From=443,To=443 --cidr-block TRUSTED_CIDR --rule-action allow. Keep return traffic (ephemeral ports 1024-65535) allowed. The default network ACL of a new VPC allows everything by design; security groups are the main control."
+  - scanner: prowler
+    check_id: ec2_networkacl_allow_ingress_tcp_port_22
+    title: Network ACL allows SSH (port 22) from the internet
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20", "ISO27001:2022 A.8.22"]
+    guidance: "No code is generated on purpose. Network ACLs are stateless and cover whole subnets, so a wrong change drops traffic at once and can lock out admins. Terraform also cannot edit an entry it does not manage. Replace the open entry with your admin range: aws ec2 replace-network-acl-entry --network-acl-id ACL --ingress --rule-number N --protocol tcp --port-range From=22,To=22 --cidr-block ADMIN_CIDR --rule-action allow. Test access from the admin range before you remove the old entry."
+  - scanner: prowler
+    check_id: ec2_networkacl_allow_ingress_tcp_port_3389
+    title: Network ACL allows RDP (port 3389) from the internet
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20", "ISO27001:2022 A.8.22"]
+    guidance: "No code is generated on purpose. Network ACLs are stateless and cover whole subnets, so a wrong change drops traffic at once and can lock out admins. Terraform also cannot edit an entry it does not manage. Replace the open entry with your admin range: aws ec2 replace-network-acl-entry --network-acl-id ACL --ingress --rule-number N --protocol tcp --port-range From=3389,To=3389 --cidr-block ADMIN_CIDR --rule-action allow. Test access from the admin range before you remove the old entry."
   - scanner: kube-bench
     benchmark_ids:
       aks-1.0: "4.2.1"

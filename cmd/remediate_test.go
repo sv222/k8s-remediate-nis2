@@ -59,6 +59,7 @@ func TestGolden(t *testing.T) {
 		{"legacy_and_bench", []string{"--prowler", "testdata/prowler_legacy.json", "--kube-bench", "testdata/kube_bench.json"}},
 		{"ocsf_only", []string{"--prowler", "testdata/prowler_ocsf.json"}},
 		{"two_buckets", []string{"--prowler", "testdata/prowler_two_buckets.json"}},
+		{"aws_gaps", []string{"--prowler", "testdata/prowler_aws_gaps.json"}},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -265,5 +266,41 @@ func TestEvidenceHasHashAndDisclaimer(t *testing.T) {
 		if !strings.Contains(ev, want) {
 			t.Errorf("evidence.md lacks %q", want)
 		}
+	}
+}
+
+func TestAWSGapsStatuses(t *testing.T) {
+	out := filepath.Join(t.TempDir(), "remediation")
+	if _, err := execute(t, "remediate", "--prowler", "testdata/prowler_aws_gaps.json", "--out", out); err != nil {
+		t.Fatal(err)
+	}
+	files := tree(t, out)
+	want := map[string]string{
+		"ec2_ebs_default_encryption":                 "remediated",
+		"s3_bucket_acl_prohibited":                   "remediated",
+		"s3_bucket_secure_transport_policy":          "remediated",
+		"s3_bucket_server_access_logging_enabled":    "remediated",
+		"eks_cluster_private_nodes_enabled":          "guidance only",
+		"ec2_networkacl_allow_ingress_any_port":      "guidance only",
+		"ec2_networkacl_allow_ingress_tcp_port_22":   "guidance only",
+		"ec2_networkacl_allow_ingress_tcp_port_3389": "guidance only",
+	}
+	got := map[string]string{}
+	for _, line := range strings.Split(files["mapping.md"], "\n") {
+		cols := strings.Split(line, "|")
+		if len(cols) > 7 && strings.TrimSpace(cols[1]) == "prowler" {
+			got[strings.TrimSpace(cols[2])] = strings.TrimSpace(cols[6])
+		}
+	}
+	for check, status := range want {
+		if got[check] != status {
+			t.Errorf("%s: status = %q, want %q", check, got[check], status)
+		}
+	}
+	if _, ok := files["terraform/ebs_default_encryption__000000000000_us-east-1.tf"]; !ok {
+		t.Errorf("regional EBS file missing: %v", sortedKeys(files))
+	}
+	if strings.Count(files["mapping.md"], "s3_bucket_secure_transport_policy") != 2 {
+		t.Errorf("the PASS record must not appear in mapping.md:\n%s", files["mapping.md"])
 	}
 }
