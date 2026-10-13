@@ -1,0 +1,42 @@
+version: 1
+entries:
+  - scanner: prowler
+    check_id: s3_bucket_public_access_block
+    title: S3 bucket without full public access block
+    articles: ["NIS2 Art.21(2)(j)", "ISO27001 A.8.12"]
+    templates: ["terraform/s3_public_access_block.tf"]
+  - scanner: prowler
+    check_id: s3_bucket_server_side_encryption_enabled
+    title: S3 bucket without encryption
+    articles: ["NIS2 Art.21(2)(h)"]
+    templates: ["terraform/s3_encryption.tf"]
+  - scanner: prowler
+    check_id: ec2_security_group_ingress_open_to_internet
+    title: Security group open to internet
+    articles: ["NIS2 Art.21(2)(d)"]
+    templates: ["terraform/sg_revoke_public_ingress.tf"]
+  - scanner: prowler
+    check_id: s3_bucket_public_read_access
+    title: S3 bucket publicly readable
+    articles: ["NIS2 Art.21(2)(j)"]
+    templates: ["terraform/s3_public_access_block.tf"]
+  - scanner: prowler
+    check_id: awsv526  # EKS public endpoint enabled
+    title: EKS API server public without restriction
+    articles: ["NIS2 Art.21(2)(d)", "DORA Art.8(4)"]
+    templates: ["terraform/eks_endpoint_restrict.tf"]
+  - scanner: kube-bench
+    check_id: "1.1.12"
+    title: etcd pod spec permissions too permissive
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9"]
+    templates: ["kyverno/require_nonroot.yaml"]
+  - scanner: kube-bench
+    check_id: "4.2.6"
+    title: pods may run as root
+    articles: ["NIS2 Art.21(2)(d)", "DORA Art.9"]
+    templates: ["kyverno/require_nonroot.yaml"]
+  - scanner: kube-bench
+    check_id: "5.2.2"
+    title: hostNetwork abused
+    articles: ["NIS2 Art.21(2)(d)"]
+    templates: ["kyverno/block_hostnet.yaml"]

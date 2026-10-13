@@ -1,0 +1,20 @@
+# Remediation for: {{ .Title }}
+# Articles: {{ range .Articles }}{{ . }} {{ end }}
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: remediation-{{ .SanitizedResourceID }}-block-hostnet
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: block-hostnetwork
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+      validate:
+        message: "hostNetwork pods are prohibited ({{ .CheckID }})"
+        pattern:
+          spec:
+            =(hostNetwork): "false"

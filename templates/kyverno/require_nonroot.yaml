@@ -1,0 +1,22 @@
+# Remediation for: {{ .Title }}
+# Articles: {{ range .Articles }}{{ . }} {{ end }}
+# Scanner: {{ .Scanner }} check {{ .CheckID }}
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: remediation-{{ .SanitizedResourceID }}-require-nonroot
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: require-nonroot
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+      validate:
+        message: "Pods must not run as root ({{ .CheckID }})"
+        pattern:
+          spec:
+            securityContext:
+              runAsNonRoot: true
