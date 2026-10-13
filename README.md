@@ -117,6 +117,14 @@ mapped controls.
 | prowler | `s3_bucket_public_write_acl` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.3 | `terraform/s3_public_access_block__<bucket>.tf` |
 | prowler | `s3_bucket_policy_public_write_access` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.3 | `terraform/s3_public_access_block__<bucket>.tf` |
 | prowler | `eks_cluster_not_publicly_accessible` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20 | none (guidance text in `mapping.md`) |
+| prowler | `s3_bucket_secure_transport_policy` | NIS2 Art.21(2)(h), DORA Art.9, ISO27001:2022 A.8.24, ISO27001:2022 A.8.20 | `terraform/s3_secure_transport__<bucket>.tf`, `terraform/variables_s3_policy.tf` (replaces the bucket policy and denies plain HTTP, see warnings) |
+| prowler | `s3_bucket_server_access_logging_enabled` | NIS2 Art.21(2)(b), DORA Art.10, ISO27001:2022 A.8.15, ISO27001:2022 A.8.16 | `terraform/s3_server_access_logging__<bucket>.tf`, `terraform/variables_access_log.tf` |
+| prowler | `s3_bucket_acl_prohibited` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.5.15, ISO27001:2022 A.8.3 | `terraform/s3_acl_prohibited__<bucket>.tf` (disables ACLs, see warnings) |
+| prowler | `ec2_ebs_default_encryption` | NIS2 Art.21(2)(h), DORA Art.9, ISO27001:2022 A.8.24 | `terraform/ebs_default_encryption__<account>_<region>.tf` (one file per region) |
+| prowler | `eks_cluster_private_nodes_enabled` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20 | none (guidance text in `mapping.md`) |
+| prowler | `ec2_networkacl_allow_ingress_any_port` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20, ISO27001:2022 A.8.22 | none (guidance text in `mapping.md`) |
+| prowler | `ec2_networkacl_allow_ingress_tcp_port_22` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20, ISO27001:2022 A.8.22 | none (guidance text in `mapping.md`) |
+| prowler | `ec2_networkacl_allow_ingress_tcp_port_3389` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20, ISO27001:2022 A.8.22 | none (guidance text in `mapping.md`) |
 | kube-bench | 5.2.2 (cis-1.7 and later), 5.2.1 (cis-1.5, cis-1.6), 4.2.1 (eks, aks): privileged containers | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.2 | `kyverno/block_privileged.yaml` |
 | kube-bench | 5.2.5 (cis-1.7 and later), 5.2.4 (cis-1.5, cis-1.6), 4.2.4 (eks, aks): host network | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.22 | `kyverno/block_hostnet.yaml` |
 | kube-bench | 5.2.7 (cis-1.7 and later), 5.2.6 (cis-1.5, cis-1.6), 4.2.6 (eks-1.0.1 to eks-1.2.0): root containers | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.2 | `kyverno/require_nonroot.yaml` |
@@ -148,9 +156,19 @@ and root containers (5.2.7). The policies start in `Audit` mode.
 The tool writes a Terraform rule for a narrow ingress. You set `var.allowed_cidr`
 and `var.allowed_port` and remove the open rules yourself.
 
-### What about eks_cluster_not_publicly_accessible?
+### What about eks_cluster_not_publicly_accessible and eks_cluster_private_nodes_enabled?
 
-There is no code fix. `mapping.md` shows guidance text with status `guidance only`.
+There is no code fix, because the cluster is not in your Terraform state and a
+wrong change can cut off `kubectl` access. `mapping.md` shows guidance text with
+status `guidance only`.
+
+### Why do the network ACL checks have no Terraform file?
+
+Network ACLs are stateless and apply to whole subnets. A generated rule can drop
+traffic at once and lock out users, and Terraform cannot edit a rule it does not
+manage. The checks `ec2_networkacl_allow_ingress_any_port`,
+`ec2_networkacl_allow_ingress_tcp_port_22` and
+`ec2_networkacl_allow_ingress_tcp_port_3389` give guidance text only.
 
 ### Does it create an NIS2 evidence report for auditors?
 
@@ -195,6 +213,13 @@ remediation/
   `validationActions` to `Deny`.
 - Policies skip `kube-system`, `kube-public`, `kube-node-lease` and `kyverno`.
 - Review all generated Terraform before you run `terraform apply`.
+- `terraform/s3_secure_transport__<bucket>.tf` replaces the whole bucket policy
+  and denies every request that does not use HTTPS. Put the current policy into
+  `var.s3_existing_bucket_policies` first, and check that no client uses plain HTTP.
+- `terraform/s3_acl_prohibited__<bucket>.tf` disables all ACLs of the bucket.
+  Anything that depends on ACL grants stops working.
+- `terraform/ebs_default_encryption__<account>_<region>.tf` affects new volumes
+  in one region only.
 - The security group snippet only adds a narrow rule. You must set
   `var.allowed_cidr` and `var.allowed_port`, and remove the internet-open rules
   yourself.

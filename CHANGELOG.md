@@ -7,6 +7,14 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Added
+
+- Terraform templates for `s3_bucket_secure_transport_policy` (deny plain HTTP), `s3_bucket_server_access_logging_enabled`, `s3_bucket_acl_prohibited` and `ec2_ebs_default_encryption` (one file per region). The risky templates start with a warning header.
+- Guidance-only entries for `eks_cluster_private_nodes_enabled`, `ec2_networkacl_allow_ingress_any_port`, `ec2_networkacl_allow_ingress_tcp_port_22` and `ec2_networkacl_allow_ingress_tcp_port_3389`. Network ACL changes are stateless and can lock out users, so no code is generated.
+- `regional` mapping option: the template gets the finding region and the file name includes it.
+- `scripts/e2e.sh` and `make e2e`: Docker-based end-to-end test with the Floci AWS emulator, Prowler 5.45, Terraform and this CLI.
+- `.github/workflows/e2e.yml`: manual and weekly run of the end-to-end test.
+
 ### Changed
 
 - Kyverno templates use `ValidatingPolicy` (`policies.kyverno.io/v1`). Kyverno 1.19 deprecates `ClusterPolicy` and Kyverno 1.20 removes it.
