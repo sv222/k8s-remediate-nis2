@@ -1,13 +1,20 @@
-# k8s-remediate-nis2
+# k8s-remediate-nis2: NIS2 remediation for Kubernetes and AWS
+
+[![CI](https://github.com/sv222/k8s-remediate-nis2/actions/workflows/ci.yml/badge.svg)](https://github.com/sv222/k8s-remediate-nis2/actions/workflows/ci.yml)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 **Prowler finds the problems. This tool generates the fixes.**
 
-NIS2 Article 21 remediation for Kubernetes and AWS. `k8s-remediate-nis2` reads
-Prowler and kube-bench reports. It writes Kyverno policies and Terraform
-snippets for the failed checks. Each fix is mapped to NIS2, DORA and ISO 27001
-references. It can also write an evidence report for auditors.
+`k8s-remediate-nis2` generates Kyverno and Terraform fixes for NIS2 failed
+checks from Prowler and kube-bench reports. Each fix is mapped to NIS2 Article
+21, DORA and ISO 27001 references. It can also write an evidence report for
+auditors. It is a single Go binary.
 
 > Technical Remediation & Evidence Assistant for NIS2/DORA. This tool does not certify compliance; risk acceptance remains with the client's management.
+
+> **Important:** The NIS2, DORA and ISO 27001 mappings in this project have NOT
+> been reviewed by legal or compliance experts. Do not use them as legal or
+> audit advice. DORA Art.9 applies only to financial entities.
 
 ## What is this tool?
 
@@ -102,6 +109,49 @@ kube-bench mappings depend on the benchmark version in the report:
 
 The source of truth is `mapping/mappings.yaml`.
 
+## FAQ
+
+### How do I fix a failed Prowler check like s3_bucket_level_public_access_block?
+
+Run `prowler aws -M json-ocsf`, then run `k8s-remediate-nis2 remediate --prowler prowler.ocsf.json`.
+The tool writes a Terraform file for each bucket, for example
+`terraform/s3_public_access_block__<bucket>.tf`. Review it before `terraform apply`.
+
+### Can I turn a Prowler report into Terraform snippets?
+
+Yes, for the checks listed in "Supported checks". Other failed checks are
+listed in `mapping.md` as `no mapping` or `guidance only`.
+
+### How do I fix kube-bench 5.2.2, 5.2.5 and 5.2.7 with Kyverno?
+
+Run `kube-bench --json > bench.json`, then
+`k8s-remediate-nis2 remediate --kube-bench bench.json`. You get Kyverno
+`ClusterPolicy` files for privileged containers (5.2.2), host network (5.2.5)
+and root containers (5.2.7). The policies start in `Audit` mode.
+
+### How do I fix ec2_securitygroup_allow_ingress_from_internet_to_any_port?
+
+The tool writes a Terraform rule for a narrow ingress. You set `var.allowed_cidr`
+and `var.allowed_port` and remove the open rules yourself.
+
+### What about eks_cluster_not_publicly_accessible?
+
+There is no code fix. `mapping.md` shows guidance text with status `guidance only`.
+
+### Does it create an NIS2 evidence report for auditors?
+
+Yes. Use `--export-evidence` to write `evidence.md`. It has counts, the SHA-256
+of each input file and the full table. It does not certify compliance.
+
+### Does DORA Art.9 apply to me?
+
+Only if you are a financial entity. The DORA references in the mappings are
+unreviewed.
+
+### Is it a scanner or a Prowler alternative?
+
+No. It does not scan. It works after Prowler and kube-bench.
+
 ## Output layout
 
 ```text
@@ -143,6 +193,8 @@ remediation/
 - It is not a scanner. It does not look at your cloud or cluster.
 - Article references are a technical aid. They are not legal advice.
 - It does not certify compliance with NIS2, DORA or ISO 27001.
+- The mappings are not reviewed by legal or compliance experts.
+- DORA Art.9 applies only to financial entities.
 
 ## Disclaimer
 
