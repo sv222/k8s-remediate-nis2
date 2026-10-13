@@ -83,7 +83,7 @@ Example `mapping.md` from a run with one Prowler and one kube-bench report:
 ## Supported scanner input formats
 
 - Prowler `json-ocsf` (`prowler -M json-ocsf`).
-- Prowler legacy `json` (`prowler -M json`).
+- Prowler legacy `json` (`prowler -M json`, written by Prowler 3 only; Prowler 4 and 5 have no such mode).
 - kube-bench JSON output.
 
 Prowler AWS Security Finding Format (`json-asff`) is not supported. Re-run
@@ -91,6 +91,11 @@ Prowler with `-M json-ocsf`.
 
 kube-bench mappings depend on the benchmark version in the report:
 `cis-1.6`, `cis-1.8`, `cis-1.10` and `eks-1.2.0`.
+
+kube-bench marks the pod security controls (privileged, host network, root
+containers) as manual checks, so it reports them as `WARN`, never `FAIL`. The
+tool treats a manual `WARN` as a gap and generates the Kyverno policy for the
+mapped controls.
 
 ## Supported checks
 

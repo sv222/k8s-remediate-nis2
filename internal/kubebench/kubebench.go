@@ -20,6 +20,7 @@ type control struct {
 			TestNumber string `json:"test_number"`
 			Status     string `json:"status"`
 			TestDesc   string `json:"test_desc"`
+			Type       string `json:"type"`
 		} `json:"results"`
 	} `json:"tests"`
 }
@@ -57,6 +58,7 @@ func Parse(data []byte, sourceFile string) ([]finding.Finding, error) {
 					CheckID:     r.TestNumber,
 					Benchmark:   c.Version,
 					Status:      strings.ToUpper(strings.TrimSpace(r.Status)),
+					Manual:      strings.EqualFold(strings.TrimSpace(r.Type), "manual"),
 					ResourceID:  "cluster",
 					Severity:    "medium",
 					Service:     "kubernetes",

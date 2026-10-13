@@ -183,9 +183,27 @@ func TestKyvernoPoliciesAreClusterWideAndDeduped(t *testing.T) {
 	if strings.Join(policies, ",") != want {
 		t.Errorf("policies = %v", policies)
 	}
-	for _, line := range strings.Split(files["mapping.md"], "\n") {
-		if strings.Contains(line, "| 1.1.12 |") && !strings.Contains(line, "| no mapping |") {
-			t.Errorf("etcd check must stay unmapped: %s", line)
+	mappingMD := files["mapping.md"]
+	hasEtcd := false
+	for _, line := range strings.Split(mappingMD, "\n") {
+		if strings.Contains(line, "| 1.1.12 |") {
+			hasEtcd = true
+			if !strings.Contains(line, "| no mapping |") {
+				t.Errorf("etcd check must stay unmapped: %s", line)
+			}
+		}
+	}
+	if !hasEtcd {
+		t.Error("failed etcd check is not listed")
+	}
+	for _, id := range []string{"5.2.2", "5.2.5", "5.2.7"} {
+		if !strings.Contains(mappingMD, "| "+id+" |") || !strings.Contains(mappingMD, "manual (WARN)") {
+			t.Errorf("manual WARN control %s is not remediated or not marked", id)
+		}
+	}
+	for _, id := range []string{"5.2.1", "5.2.3", "5.2.4", "5.2.6"} {
+		if strings.Contains(mappingMD, "| "+id+" |") {
+			t.Errorf("unmapped manual WARN control %s must not be listed", id)
 		}
 	}
 }

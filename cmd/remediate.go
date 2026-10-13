@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -78,7 +79,8 @@ func run(w io.Writer, o options) error {
 	set := render.NewSet()
 	var rows []out.SummaryRow
 	for _, f := range findings {
-		if f.Status != "FAIL" {
+		manualWarn := f.IsManualWarn()
+		if f.Status != "FAIL" && !manualWarn {
 			continue
 		}
 		row := out.SummaryRow{
@@ -88,6 +90,9 @@ func run(w io.Writer, o options) error {
 		e, ok, err := mapping.For(f)
 		if err != nil {
 			return err
+		}
+		if !ok && manualWarn {
+			continue
 		}
 		if !ok {
 			row.Status = out.StatusNoMapping
@@ -115,6 +120,9 @@ func run(w io.Writer, o options) error {
 			row.Status = out.StatusRemediated
 		}
 		row.Note = e.Guidance
+		if manualWarn {
+			row.Note = strings.TrimSpace("kube-bench reports this control as manual (WARN). " + row.Note)
+		}
 		rows = append(rows, row)
 	}
 	files := set.Files()
