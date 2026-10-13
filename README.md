@@ -91,14 +91,28 @@ Prowler with `-M json-ocsf`.
 
 kube-bench mappings depend on the benchmark version in the report. These
 versions are mapped: `cis-1.5` to `cis-1.12` (also `cis-1.20`, `cis-1.23`,
-`cis-1.24`, `cis-1.6-k3s`), `eks-1.0.1` to `eks-1.8.0`, `aks-1.0`, `aks-1.7`,
-`aks-1.8`, `gke-1.2.0` and `rke2-cis-1.7` to `rke2-cis-1.24`. The IDs are
-checked against the kube-bench 0.16.0 config.
+`cis-1.24`, `cis-1.24-microk8s`, `cis-1.6-k3s`), `eks-1.0.1` to `eks-1.8.0`,
+`aks-1.0`, `aks-1.7`, `aks-1.8`, `gke-1.0`, `gke-1.2.0`, `ack-1.0`,
+`k3s-cis-1.7` to `k3s-cis-1.24`, `rke-cis-1.7` to `rke-cis-1.24`,
+`rke2-cis-1.7` to `rke2-cis-1.24`, `rh-1.0` to `rh-1.9` and `tkgi-1.2.53`. The
+IDs are checked against the kube-bench 0.16.0 config. The parser and the
+`cis-1.12` IDs are also tested with real kube-bench 0.16.0 output from a kind
+cluster. For Kubernetes 1.37, which is not in its version table, kube-bench
+0.16.0 picked `cis-1.12`.
 
-kube-bench marks the pod security controls (privileged, host network, root
-containers) as manual checks, so it reports them as `WARN`, never `FAIL`. The
-tool treats a manual `WARN` as a gap and generates the Kyverno policy for the
-mapped controls.
+In `cis-1.12`, kube-bench marks the pod security controls (privileged, host
+network, root containers) as manual checks, so it reports them as `WARN`, never
+`FAIL`. It does not always set `type` to `manual` for them, so the tool also
+reads the `(Manual)` or `(Not Scored)` ending of the control text. The tool
+treats a manual `WARN` as a gap and generates the Kyverno policy for the mapped
+controls. Other manual `WARN` controls are ignored. Older benchmarks that mark
+these controls as automated report `FAIL`, and the tool processes those too.
+
+To get the JSON from a cluster, run the official `job.yaml` with the command
+`["kube-bench", "run", "--json"]` and save the output of
+`kubectl logs job/kube-bench` as `bench.json`. With the default service
+account, controls that query the cluster (section 5) show `Forbidden` in
+`actual_value`. Their status does not change for the controls this tool maps.
 
 ## Supported checks
 

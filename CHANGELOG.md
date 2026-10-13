@@ -9,6 +9,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- `make policy-test`: checks the three Kyverno templates with the Kyverno CLI against good and bad pod manifests.
 - Terraform templates for `s3_bucket_secure_transport_policy` (deny plain HTTP), `s3_bucket_server_access_logging_enabled`, `s3_bucket_acl_prohibited` and `ec2_ebs_default_encryption` (one file per region). The risky templates start with a warning header.
 - Guidance-only entries for `eks_cluster_private_nodes_enabled`, `ec2_networkacl_allow_ingress_any_port`, `ec2_networkacl_allow_ingress_tcp_port_22` and `ec2_networkacl_allow_ingress_tcp_port_3389`. Network ACL changes are stateless and can lock out users, so no code is generated.
 - `regional` mapping option: the template gets the finding region and the file name includes it.
@@ -17,11 +18,17 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Changed
 
+- kube-bench test fixtures are real kube-bench 0.16.0 output (`cis-1.12`, Kubernetes 1.37, kind), with the node IP and cluster name removed.
+- kube-bench benchmark IDs also cover `ack-1.0`, `cis-1.24-microk8s`, `gke-1.0`, `k3s-cis-*`, `rke-cis-*`, `rh-*` and `tkgi-1.2.53`.
 - Kyverno templates use `ValidatingPolicy` (`policies.kyverno.io/v1`). Kyverno 1.19 deprecates `ClusterPolicy` and Kyverno 1.20 removes it.
 - The kube-bench pod security controls are processed when they are reported as manual `WARN`.
 - kube-bench benchmark IDs cover the current CIS, EKS, AKS, GKE and RKE2 benchmark versions.
 - `var.allowed_cidr` rejects wide public ranges: it accepts private IPv4 ranges, or public ranges with prefix length 24 or longer.
 - Prowler 5 security group checks for all ports, SSH, RDP and high-risk ports and the S3 public write checks are mapped.
+
+### Fixed
+
+- kube-bench manual controls whose `type` is empty were skipped. With real `cis-1.12` output this dropped privileged containers (5.2.2) and host network (5.2.5). The `(Manual)` and `(Not Scored)` text endings are now detected too.
 
 ## [0.1.0] - 2026-10-13
 
