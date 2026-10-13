@@ -58,7 +58,7 @@ func Parse(data []byte, sourceFile string) ([]finding.Finding, error) {
 					CheckID:     r.TestNumber,
 					Benchmark:   c.Version,
 					Status:      strings.ToUpper(strings.TrimSpace(r.Status)),
-					Manual:      strings.EqualFold(strings.TrimSpace(r.Type), "manual"),
+					Manual:      isManual(r.Type, r.TestDesc),
 					ResourceID:  "cluster",
 					Severity:    "medium",
 					Service:     "kubernetes",
@@ -69,4 +69,12 @@ func Parse(data []byte, sourceFile string) ([]finding.Finding, error) {
 		}
 	}
 	return out, nil
+}
+
+func isManual(typ, desc string) bool {
+	if strings.EqualFold(strings.TrimSpace(typ), "manual") {
+		return true
+	}
+	d := strings.ToLower(strings.TrimSpace(desc))
+	return strings.HasSuffix(d, "(manual)") || strings.HasSuffix(d, "(not scored)")
 }
