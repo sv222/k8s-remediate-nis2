@@ -1,14 +1,82 @@
-# k8s-remediate-nis2: NIS2 remediation for Kubernetes and AWS
+# k8s-remediate-nis2
+
+**Turn a failed Prowler or kube-bench report into reviewable Kyverno and Terraform fixes, mapped to NIS2 Article 21.**
 
 [![CI](https://github.com/sv222/k8s-remediate-nis2/actions/workflows/ci.yml/badge.svg)](https://github.com/sv222/k8s-remediate-nis2/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-**Prowler finds the problems. This tool generates the fixes.**
+`k8s-remediate-nis2` is a small Go command line tool. It reads the JSON report of
+Prowler (AWS) or kube-bench (Kubernetes). For each failed check it writes a Kyverno
+policy or a Terraform file, a `mapping.md` table and an optional `evidence.md` report.
+It does not scan anything itself.
 
-`k8s-remediate-nis2` generates Kyverno and Terraform fixes for NIS2 failed
-checks from Prowler and kube-bench reports. Each fix is mapped to NIS2 Article
-21, DORA and ISO 27001 references. It can also write an evidence report for
-auditors. It is a single Go binary.
+## The problem
+
+Scanners list hundreds of failed checks. Engineers still write each fix by hand.
+They also write the audit evidence by hand: which check failed, which article it
+relates to and what changed. This tool automates the repeatable part. A person
+still reviews every result.
+
+## 30-second demo
+
+The input is the test reports in this repo. They are derived from real Prowler 5.45
+(OCSF) and kube-bench 0.16 (JSON) output. The output below is from a real run.
+
+```sh
+k8s-remediate-nis2 remediate \
+  --prowler cmd/testdata/prowler_ocsf.json \
+  --kube-bench cmd/testdata/kube_bench.json \
+  --out out --export-evidence
+```
+
+```text
+failed findings: 26, files written: 13, output: out
+```
+
+```text
+out/
+  kyverno/     block_hostnet.yaml  block_privileged.yaml  require_nonroot.yaml
+  terraform/   s3_public_access_block__acme-public-logs.tf
+               s3_encryption_kms__acme-backup-dump.tf
+               sg_restrict_ingress__sg-a899c3f6063affe1f.tf
+               ... 10 files in total, with shared variables_*.tf
+  mapping.md
+  evidence.md
+```
+
+One generated file, `terraform/s3_public_access_block__acme-public-logs.tf`:
+
+```hcl
+# Remediation for: S3 bucket without Block Public Access
+# Articles: NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.3
+resource "aws_s3_bucket_public_access_block" "remediation_acme-public-logs" {
+  bucket = "acme-public-logs"
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+```
+
+Some rows of `mapping.md` (the Articles and Note columns are left out here):
+
+```text
+| Scanner    | Check                               | Resource         | Generated                                             | Status        |
+|------------|-------------------------------------|------------------|-------------------------------------------------------|---------------|
+| prowler    | s3_bucket_public_access             | acme-public-logs | terraform/s3_public_access_block__acme-public-logs.tf | remediated    |
+| prowler    | eks_cluster_not_publicly_accessible | acme-eks         |                                                       | guidance only |
+| kube-bench | 5.2.2                               | cluster          | kyverno/block_privileged.yaml                         | remediated    |
+| kube-bench | 1.2.5                               | cluster          |                                                       | no mapping    |
+```
+
+The top of `evidence.md`. It also lists the SHA-256 of each input file.
+
+```text
+Findings: 143 | Failed: 26 | Remediated: 13 | Guidance only: 1 | Unmapped: 12 | Skipped: 0
+```
+
+## Notice and disclaimer
 
 > Technical Remediation & Evidence Assistant for NIS2/DORA. This tool does not certify compliance; risk acceptance remains with the client's management.
 
@@ -16,242 +84,168 @@ auditors. It is a single Go binary.
 > been reviewed by legal or compliance experts. Do not use them as legal or
 > audit advice. DORA Art.9 applies only to financial entities.
 
-## What is this tool?
+## Quickstart
 
-It is a small Go CLI. It is not a scanner. Run your scanner first, then give
-the report to this tool. It is complementary to Prowler and kube-bench.
-
-- Input: Prowler JSON and kube-bench JSON.
-- Output: Kyverno `ValidatingPolicy` files (Kyverno 1.17 or later), Terraform files, `mapping.md`, and
-  optionally `evidence.md`.
-- Prowler `FAIL` findings and kube-bench manual `WARN` results are processed.
-
-## Install
-
-With Go:
+Install with Go 1.23 or later, or build from source:
 
 ```sh
 go install github.com/sv222/k8s-remediate-nis2/cmd/k8s-remediate-nis2@latest
-```
 
-Build from source:
-
-```sh
 git clone https://github.com/sv222/k8s-remediate-nis2.git
-cd k8s-remediate-nis2
-make build
-./bin/k8s-remediate-nis2 --version
+cd k8s-remediate-nis2 && make build && ./bin/k8s-remediate-nis2 --version
 ```
-
-## Quickstart: generate fixes from a Prowler or kube-bench report
 
 ```sh
-prowler aws -M json-ocsf
-k8s-remediate-nis2 remediate --prowler prowler.ocsf.json --out remediation/
-
-kube-bench --json > bench.json
-k8s-remediate-nis2 remediate --kube-bench bench.json --export-evidence
+prowler aws -M json-ocsf                    # 1. scan AWS
+kube-bench run --json > bench.json          # 1. scan Kubernetes
+k8s-remediate-nis2 remediate --prowler prowler.ocsf.json --kube-bench bench.json \
+  --out remediation/ --export-evidence      # 2. generate fixes
+kubectl apply -f remediation/kyverno/       # 4. apply policies (Audit mode)
+terraform plan                              # 5. plan, then apply what you understand
 ```
 
-You can pass both `--prowler` and `--kube-bench` in one run.
+Step 3 is yours: read `remediation/mapping.md` and every generated file.
 
-| Flag | Meaning | Default |
-|---|---|---|
-| `--prowler` | Prowler JSON report | none |
-| `--kube-bench` | kube-bench JSON report | none |
-| `--out` | Output directory | `./remediation` |
-| `--export-evidence` | Also write `evidence.md` | off |
+Flags: `--prowler FILE`, `--kube-bench FILE`, `--out DIR` (default `./remediation`),
+`--export-evidence`. Use at least one scanner flag. Exit code `0` means success, also
+when some findings have no mapping. Exit code `2` means an error.
 
-At least one of `--prowler` or `--kube-bench` is required.
+### Safety rules
 
-The command prints one summary line, for example:
+- Kyverno policies start in `Audit` mode. Read the policy reports first, then change
+  `validationActions` to `Deny`. They skip `kube-system`, `kube-public`,
+  `kube-node-lease` and `kyverno`.
+- Review all Terraform before `terraform apply`. Risky files start with a `WARNING`.
+  `s3_secure_transport` replaces the whole bucket policy and denies plain HTTP: put the
+  current policy into `var.s3_existing_bucket_policies` first. `s3_acl_prohibited`
+  disables all ACLs of a bucket.
+- The security group template only adds one narrow rule. You set `var.allowed_cidr`
+  and `var.allowed_port`, and you revoke the open rules yourself.
+- Some checks are guidance only on purpose. EKS endpoint settings are not in your
+  Terraform state, and a wrong change cuts off `kubectl`. Network ACLs are stateless and
+  cover whole subnets, so a wrong rule drops traffic at once. For these, `mapping.md`
+  gives exact steps, not code.
+- Resource IDs are validated before they reach a template. Bad IDs are listed as
+  `skipped: invalid resource id`.
 
-```text
-failed findings: 6, files written: 6, output: remediation/
-```
+### Supported input
 
-Example `mapping.md` from a run with one Prowler and one kube-bench report:
-
-```text
-| Scanner | Check | Resource | Articles | Generated | Status | Note |
-|---|---|---|---|---|---|---|
-| prowler | s3_bucket_level_public_access_block | company-frontend-assets | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.3 | terraform/s3_public_access_block__company-frontend-assets.tf | remediated |  |
-| kube-bench | 1.1.12 | cluster |  |  | no mapping |  |
-| kube-bench | 5.2.2 | cluster | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.2 | kyverno/block_privileged.yaml | remediated |  |
-```
-
-## Supported scanner input formats
-
-- Prowler `json-ocsf` (`prowler -M json-ocsf`).
-- Prowler legacy `json` (`prowler -M json`, written by Prowler 3 only; Prowler 4 and 5 have no such mode).
-- kube-bench JSON output.
-
-Prowler AWS Security Finding Format (`json-asff`) is not supported. Re-run
-Prowler with `-M json-ocsf`.
-
-kube-bench mappings depend on the benchmark version in the report. These
-versions are mapped: `cis-1.5` to `cis-1.12` (also `cis-1.20`, `cis-1.23`,
-`cis-1.24`, `cis-1.24-microk8s`, `cis-1.6-k3s`), `eks-1.0.1` to `eks-1.8.0`,
-`aks-1.0`, `aks-1.7`, `aks-1.8`, `gke-1.0`, `gke-1.2.0`, `ack-1.0`,
-`k3s-cis-1.7` to `k3s-cis-1.24`, `rke-cis-1.7` to `rke-cis-1.24`,
-`rke2-cis-1.7` to `rke2-cis-1.24`, `rh-1.0` to `rh-1.9` and `tkgi-1.2.53`. The
-IDs are checked against the kube-bench 0.16.0 config. The parser and the
-`cis-1.12` IDs are also tested with real kube-bench 0.16.0 output from a kind
-cluster. For Kubernetes 1.37, which is not in its version table, kube-bench
-0.16.0 picked `cis-1.12`.
-
-In `cis-1.12`, kube-bench marks the pod security controls (privileged, host
-network, root containers) as manual checks, so it reports them as `WARN`, never
-`FAIL`. It does not always set `type` to `manual` for them, so the tool also
-reads the `(Manual)` or `(Not Scored)` ending of the control text. The tool
-treats a manual `WARN` as a gap and generates the Kyverno policy for the mapped
-controls. Other manual `WARN` controls are ignored. Older benchmarks that mark
-these controls as automated report `FAIL`, and the tool processes those too.
-
-To get the JSON from a cluster, run the official `job.yaml` with the command
-`["kube-bench", "run", "--json"]` and save the output of
-`kubectl logs job/kube-bench` as `bench.json`. With the default service
-account, controls that query the cluster (section 5) show `Forbidden` in
-`actual_value`. Their status does not change for the controls this tool maps.
+- Prowler `json-ocsf` (`prowler -M json-ocsf`) and the legacy `json` of Prowler 3.
+  Prowler ASFF output is not supported.
+- kube-bench JSON. IDs are mapped for the CIS, EKS, AKS, GKE, ACK, k3s, RKE, RKE2,
+  OpenShift, MicroK8s and TKGI benchmarks listed in `mapping/mappings.yaml`.
+- In `cis-1.12`, kube-bench reports the pod security controls as manual `WARN`, never
+  `FAIL`. The tool treats a manual `WARN` of a mapped control as a gap. It also reads the
+  `(Manual)` ending of the control text, because `type` can be empty.
 
 ## Supported checks
 
-| Scanner | Check | NIS2 / DORA / ISO references | Generated file |
-|---|---|---|---|
-| prowler | `s3_bucket_level_public_access_block` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.3 | `terraform/s3_public_access_block__<bucket>.tf` |
-| prowler | `s3_bucket_public_access` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.3 | `terraform/s3_public_access_block__<bucket>.tf` |
-| prowler | `s3_bucket_public_list_acl` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.3 | `terraform/s3_public_access_block__<bucket>.tf` |
-| prowler | `s3_bucket_default_encryption` | NIS2 Art.21(2)(h), DORA Art.9, ISO27001:2022 A.8.24 | `terraform/s3_encryption__<bucket>.tf` |
-| prowler | `s3_bucket_kms_encryption` | NIS2 Art.21(2)(h), DORA Art.9, ISO27001:2022 A.8.24 | `terraform/s3_encryption_kms__<bucket>.tf`, `terraform/variables_kms_key.tf` |
-| prowler | `ec2_securitygroup_allow_ingress_from_internet_to_any_port` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20 | `terraform/sg_restrict_ingress__<sg-id>.tf`, `terraform/variables_sg_ingress.tf` |
-| prowler | `ec2_securitygroup_allow_ingress_from_internet_to_all_ports` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20 | `terraform/sg_restrict_ingress__<sg-id>.tf`, `terraform/variables_sg_ingress.tf` |
-| prowler | `ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_22` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20 | `terraform/sg_restrict_ingress__<sg-id>.tf`, `terraform/variables_sg_ingress.tf` |
-| prowler | `ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_3389` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20 | `terraform/sg_restrict_ingress__<sg-id>.tf`, `terraform/variables_sg_ingress.tf` |
-| prowler | `ec2_securitygroup_allow_ingress_from_internet_to_high_risk_tcp_ports` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20 | `terraform/sg_restrict_ingress__<sg-id>.tf`, `terraform/variables_sg_ingress.tf` |
-| prowler | `s3_bucket_public_write_acl` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.3 | `terraform/s3_public_access_block__<bucket>.tf` |
-| prowler | `s3_bucket_policy_public_write_access` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.3 | `terraform/s3_public_access_block__<bucket>.tf` |
-| prowler | `eks_cluster_not_publicly_accessible` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20 | none (guidance text in `mapping.md`) |
-| prowler | `s3_bucket_secure_transport_policy` | NIS2 Art.21(2)(h), DORA Art.9, ISO27001:2022 A.8.24, ISO27001:2022 A.8.20 | `terraform/s3_secure_transport__<bucket>.tf`, `terraform/variables_s3_policy.tf` (replaces the bucket policy and denies plain HTTP, see warnings) |
-| prowler | `s3_bucket_server_access_logging_enabled` | NIS2 Art.21(2)(b), DORA Art.10, ISO27001:2022 A.8.15, ISO27001:2022 A.8.16 | `terraform/s3_server_access_logging__<bucket>.tf`, `terraform/variables_access_log.tf` |
-| prowler | `s3_bucket_acl_prohibited` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.5.15, ISO27001:2022 A.8.3 | `terraform/s3_acl_prohibited__<bucket>.tf` (disables ACLs, see warnings) |
-| prowler | `ec2_ebs_default_encryption` | NIS2 Art.21(2)(h), DORA Art.9, ISO27001:2022 A.8.24 | `terraform/ebs_default_encryption__<account>_<region>.tf` (one file per region) |
-| prowler | `eks_cluster_private_nodes_enabled` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20 | none (guidance text in `mapping.md`) |
-| prowler | `ec2_networkacl_allow_ingress_any_port` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20, ISO27001:2022 A.8.22 | none (guidance text in `mapping.md`) |
-| prowler | `ec2_networkacl_allow_ingress_tcp_port_22` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20, ISO27001:2022 A.8.22 | none (guidance text in `mapping.md`) |
-| prowler | `ec2_networkacl_allow_ingress_tcp_port_3389` | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.20, ISO27001:2022 A.8.22 | none (guidance text in `mapping.md`) |
-| kube-bench | 5.2.2 (cis-1.7 and later), 5.2.1 (cis-1.5, cis-1.6), 4.2.1 (eks, aks): privileged containers | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.2 | `kyverno/block_privileged.yaml` |
-| kube-bench | 5.2.5 (cis-1.7 and later), 5.2.4 (cis-1.5, cis-1.6), 4.2.4 (eks, aks): host network | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.22 | `kyverno/block_hostnet.yaml` |
-| kube-bench | 5.2.7 (cis-1.7 and later), 5.2.6 (cis-1.5, cis-1.6), 4.2.6 (eks-1.0.1 to eks-1.2.0): root containers | NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.2 | `kyverno/require_nonroot.yaml` |
+Generated from `mapping/mappings.yaml`. NIS2 letters are Article 21(2) points:
+(b) incident handling, (g) basic cyber hygiene, (h) cryptography and encryption,
+(i) access control and asset management. These are short summaries, not legal text.
+DORA references are in `mapping.md`.
 
-The source of truth is `mapping/mappings.yaml`.
+| Scanner | Check | What the fix does | NIS2 | ISO 27001:2022 | Type |
+|---|---|---|---|---|---|
+| prowler | `s3_bucket_level_public_access_block`, `s3_bucket_public_access`, `s3_bucket_public_list_acl`, `s3_bucket_public_write_acl`, `s3_bucket_policy_public_write_access` | Turns on all four S3 Block Public Access settings | (i), (g) | A.8.3 | template |
+| prowler | `s3_bucket_default_encryption` (deprecated in current Prowler) | Default SSE-S3 (AES256) encryption | (h) | A.8.24 | template |
+| prowler | `s3_bucket_kms_encryption` | Default SSE-KMS encryption with `var.kms_key_arn` | (h) | A.8.24 | template |
+| prowler | `s3_bucket_secure_transport_policy` | Bucket policy that denies plain HTTP | (h) | A.8.24, A.8.20 | template |
+| prowler | `s3_bucket_server_access_logging_enabled` | Server access logs to `var.access_log_bucket` | (b) | A.8.15, A.8.16 | template |
+| prowler | `s3_bucket_acl_prohibited` | `BucketOwnerEnforced`, which disables ACLs | (i), (g) | A.5.15, A.8.3 | template |
+| prowler | `ec2_ebs_default_encryption` | Default EBS encryption, one file per region | (h) | A.8.24 | template |
+| prowler | `ec2_securitygroup_allow_ingress_from_internet_to_any_port`, `..._to_all_ports`, `..._to_tcp_port_22`, `..._to_tcp_port_3389`, `..._to_high_risk_tcp_ports` | Adds one narrow ingress rule | (i), (g) | A.8.20 | template |
+| prowler | `eks_cluster_not_publicly_accessible`, `eks_cluster_private_nodes_enabled` | Steps to limit the public endpoint and enable the private one | (i), (g) | A.8.20 | guidance |
+| prowler | `ec2_networkacl_allow_ingress_any_port`, `..._tcp_port_22`, `..._tcp_port_3389` | Steps to narrow the open entry | (i), (g) | A.8.20, A.8.22 | guidance |
+| kube-bench | privileged containers (5.2.2; 5.2.1 and 4.2.1 in other benchmarks) | Kyverno `nis2-block-privileged` | (i), (g) | A.8.2 | template |
+| kube-bench | host network (5.2.5; 5.2.4 and 4.2.4) | Kyverno `nis2-block-hostnetwork` | (i), (g) | A.8.22 | template |
+| kube-bench | root containers (5.2.7; 5.2.6 and 4.2.6) | Kyverno `nis2-require-nonroot` | (i), (g) | A.8.2 | template |
 
-## FAQ
+The `regional` option applies to `ec2_ebs_default_encryption`. This setting exists per
+AWS region, so the template gets the region of the finding and the file name includes it.
 
-### How do I fix a failed Prowler check like s3_bucket_level_public_access_block?
+## How it works
 
-Run `prowler aws -M json-ocsf`, then run `k8s-remediate-nis2 remediate --prowler prowler.ocsf.json`.
-The tool writes a Terraform file for each bucket, for example
-`terraform/s3_public_access_block__<bucket>.tf`. Review it before `terraform apply`.
-
-### Can I turn a Prowler report into Terraform snippets?
-
-Yes, for the checks listed in "Supported checks". Other failed checks are
-listed in `mapping.md` as `no mapping` or `guidance only`.
-
-### How do I fix kube-bench 5.2.2, 5.2.5 and 5.2.7 with Kyverno?
-
-Run `kube-bench --json > bench.json`, then
-`k8s-remediate-nis2 remediate --kube-bench bench.json`. You get Kyverno
-`ValidatingPolicy` files for privileged containers (5.2.2), host network (5.2.5)
-and root containers (5.2.7). The policies start in `Audit` mode.
-
-### How do I fix ec2_securitygroup_allow_ingress_from_internet_to_any_port?
-
-The tool writes a Terraform rule for a narrow ingress. You set `var.allowed_cidr`
-and `var.allowed_port` and remove the open rules yourself.
-
-### What about eks_cluster_not_publicly_accessible and eks_cluster_private_nodes_enabled?
-
-There is no code fix, because the cluster is not in your Terraform state and a
-wrong change can cut off `kubectl` access. `mapping.md` shows guidance text with
-status `guidance only`.
-
-### Why do the network ACL checks have no Terraform file?
-
-Network ACLs are stateless and apply to whole subnets. A generated rule can drop
-traffic at once and lock out users, and Terraform cannot edit a rule it does not
-manage. The checks `ec2_networkacl_allow_ingress_any_port`,
-`ec2_networkacl_allow_ingress_tcp_port_22` and
-`ec2_networkacl_allow_ingress_tcp_port_3389` give guidance text only.
-
-### Does it create an NIS2 evidence report for auditors?
-
-Yes. Use `--export-evidence` to write `evidence.md`. It has counts, the SHA-256
-of each input file and the full table. It does not certify compliance.
-
-### Does DORA Art.9 apply to me?
-
-Only if you are a financial entity. The DORA references in the mappings are
-unreviewed.
-
-### Is it a scanner or a Prowler alternative?
-
-No. It does not scan. It works after Prowler and kube-bench.
-
-## Output layout
-
-```text
-remediation/
-  kyverno/      cluster-wide policies, one file per policy
-  terraform/    one file per resource, plus shared variable files
-  mapping.md    every failed finding and its status
-  evidence.md   auditor report (only with --export-evidence)
+```mermaid
+flowchart LR
+  A[Prowler or kube-bench JSON] --> B[Parse: FAIL and manual WARN]
+  B --> C[Map check to mappings.yaml]
+  C --> D[Render templates]
+  D --> E[out/kyverno]
+  D --> F[out/terraform]
+  C --> G[out/mapping.md]
+  C --> H[out/evidence.md]
 ```
 
-- Terraform files are named `<template>__<resource>.tf`.
-- Kyverno policies are rendered once for the whole cluster.
-- A finding gets one status: `remediated`, `guidance only`, `no mapping`, or
-  `skipped: invalid resource id`.
-- `evidence.md` has counts, the SHA-256 of each input file, and the full table.
+- **It never widens access.** Templates only tighten settings. The security group
+  template adds a narrow rule and deletes nothing. `var.allowed_cidr` rejects
+  `0.0.0.0/0` and wide public ranges.
+- **Guidance instead of unsafe automation.** If a change could lock out users or edit a
+  resource Terraform does not own, the tool writes steps, not code.
+- **The mapping is data.** Checks, articles and templates live in
+  `mapping/mappings.yaml`. Templates are embedded in the binary.
 
-## Exit codes
+## How it was tested
 
-| Code | Meaning |
-|---|---|
-| 0 | Success. This includes runs where some findings have no mapping. |
-| 2 | Error, for example a missing flag, an unreadable file or an unsupported format. |
+`make e2e` (`scripts/e2e.sh`, needs Docker) tests the AWS fixes against the Floci AWS
+emulator. It creates bad resources for 20 Prowler checks and runs real Prowler 5.45. It
+runs `remediate`, then Terraform 1.16.5 `validate`, `plan` and `apply`. Then it does the
+follow-up steps from the guidance text and runs Prowler again. It fails if a covered check
+still reports `FAIL`.
 
-## Safety notes
+| Prowler scan | FAIL | PASS |
+|---|---|---|
+| Before | 50 | 51 |
+| After `terraform apply` (36 resources added) | 13 | 88 |
+| After the guidance follow-up steps | 0 | 103 |
 
-- Kyverno policies start in `Audit` mode. Read the policy reports, then change
-  `validationActions` to `Deny`.
-- Policies skip `kube-system`, `kube-public`, `kube-node-lease` and `kyverno`.
-- Review all generated Terraform before you run `terraform apply`.
-- `terraform/s3_secure_transport__<bucket>.tf` replaces the whole bucket policy
-  and denies every request that does not use HTTPS. Put the current policy into
-  `var.s3_existing_bucket_policies` first, and check that no client uses plain HTTP.
-- `terraform/s3_acl_prohibited__<bucket>.tf` disables all ACLs of the bucket.
-  Anything that depends on ACL grants stops working.
-- `terraform/ebs_default_encryption__<account>_<region>.tf` affects new volumes
-  in one region only.
-- The security group snippet only adds a narrow rule. You must set
-  `var.allowed_cidr` and `var.allowed_port`, and remove the internet-open rules
-  yourself.
-- Resource IDs are checked before they reach a template. Invalid IDs are
-  skipped and listed in `mapping.md`.
+The 13 failures after `apply` are open security group rules, network ACL entries and
+EKS settings. The tool leaves these to you on purpose. The check
+`ec2_securitygroup_allow_ingress_from_internet_to_any_port` cannot be created in the
+emulator, so it was not tested. The emulator has no `UpdateClusterConfig`, so the EKS
+step recreated the mock cluster with the target settings.
 
-## Limitations
+- **kube-bench:** a real kube-bench 0.16.0 run on Kubernetes 1.37 (kind) gave 63 PASS,
+  12 FAIL and 56 WARN with the default service account. Controls 5.2.2, 5.2.5 and 5.2.7
+  are manual `WARN` checks, and the tool handles them. kube-bench chose `cis-1.12` itself.
+- **Kyverno:** `make policy-test` runs the three policies through the Kyverno 1.19.1 CLI
+  against good and bad pods. A real Kyverno 1.19.1 admission also tested the three policies.
+- **Unit tests:** `make test` compares output with golden files in `cmd/testdata/golden`.
+  CI runs build, vet, test, gofmt and `go mod tidy`.
 
-- The mapping set is small. Many failed checks will show `no mapping`.
-- It is not a scanner. It does not look at your cloud or cluster.
-- Article references are a technical aid. They are not legal advice.
-- It does not certify compliance with NIS2, DORA or ISO 27001.
-- The mappings are not reviewed by legal or compliance experts.
-- DORA Art.9 applies only to financial entities.
+Not verified:
 
-## Disclaimer
+- Real AWS accounts. A green emulator run does not prove that AWS accepts every change.
+- kube-bench output from EKS, AKS or GKE.
+- Other kube-bench benchmark versions end to end. IDs are checked against kube-bench 0.16.0 only.
+- Review of the mappings by legal or compliance experts.
 
-Technical Remediation & Evidence Assistant for NIS2/DORA. This tool does not certify compliance; risk acceptance remains with the client's management.
+## Limitations and roadmap
+
+- The mapping set is small. Many failed checks show `no mapping`.
+- The tool does not scan and does not remove existing rules.
+- Terraform files are snippets per resource. You merge them into your own code and state.
+- Roadmap: review of the mappings by compliance experts, more Prowler checks, and
+  kube-bench tests with managed Kubernetes output.
+
+## Contributing
+
+To add a mapping: add a template under `templates/`, add an entry to
+`mapping/mappings.yaml` (`scanner`, `check_id` or `benchmark_ids`, `title`, `articles`,
+and `templates` or `guidance`), add a test input and golden files in `cmd/testdata`,
+then run `make test` (and `make e2e` for AWS templates).
+
+If you work in compliance, audit or law, please review the article references. Open an
+issue or a pull request for any reference that is wrong or too broad. See
+`CONTRIBUTING.md`. Report security problems through GitHub private vulnerability
+reporting. See `SECURITY.md`.
+
+## About the author
+
+Stanislav is a DevSecOps engineer. He works on Kubernetes and cloud security
+automation. GitHub: [sv222](https://github.com/sv222).
+
+Related: [ai-guard-k8s](https://github.com/sv222/ai-guard-k8s), a scanner and policy generator for Kubernetes AI inference workloads.
 
 ## License
 
