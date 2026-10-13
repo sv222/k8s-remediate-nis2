@@ -24,6 +24,14 @@ Run `gofmt -l .` and `go mod tidy` before you open a pull request.
 
 Kyverno templates must start in `Audit` mode.
 
+## Mapping review
+
+The NIS2, DORA and ISO 27001 mappings in `mapping/mappings.yaml` have not
+been reviewed by legal or compliance experts. If you work in compliance, audit
+or law, please review them. Open an issue or a pull request for any article
+reference that is wrong, too broad or missing. DORA Art.9 applies only to
+financial entities.
+
 ## Pull requests
 
 - Every change needs tests.
