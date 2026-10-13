@@ -24,6 +24,29 @@ Run `gofmt -l .` and `go mod tidy` before you open a pull request.
 
 Kyverno templates must be `ValidatingPolicy` (`policies.kyverno.io/v1`) and start in `Audit` mode.
 
+## End-to-end test
+
+`make e2e` (or `bash scripts/e2e.sh`) tests the AWS templates against a local
+AWS emulator. It needs Docker and `python3`. It does not need AWS credentials,
+Go, Terraform or Prowler on the host. It uses only dummy credentials.
+
+The script starts one Floci container (pinned image), creates bad resources,
+runs Prowler 5.45, runs `remediate`, runs `terraform validate`, `plan` and
+`apply` against the emulator, and runs Prowler again. It then applies the
+follow-up steps that the guidance text describes (revoke open security group
+rules, narrow network ACL entries, change the EKS cluster). It fails if a
+covered check still has a `FAIL` result. It removes its containers, network and
+volume at the end.
+
+- `E2E_PREFIX` sets the name prefix of containers and network (default `nrval`).
+- `E2E_WORKDIR` sets the work directory (default `temp/e2e`).
+- `E2E_KEEP=1` keeps the work directory, with scans, logs and `report.md`.
+
+All image versions are pinned in `scripts/e2e.sh`. The workflow
+`.github/workflows/e2e.yml` runs it by hand and once a week, not on every push.
+The emulator is not AWS: a green run proves the generated code is valid and
+that Prowler accepts the result, not that real AWS accepts every change.
+
 ## Mapping review
 
 The NIS2, DORA and ISO 27001 mappings in `mapping/mappings.yaml` have not
