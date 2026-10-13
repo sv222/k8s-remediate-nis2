@@ -1,0 +1,103 @@
+{
+  "Controls": [
+    {
+      "id": "1",
+      "version": "cis-1.8",
+      "detected_version": "1.28",
+      "text": "Control Plane Security Configuration",
+      "node_type": "master",
+      "tests": [
+        {
+          "section": "1.1",
+          "type": "",
+          "pass": 1,
+          "fail": 1,
+          "warn": 0,
+          "info": 0,
+          "desc": "Control Plane Node Configuration Files",
+          "results": [
+            {
+              "test_number": "1.1.12",
+              "test_desc": "Ensure that the etcd data directory ownership is set to etcd:etcd (Automated)",
+              "audit": "ps -ef | grep etcd",
+              "AuditConfig": "",
+              "type": "",
+              "remediation": "On the etcd server node, get the etcd data directory and run chown etcd:etcd.",
+              "test_info": ["On the etcd server node, get the etcd data directory."],
+              "status": "FAIL",
+              "actual_value": "root:root",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": "'etcd:etcd' is equal to 'etcd:etcd'"
+            },
+            {
+              "test_number": "1.1.1",
+              "test_desc": "Ensure that the API server pod specification file permissions are set to 600 or more restrictive (Automated)",
+              "audit": "stat -c permissions=%a /etc/kubernetes/manifests/kube-apiserver.yaml",
+              "type": "",
+              "remediation": "",
+              "test_info": [],
+              "status": "PASS",
+              "actual_value": "permissions=600",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": "permissions has permission 600, expected 600 or more restrictive"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "version": "cis-1.8",
+      "detected_version": "1.28",
+      "text": "Kubernetes Policies",
+      "node_type": "policies",
+      "tests": [
+        {
+          "section": "5.2",
+          "type": "",
+          "pass": 0,
+          "fail": 3,
+          "warn": 0,
+          "info": 0,
+          "desc": "Pod Security Standards",
+          "results": [
+            {
+              "test_number": "5.2.2",
+              "test_desc": "Minimize the admission of privileged containers (Manual)",
+              "type": "",
+              "remediation": "Add policies to each namespace in the cluster which has user workloads to restrict the admission of privileged containers.",
+              "status": "FAIL",
+              "scored": false,
+              "IsMultiple": true
+            },
+            {
+              "test_number": "5.2.5",
+              "test_desc": "Minimize the admission of containers wishing to share the host network namespace (Manual)",
+              "type": "",
+              "remediation": "Add policies to each namespace in the cluster which has user workloads to restrict the admission of hostNetwork containers.",
+              "status": "FAIL",
+              "scored": false,
+              "IsMultiple": true
+            },
+            {
+              "test_number": "5.2.7",
+              "test_desc": "Minimize the admission of root containers (Manual)",
+              "type": "manual",
+              "remediation": "Create a policy for each namespace in the cluster, ensuring that either MustRunAsNonRoot or MustRunAs with the range of UIDs not including 0, is set.",
+              "status": "FAIL",
+              "scored": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "Totals": {
+    "total_pass": 1,
+    "total_fail": 4,
+    "total_warn": 0,
+    "total_info": 0
+  }
+}

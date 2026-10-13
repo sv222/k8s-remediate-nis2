@@ -1,42 +1,66 @@
 version: 1
 entries:
   - scanner: prowler
-    check_id: s3_bucket_public_access_block
-    title: S3 bucket without full public access block
-    articles: ["NIS2 Art.21(2)(j)", "ISO27001 A.8.12"]
+    check_id: s3_bucket_level_public_access_block
+    title: S3 bucket without Block Public Access
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.3"]
     templates: ["terraform/s3_public_access_block.tf"]
   - scanner: prowler
-    check_id: s3_bucket_server_side_encryption_enabled
-    title: S3 bucket without encryption
-    articles: ["NIS2 Art.21(2)(h)"]
+    check_id: s3_bucket_public_access
+    title: S3 bucket publicly accessible
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.3"]
+    templates: ["terraform/s3_public_access_block.tf"]
+  - scanner: prowler
+    check_id: s3_bucket_public_list_acl
+    title: S3 bucket publicly listable through ACL
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.3"]
+    templates: ["terraform/s3_public_access_block.tf"]
+  - scanner: prowler
+    check_id: s3_bucket_default_encryption
+    title: S3 bucket without default encryption (check deprecated in current Prowler)
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "ISO27001:2022 A.8.24"]
     templates: ["terraform/s3_encryption.tf"]
   - scanner: prowler
-    check_id: ec2_security_group_ingress_open_to_internet
-    title: Security group open to internet
-    articles: ["NIS2 Art.21(2)(d)"]
-    templates: ["terraform/sg_revoke_public_ingress.tf"]
+    check_id: s3_bucket_kms_encryption
+    title: S3 bucket without SSE-KMS default encryption
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "ISO27001:2022 A.8.24"]
+    templates: ["terraform/s3_encryption_kms.tf"]
+    shared_templates: ["terraform/variables_kms_key.tf"]
   - scanner: prowler
-    check_id: s3_bucket_public_read_access
-    title: S3 bucket publicly readable
-    articles: ["NIS2 Art.21(2)(j)"]
-    templates: ["terraform/s3_public_access_block.tf"]
+    check_id: ec2_securitygroup_allow_ingress_from_internet_to_any_port
+    title: Security group open to the internet on all ports
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20"]
+    templates: ["terraform/sg_restrict_ingress.tf"]
+    shared_templates: ["terraform/variables_sg_ingress.tf"]
   - scanner: prowler
-    check_id: awsv526  # EKS public endpoint enabled
-    title: EKS API server public without restriction
-    articles: ["NIS2 Art.21(2)(d)", "DORA Art.8(4)"]
-    templates: ["terraform/eks_endpoint_restrict.tf"]
+    check_id: eks_cluster_not_publicly_accessible
+    title: EKS API server endpoint open to the internet
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20"]
+    guidance: "Change the existing aws_eks_cluster vpc_config: set endpoint_public_access = false and endpoint_private_access = true, or limit public_access_cidrs to admin ranges. Confirm private connectivity (VPN, Direct Connect or bastion) first, or kubectl access is lost."
   - scanner: kube-bench
-    check_id: "1.1.12"
-    title: etcd pod spec permissions too permissive
-    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9"]
-    templates: ["kyverno/require_nonroot.yaml"]
+    benchmark_ids:
+      cis-1.6: "5.2.1"
+      cis-1.8: "5.2.2"
+      cis-1.10: "5.2.2"
+      eks-1.2.0: "4.2.1"
+    title: Privileged containers may be admitted
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.2"]
+    shared_templates: ["kyverno/block_privileged.yaml"]
   - scanner: kube-bench
-    check_id: "4.2.6"
-    title: pods may run as root
-    articles: ["NIS2 Art.21(2)(d)", "DORA Art.9"]
-    templates: ["kyverno/require_nonroot.yaml"]
+    benchmark_ids:
+      cis-1.6: "5.2.4"
+      cis-1.8: "5.2.5"
+      cis-1.10: "5.2.5"
+      eks-1.2.0: "4.2.4"
+    title: Containers may share the host network namespace
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.22"]
+    shared_templates: ["kyverno/block_hostnet.yaml"]
   - scanner: kube-bench
-    check_id: "5.2.2"
-    title: hostNetwork abused
-    articles: ["NIS2 Art.21(2)(d)"]
-    templates: ["kyverno/block_hostnet.yaml"]
+    benchmark_ids:
+      cis-1.6: "5.2.6"
+      cis-1.8: "5.2.7"
+      cis-1.10: "5.2.7"
+      eks-1.2.0: "4.2.6"
+    title: Root containers may be admitted
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.2"]
+    shared_templates: ["kyverno/require_nonroot.yaml"]

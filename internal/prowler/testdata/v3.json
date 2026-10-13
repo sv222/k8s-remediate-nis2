@@ -1,5 +1,0 @@
-{
-  "Findings": [
-    { "CheckID": "s3_bucket_public_access_block", "Status": "FAIL", "ResourceID": "x" }
-  ]
-}

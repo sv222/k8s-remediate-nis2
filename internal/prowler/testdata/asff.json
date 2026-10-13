@@ -1,0 +1,14 @@
+[
+  {
+    "SchemaVersion": "2018-10-08",
+    "Id": "prowler-rds_instance_minor_version_upgrade_enabled-123456789012-eu-west-1-b1ade474a",
+    "ProductArn": "arn:aws:securityhub:eu-west-1::product/prowler/prowler",
+    "RecordState": "ACTIVE",
+    "GeneratorId": "prowler-rds_instance_minor_version_upgrade_enabled",
+    "AwsAccountId": "123456789012",
+    "Severity": {"Label": "LOW"},
+    "Title": "Ensure RDS instances have minor version upgrade enabled.",
+    "Resources": [{"Type": "AwsRdsDbInstance", "Id": "rds-instance-id", "Partition": "aws", "Region": "eu-west-1"}],
+    "Compliance": {"Status": "FAILED"}
+  }
+]

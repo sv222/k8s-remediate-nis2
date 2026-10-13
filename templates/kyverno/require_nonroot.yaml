@@ -1,12 +1,15 @@
-# Remediation for: {{ .Title }}
-# Articles: {{ range .Articles }}{{ . }} {{ end }}
-# Scanner: {{ .Scanner }} check {{ .CheckID }}
+# NIS2/DORA remediation: require pods to run as non-root (CIS Kubernetes pod security).
+# Starts in Audit mode. Review the policy reports, then change validationFailureAction to Enforce.
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
-  name: remediation-{{ .SanitizedResourceID }}-require-nonroot
+  name: nis2-require-nonroot
+  annotations:
+    policies.kyverno.io/title: Require runAsNonRoot
+    policies.kyverno.io/category: Pod Security Standards (Restricted)
+    policies.kyverno.io/severity: medium
 spec:
-  validationFailureAction: Enforce
+  validationFailureAction: Audit
   background: true
   rules:
     - name: require-nonroot
@@ -14,9 +17,32 @@ spec:
         any:
           - resources:
               kinds: [Pod]
+      exclude:
+        any:
+          - resources:
+              namespaces: [kube-system, kube-public, kube-node-lease, kyverno]
       validate:
-        message: "Pods must not run as root ({{ .CheckID }})"
-        pattern:
-          spec:
-            securityContext:
-              runAsNonRoot: true
+        message: "Pods must not run as root: set runAsNonRoot to true at pod level or on every container"
+        anyPattern:
+          - spec:
+              securityContext:
+                runAsNonRoot: "true"
+              =(ephemeralContainers):
+                - =(securityContext):
+                    =(runAsNonRoot): "true"
+              =(initContainers):
+                - =(securityContext):
+                    =(runAsNonRoot): "true"
+              containers:
+                - =(securityContext):
+                    =(runAsNonRoot): "true"
+          - spec:
+              =(ephemeralContainers):
+                - securityContext:
+                    runAsNonRoot: "true"
+              =(initContainers):
+                - securityContext:
+                    runAsNonRoot: "true"
+              containers:
+                - securityContext:
+                    runAsNonRoot: "true"

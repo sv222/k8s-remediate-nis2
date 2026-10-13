@@ -1,0 +1,80 @@
+[
+  {
+    "FindingUniqueId": "prowler-aws-s3_bucket_level_public_access_block-123456789012-eu-central-1-bucket-one",
+    "Provider": "aws",
+    "CheckID": "s3_bucket_level_public_access_block",
+    "CheckTitle": "Check S3 Bucket Level Public Access Block.",
+    "ServiceName": "s3",
+    "Status": "FAIL",
+    "StatusExtended": "Block Public Access is not configured for the S3 Bucket bucket-one.",
+    "Severity": "medium",
+    "Region": "eu-central-1",
+    "ResourceId": "bucket-one",
+    "ResourceArn": "arn:aws:s3:::bucket-one"
+  },
+  {
+    "FindingUniqueId": "prowler-aws-s3_bucket_level_public_access_block-123456789012-eu-central-1-bucket-two",
+    "Provider": "aws",
+    "CheckID": "s3_bucket_level_public_access_block",
+    "CheckTitle": "Check S3 Bucket Level Public Access Block.",
+    "ServiceName": "s3",
+    "Status": "FAIL",
+    "StatusExtended": "Block Public Access is not configured for the S3 Bucket bucket-two.",
+    "Severity": "medium",
+    "Region": "eu-central-1",
+    "ResourceId": "",
+    "ResourceArn": "arn:aws:s3:::bucket-two"
+  },
+  {
+    "FindingUniqueId": "prowler-aws-s3_bucket_public_access-123456789012-eu-central-1-bucket-two",
+    "Provider": "aws",
+    "CheckID": "s3_bucket_public_access",
+    "CheckTitle": "Ensure there are no S3 buckets open to Everyone or Any AWS user.",
+    "ServiceName": "s3",
+    "Status": "FAIL",
+    "StatusExtended": "S3 Bucket bucket-two has public access.",
+    "Severity": "critical",
+    "Region": "eu-central-1",
+    "ResourceId": "bucket-two",
+    "ResourceArn": "arn:aws:s3:::bucket-two"
+  },
+  {
+    "FindingUniqueId": "prowler-aws-s3_bucket_level_public_access_block-123456789012-eu-central-1-evil",
+    "Provider": "aws",
+    "CheckID": "s3_bucket_level_public_access_block",
+    "CheckTitle": "Check S3 Bucket Level Public Access Block.",
+    "ServiceName": "s3",
+    "Status": "FAIL",
+    "StatusExtended": "x",
+    "Severity": "medium",
+    "Region": "eu-central-1",
+    "ResourceId": "evil\"\n}\nresource \"aws_iam_user\" \"x\" {",
+    "ResourceArn": ""
+  },
+  {
+    "FindingUniqueId": "prowler-aws-eks_cluster_not_publicly_accessible-123456789012-eu-central-1-prod",
+    "Provider": "aws",
+    "CheckID": "eks_cluster_not_publicly_accessible",
+    "CheckTitle": "EKS cluster endpoint is not publicly accessible from 0.0.0.0/0",
+    "ServiceName": "eks",
+    "Status": "FAIL",
+    "StatusExtended": "Cluster endpoint access is public.",
+    "Severity": "high",
+    "Region": "eu-central-1",
+    "ResourceId": "prod",
+    "ResourceArn": "arn:aws:eks:eu-central-1:123456789012:cluster/prod"
+  },
+  {
+    "FindingUniqueId": "prowler-aws-iam_root_mfa_enabled-123456789012-eu-central-1-root",
+    "Provider": "aws",
+    "CheckID": "iam_root_mfa_enabled",
+    "CheckTitle": "Ensure MFA is enabled for the root account | urgent",
+    "ServiceName": "iam",
+    "Status": "FAIL",
+    "StatusExtended": "MFA is not enabled for root.",
+    "Severity": "critical",
+    "Region": "us-east-1",
+    "ResourceId": "<root_account>",
+    "ResourceArn": "arn:aws:iam::123456789012:root"
+  }
+]

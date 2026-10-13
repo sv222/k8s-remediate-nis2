@@ -1,0 +1,28 @@
+# NIS2/DORA remediation: disallow hostNetwork pods (CIS Kubernetes pod security).
+# Starts in Audit mode. Review the policy reports, then change validationFailureAction to Enforce.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: nis2-block-hostnetwork
+  annotations:
+    policies.kyverno.io/title: Disallow host network
+    policies.kyverno.io/category: Pod Security Standards (Baseline)
+    policies.kyverno.io/severity: medium
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: block-hostnetwork
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+      exclude:
+        any:
+          - resources:
+              namespaces: [kube-system, kube-public, kube-node-lease, kyverno]
+      validate:
+        message: "hostNetwork pods are prohibited"
+        pattern:
+          spec:
+            =(hostNetwork): "false"

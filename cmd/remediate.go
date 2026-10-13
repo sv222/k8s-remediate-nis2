@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"errors"
+	"fmt"
+	"io"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -13,94 +16,127 @@ import (
 	"github.com/nis2rem/k8s-remediate-nis2/mapping"
 )
 
-var (
-	prowlerFile   string
-	kubebenchFile string
-	outDir        string
-	evidence      bool
-)
+type options struct {
+	prowler   string
+	kubeBench string
+	outDir    string
+	evidence  bool
+}
 
-var remediateCmd = &cobra.Command{
-	Use:   "remediate",
-	Short: "Generate remediation code from Prowler/kube-bench findings",
-	RunE: func(c *cobra.Command, args []string) error {
-		var findings []finding.Finding
-		if prowlerFile != "" {
-			data, err := os.ReadFile(prowlerFile)
-			if err != nil {
-				return err
-			}
-			fs, err := prowler.Parse(data, prowlerFile)
-			if err != nil {
-				return err
-			}
-			findings = append(findings, fs...)
+func newRemediateCmd() *cobra.Command {
+	var o options
+	c := &cobra.Command{
+		Use:   "remediate",
+		Short: "Generate remediation code from Prowler/kube-bench findings",
+		Args:  cobra.NoArgs,
+		RunE: func(c *cobra.Command, args []string) error {
+			return run(c.OutOrStdout(), o)
+		},
+	}
+	c.Flags().StringVar(&o.prowler, "prowler", "", "Prowler JSON report (json-ocsf or legacy json)")
+	c.Flags().StringVar(&o.kubeBench, "kube-bench", "", "kube-bench JSON report")
+	c.Flags().StringVar(&o.outDir, "out", "./remediation", "output directory")
+	c.Flags().BoolVar(&o.evidence, "export-evidence", false, "also write evidence.md for auditors")
+	return c
+}
+
+func loadFindings(o options) ([]finding.Finding, error) {
+	var findings []finding.Finding
+	if o.prowler != "" {
+		data, err := os.ReadFile(o.prowler)
+		if err != nil {
+			return nil, err
 		}
-		if kubebenchFile != "" {
-			data, err := os.ReadFile(kubebenchFile)
-			if err != nil {
-				return err
-			}
-			fs, err := kubebench.Parse(data, kubebenchFile)
-			if err != nil {
-				return err
-			}
-			findings = append(findings, fs...)
+		fs, err := prowler.Parse(data, o.prowler)
+		if err != nil {
+			return nil, err
 		}
-		var files []render.RenderedFile
-		var rows []out.SummaryRow
-		for _, f := range findings {
-			if f.Status != "FAIL" {
-				continue
-			}
-			e, ok := mapping.For(f)
-			if !ok {
-				rows = append(rows, out.SummaryRow{Scanner: f.Scanner, CheckID: f.CheckID,
-					ResourceID: f.ResourceID, Status: "no mapping (v1 seed set)"})
-				continue
-			}
-			rf, err := render.Render(e, f)
-			if err != nil {
-				return err
-			}
-			files = append(files, rf...)
-			var rels []string
-			for _, x := range rf {
-				rels = append(rels, x.RelPath)
-			}
-			rows = append(rows, out.SummaryRow{Scanner: f.Scanner, CheckID: f.CheckID,
-				ResourceID: f.ResourceID, Articles: e.Articles, Files: rels, Status: "remediated"})
+		findings = append(findings, fs...)
+	}
+	if o.kubeBench != "" {
+		data, err := os.ReadFile(o.kubeBench)
+		if err != nil {
+			return nil, err
 		}
-		if err := out.Write(outDir, files, rows); err != nil {
+		fs, err := kubebench.Parse(data, o.kubeBench)
+		if err != nil {
+			return nil, err
+		}
+		findings = append(findings, fs...)
+	}
+	return findings, nil
+}
+
+func run(w io.Writer, o options) error {
+	if o.prowler == "" && o.kubeBench == "" {
+		return errors.New("at least one of --prowler or --kube-bench is required")
+	}
+	findings, err := loadFindings(o)
+	if err != nil {
+		return err
+	}
+	set := render.NewSet()
+	var rows []out.SummaryRow
+	for _, f := range findings {
+		if f.Status != "FAIL" {
+			continue
+		}
+		row := out.SummaryRow{
+			Scanner: f.Scanner, CheckID: f.CheckID, ResourceID: f.ResourceID,
+			Severity: f.Severity, Region: f.Region,
+		}
+		e, ok, err := mapping.For(f)
+		if err != nil {
 			return err
 		}
-		if evidence {
-			if err := out.WriteEvidence(outDir, findings, rows, inputPaths()); err != nil {
-				return err
-			}
+		if !ok {
+			row.Status = out.StatusNoMapping
+			rows = append(rows, row)
+			continue
 		}
-		if len(files) == 0 {
-			os.Exit(1)
+		row.Articles = e.Articles
+		rf, err := render.Render(e, f)
+		if errors.Is(err, render.ErrInvalidResourceID) {
+			row.Status = out.StatusInvalidResource
+			row.Note = err.Error()
+			rows = append(rows, row)
+			continue
 		}
-		return nil
-	},
+		if err != nil {
+			return err
+		}
+		set.Add(rf)
+		for _, x := range rf {
+			row.Files = append(row.Files, x.RelPath)
+		}
+		if len(rf) == 0 {
+			row.Status = out.StatusGuidanceOnly
+		} else {
+			row.Status = out.StatusRemediated
+		}
+		row.Note = e.Guidance
+		rows = append(rows, row)
+	}
+	files := set.Files()
+	if err := out.Write(o.outDir, files, rows); err != nil {
+		return err
+	}
+	if o.evidence {
+		if err := out.WriteEvidence(o.outDir, findings, rows, inputPaths(o)); err != nil {
+			return err
+		}
+	}
+	fmt.Fprintf(w, "failed findings: %d, files written: %d, output: %s\n", len(rows), len(files), o.outDir)
+	return nil
 }
 
-func inputPaths() []string {
+func inputPaths(o options) []string {
 	var p []string
-	if prowlerFile != "" {
-		p = append(p, prowlerFile)
+	if o.prowler != "" {
+		p = append(p, o.prowler)
 	}
-	if kubebenchFile != "" {
-		p = append(p, kubebenchFile)
+	if o.kubeBench != "" {
+		p = append(p, o.kubeBench)
 	}
 	return p
-}
-
-func init() {
-	remediateCmd.Flags().StringVar(&prowlerFile, "prowler", "", "Prowler v4 JSON report")
-	remediateCmd.Flags().StringVar(&kubebenchFile, "kube-bench", "", "kube-bench JSON report")
-	remediateCmd.Flags().StringVar(&outDir, "out", "./remediation", "output directory")
-	remediateCmd.Flags().BoolVar(&evidence, "export-evidence", false, "also write evidence.md for auditors")
-	rootCmd.AddCommand(remediateCmd)
 }

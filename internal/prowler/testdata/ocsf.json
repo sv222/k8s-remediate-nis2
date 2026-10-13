@@ -1,0 +1,170 @@
+[
+  {
+    "message": "S3 Bucket company-frontend-assets does not have Public Access Block enabled for IgnorePublicAcls and RestrictPublicBuckets.",
+    "metadata": {
+      "event_code": "s3_bucket_level_public_access_block",
+      "product": {"name": "Prowler", "uid": "prowler", "vendor_name": "Prowler", "version": "5.3.0"},
+      "profiles": ["cloud", "datetime"],
+      "tenant_uid": "",
+      "version": "1.3.0"
+    },
+    "severity_id": 3,
+    "severity": "Medium",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Block Public Access is not configured for the S3 Bucket company-frontend-assets.",
+    "status_id": 1,
+    "unmapped": {"categories": ["internet-exposed"], "compliance": {}},
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "created_time": 1760343242,
+      "created_time_dt": "2026-10-13T08:14:02.381532",
+      "desc": "Check S3 Bucket Level Public Access Block.",
+      "product_uid": "prowler",
+      "title": "Check S3 Bucket Level Public Access Block.",
+      "types": ["Data Protection"],
+      "uid": "prowler-aws-s3_bucket_level_public_access_block-123456789012-eu-central-1-company-frontend-assets"
+    },
+    "resources": [
+      {
+        "cloud_partition": "aws",
+        "region": "eu-central-1",
+        "data": {"details": "", "metadata": {"name": "company-frontend-assets"}},
+        "group": {"name": "s3"},
+        "labels": [],
+        "name": "company-frontend-assets",
+        "type": "AwsS3Bucket",
+        "uid": "arn:aws:s3:::company-frontend-assets"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "cloud": {
+      "account": {"name": "", "type": "AWS Account", "type_id": 10, "uid": "123456789012", "labels": []},
+      "org": {"name": "", "uid": ""},
+      "provider": "aws",
+      "region": "eu-central-1"
+    },
+    "remediation": {"desc": "Enable Block Public Access at bucket level.", "references": []},
+    "risk_details": "Public access policies may be applied to sensitive data buckets.",
+    "time": 1760343242,
+    "time_dt": "2026-10-13T08:14:02.381532",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Security group sg-0a1b2c3d4e5f60718 has all ports open to the Internet.",
+    "metadata": {
+      "event_code": "ec2_securitygroup_allow_ingress_from_internet_to_any_port",
+      "product": {"name": "Prowler", "uid": "prowler", "vendor_name": "Prowler", "version": "5.3.0"},
+      "profiles": ["cloud", "datetime"],
+      "tenant_uid": "",
+      "version": "1.3.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Security group sg-0a1b2c3d4e5f60718 has all ports open to the Internet.",
+    "status_id": 1,
+    "unmapped": {"categories": ["internet-exposed"], "compliance": {}},
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "created_time": 1760343242,
+      "created_time_dt": "2026-10-13T08:14:02.381532",
+      "desc": "Ensure there are no Security Groups allowing ingress from 0.0.0.0/0 or ::/0 to any port.",
+      "product_uid": "prowler",
+      "title": "Ensure there are no Security Groups allowing ingress from 0.0.0.0/0 or ::/0 to any port.",
+      "types": ["Infrastructure Security"],
+      "uid": "prowler-aws-ec2_securitygroup_allow_ingress_from_internet_to_any_port-123456789012-eu-central-1-sg-0a1b2c3d4e5f60718"
+    },
+    "resources": [
+      {
+        "cloud_partition": "aws",
+        "region": "eu-central-1",
+        "data": {"details": "app-servers", "metadata": {"id": "sg-0a1b2c3d4e5f60718"}},
+        "group": {"name": "ec2"},
+        "labels": [],
+        "name": "sg-0a1b2c3d4e5f60718",
+        "type": "AwsEc2SecurityGroup",
+        "uid": "arn:aws:ec2:eu-central-1:123456789012:security-group/sg-0a1b2c3d4e5f60718"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "cloud": {
+      "account": {"name": "", "type": "AWS Account", "type_id": 10, "uid": "123456789012", "labels": []},
+      "org": {"name": "", "uid": ""},
+      "provider": "aws",
+      "region": "eu-central-1"
+    },
+    "remediation": {"desc": "Restrict ingress to required ports and trusted sources.", "references": []},
+    "risk_details": "The security group can be accessed from any IP address on the Internet.",
+    "time": 1760343242,
+    "time_dt": "2026-10-13T08:14:02.381532",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Block Public Access is configured for the S3 Bucket company-logs.",
+    "metadata": {
+      "event_code": "s3_bucket_level_public_access_block",
+      "product": {"name": "Prowler", "uid": "prowler", "vendor_name": "Prowler", "version": "5.3.0"},
+      "profiles": ["cloud", "datetime"],
+      "tenant_uid": "",
+      "version": "1.3.0"
+    },
+    "severity_id": 3,
+    "severity": "Medium",
+    "status": "New",
+    "status_code": "PASS",
+    "status_detail": "Block Public Access is configured for the S3 Bucket company-logs.",
+    "status_id": 1,
+    "unmapped": {"categories": [], "compliance": {}},
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "created_time": 1760343242,
+      "created_time_dt": "2026-10-13T08:14:02.381532",
+      "desc": "Check S3 Bucket Level Public Access Block.",
+      "product_uid": "prowler",
+      "title": "Check S3 Bucket Level Public Access Block.",
+      "types": ["Data Protection"],
+      "uid": "prowler-aws-s3_bucket_level_public_access_block-123456789012-eu-central-1-company-logs"
+    },
+    "resources": [
+      {
+        "cloud_partition": "aws",
+        "region": "eu-central-1",
+        "data": {"details": "", "metadata": {"name": "company-logs"}},
+        "group": {"name": "s3"},
+        "labels": [],
+        "name": "company-logs",
+        "type": "AwsS3Bucket",
+        "uid": "arn:aws:s3:::company-logs"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "cloud": {
+      "account": {"name": "", "type": "AWS Account", "type_id": 10, "uid": "123456789012", "labels": []},
+      "org": {"name": "", "uid": ""},
+      "provider": "aws",
+      "region": "eu-central-1"
+    },
+    "remediation": {"desc": "", "references": []},
+    "risk_details": "Public access policies may be applied to sensitive data buckets.",
+    "time": 1760343242,
+    "time_dt": "2026-10-13T08:14:02.381532",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  }
+]
