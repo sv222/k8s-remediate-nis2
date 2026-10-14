@@ -13,7 +13,7 @@ func NewRootCmd() *cobra.Command {
 	root := &cobra.Command{
 		Use:           "k8s-remediate-nis2",
 		Short:         "Turn Prowler/kube-bench findings into Kyverno/Terraform remediation code mapped to NIS2/DORA",
-		Version:       version.Version,
+		Version:       version.Get(),
 		SilenceUsage:  true,
 		SilenceErrors: true,
 	}

@@ -1,7 +1,9 @@
 package mapping
 
 import (
+	"crypto/sha256"
 	"embed"
+	"encoding/hex"
 	"fmt"
 	"sync"
 
@@ -31,13 +33,26 @@ type Entry struct {
 	SharedTemplates []string          `json:"shared_templates"`
 	Guidance        string            `json:"guidance"`
 	Regional        bool              `json:"regional"`
+	RequiresRegion  bool              `json:"requires_region"`
+	FollowUp        string            `json:"follow_up"`
+	Caution         string            `json:"caution"`
+	Group           string            `json:"group"`
+	Rank            int               `json:"rank"`
 }
 
 var (
 	loadOnce sync.Once
 	loaded   []Entry
 	loadErr  error
+
+	docVersion int
+	docSHA     string
 )
+
+func Info() (int, string) {
+	_, _ = Load()
+	return docVersion, docSHA
+}
 
 func Load() ([]Entry, error) {
 	loadOnce.Do(func() {
@@ -51,6 +66,8 @@ func parse() ([]Entry, error) {
 	if err != nil {
 		return nil, err
 	}
+	sum := sha256.Sum256(data)
+	docSHA = hex.EncodeToString(sum[:])
 	var d doc
 	if err := yaml.UnmarshalStrict(data, &d); err != nil {
 		return nil, fmt.Errorf("mappings.yaml: %w", err)
@@ -58,6 +75,7 @@ func parse() ([]Entry, error) {
 	if d.Version != 1 {
 		return nil, fmt.Errorf("unsupported mapping version %d", d.Version)
 	}
+	docVersion = d.Version
 	if err := validate(d.Entries); err != nil {
 		return nil, fmt.Errorf("mappings.yaml: %w", err)
 	}
@@ -72,6 +90,9 @@ func validate(entries []Entry) error {
 		}
 		if len(e.Templates) == 0 && len(e.SharedTemplates) == 0 && e.Guidance == "" {
 			return fmt.Errorf("entry %d (%s): no templates and no guidance", i, e.Title)
+		}
+		if (e.Group == "") != (e.Rank == 0) {
+			return fmt.Errorf("entry %d (%s): group and rank go together", i, e.Title)
 		}
 		var keys []string
 		switch e.Scanner {
