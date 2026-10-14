@@ -240,13 +240,6 @@ issue or a pull request for any reference that is wrong or too broad. See
 `CONTRIBUTING.md`. Report security problems through GitHub private vulnerability
 reporting. See `SECURITY.md`.
 
-## About the author
-
-Stanislav is a DevSecOps engineer. He works on Kubernetes and cloud security
-automation. GitHub: [sv222](https://github.com/sv222).
-
-Related: [ai-guard-k8s](https://github.com/sv222/ai-guard-k8s), a scanner and policy generator for Kubernetes AI inference workloads.
-
 ## License
 
 Apache-2.0. See `LICENSE`.
