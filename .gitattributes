@@ -1,1 +1,8 @@
 * text=auto eol=lf
+Makefile linguist-vendored
+scripts/** linguist-vendored
+templates/** linguist-vendored
+**/testdata/** linguist-vendored
+*.tf linguist-vendored
+*.py linguist-vendored
+*.sh linguist-vendored
