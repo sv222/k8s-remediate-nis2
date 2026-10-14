@@ -12,19 +12,21 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
       - name: Build
-        run: go build ./...
+        run: go build -trimpath ./...
       - name: Vet
         run: go vet ./...
-      - name: Test
+      - name: Test (fuzz seed corpora run as normal tests)
         run: go test -race ./...
       - name: gofmt
         run: |
-          out=$(gofmt -l .)
+          out=$(gofmt -s -l .)
           if [ -n "$out" ]; then
             echo "$out"
             exit 1
@@ -33,3 +35,37 @@ jobs:
         run: |
           go mod tidy
           git diff --exit-code go.mod go.sum
+
+  analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: stable
+      - name: staticcheck
+        run: go run honnef.co/go/tools/cmd/staticcheck@v0.8.2 ./...
+      - name: govulncheck
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
+
+  policy-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Kyverno CLI against good and bad pods
+        run: make policy-test
+
+  terraform-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: terraform fmt -check and validate on generated code
+        run: make tf-check
+        env:
+          TFCHECK_DOCKER_FLAGS: ""
