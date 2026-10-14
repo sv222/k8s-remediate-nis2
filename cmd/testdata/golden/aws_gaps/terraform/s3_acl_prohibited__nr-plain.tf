@@ -1,5 +1,5 @@
 # Remediation for: S3 bucket has ACLs enabled
-# Articles: NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.5.15, ISO27001:2022 A.8.3
+# Articles: NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, DORA RTS 2024/1774 Art.21, NIS2 CIR 2024/2690 Annex 11.1, ISO27001:2022 A.5.15, ISO27001:2022 A.8.3
 # WARNING: BucketOwnerEnforced disables all ACLs of nr-plain. Existing ACL grants stop working.
 # Services and partners that depend on ACL grants (for example legacy S3 or CloudFront log delivery,
 # cross-account writers that use ACLs) lose access. Check with: aws s3api get-bucket-acl --bucket nr-plain

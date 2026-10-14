@@ -3,6 +3,8 @@ package render
 import (
 	"errors"
 	"io/fs"
+	"net/netip"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -61,7 +63,7 @@ func TestRenderEmptyResourceUsesPlaceholder(t *testing.T) {
 	if !strings.Contains(files[0].Content, `bucket = "<RESOURCE_IDENTIFIER>"`) {
 		t.Errorf("placeholder missing:\n%s", files[0].Content)
 	}
-	if files[0].RelPath != "terraform/s3_public_access_block__RESOURCE_IDENTIFIER.tf" {
+	if files[0].RelPath != "terraform/s3_public_access_block__unknown_e3b0c442.tf" {
 		t.Errorf("path = %s", files[0].RelPath)
 	}
 }
@@ -116,11 +118,11 @@ func TestSanitizeIsUniqueForLossyNames(t *testing.T) {
 	if SanitizeResourceID("a.b") != a {
 		t.Error("sanitize is not deterministic")
 	}
-	if got := SanitizeResourceID(""); got != "RESOURCE_IDENTIFIER" {
+	if got := SanitizeResourceID(""); got != "unknown_e3b0c442" {
 		t.Errorf("fallback got %q", got)
 	}
 	long := SanitizeResourceID(strings.Repeat("a", 200))
-	if len(long) > maxNameLen+7 {
+	if len(long) > maxNameLen+9 {
 		t.Errorf("long name not truncated: %d", len(long))
 	}
 }
@@ -134,12 +136,67 @@ func TestTwoResourcesGetDistinctFiles(t *testing.T) {
 		}
 		set.Add(files)
 	}
-	got := set.Files()
-	if len(got) != 2 {
-		t.Fatalf("files = %d, want 2", len(got))
+	got := setFiles(t, set)
+	if len(got) != 3 {
+		t.Fatalf("files = %d, want 2 buckets and versions.tf", len(got))
 	}
 	if got[0].RelPath == got[1].RelPath {
 		t.Error("distinct buckets share a path")
+	}
+	if got[2].RelPath != "terraform/versions.tf" || !strings.Contains(got[2].Content, `version = ">= 6.0, < 7.0"`) {
+		t.Errorf("versions.tf missing or unpinned: %+v", got[2])
+	}
+}
+
+func setFiles(t *testing.T, s *Set) []RenderedFile {
+	t.Helper()
+	files, err := s.Files()
+	if err != nil {
+		t.Fatal(err)
+	}
+	return files
+}
+
+func TestSetMergesTitlesAndArticlesOfSharedFile(t *testing.T) {
+	a := s3Entry()
+	b := s3Entry()
+	b.Title = "S3 bucket publicly accessible"
+	b.Articles = []string{"NIS2 Art.21(2)(i)", "DORA Art.9"}
+	set := NewSet()
+	for _, e := range []mapping.Entry{a, b, a} {
+		files, err := Render(e, finding.Finding{ResourceID: "bucket-one"})
+		if err != nil {
+			t.Fatal(err)
+		}
+		set.Add(files)
+	}
+	var content string
+	for _, f := range setFiles(t, set) {
+		if strings.HasPrefix(f.RelPath, "terraform/s3_public_access_block__") {
+			content = f.Content
+		}
+	}
+	for _, want := range []string{"S3 bucket without Block Public Access; S3 bucket publicly accessible", "DORA Art.9"} {
+		if !strings.Contains(content, want) {
+			t.Errorf("merged header lacks %q:\n%s", want, content)
+		}
+	}
+	if strings.Count(content, "NIS2 Art.21(2)(i)") != 1 {
+		t.Errorf("article repeated:\n%s", content)
+	}
+}
+
+func TestNamesDifferingOnlyByCaseStayDistinct(t *testing.T) {
+	seen := map[string]string{}
+	for _, id := range []string{"Bucket", "bucket", "BUCKET", "bUcket", "sg-ABC", "sg-abc", "a.b", "a_b", "A.B"} {
+		p := strings.ToLower(ResourcePath("terraform/x.tf", id))
+		if other, ok := seen[p]; ok {
+			t.Errorf("%q and %q collide on a case-insensitive file system: %s", id, other, p)
+		}
+		seen[p] = id
+	}
+	if got := SanitizeResourceID("bucket"); got != "bucket" {
+		t.Errorf("clean lower-case id changed: %q", got)
 	}
 }
 
@@ -153,44 +210,128 @@ func TestSharedTemplatesRenderOnce(t *testing.T) {
 		}
 		set.Add(files)
 	}
-	if got := set.Files(); len(got) != 1 || got[0].RelPath != "kyverno/require_nonroot.yaml" {
+	if got := setFiles(t, set); len(got) != 1 || got[0].RelPath != "kyverno/require_nonroot.yaml" {
 		t.Fatalf("files = %+v", got)
 	}
 }
 
-func TestSecurityGroupNeverOpensToInternet(t *testing.T) {
-	entries, err := mapping.Load()
-	if err != nil {
-		t.Fatal(err)
+func TestSecurityGroupRulesUseFixedPortAndPerGroupCIDR(t *testing.T) {
+	cases := []struct {
+		check, tpl, port, variable string
+	}{
+		{"ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_22", "terraform/sg_restrict_ssh__", "22", "ssh_allowed_cidr"},
+		{"ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_3389", "terraform/sg_restrict_rdp__", "3389", "rdp_allowed_cidr"},
 	}
-	checked := 0
-	for _, e := range entries {
-		if len(e.Templates) != 1 || e.Templates[0] != "terraform/sg_restrict_ingress.tf" {
-			continue
-		}
-		checked++
-		files, err := Render(e, finding.Finding{ResourceID: "sg-0a1b2c3d4e5f60718"})
+	for _, c := range cases {
+		files, err := Render(entryFor(t, c.check), finding.Finding{ResourceID: "sg-0a1b2c3d4e5f60718", Region: "eu-west-1"})
 		if err != nil {
 			t.Fatal(err)
 		}
 		if len(files) != 2 {
-			t.Fatalf("files = %d, want rule and variables", len(files))
+			t.Fatalf("%s: files = %d, want rule and variables", c.check, len(files))
+		}
+		rule := files[0].Content
+		if !strings.HasPrefix(files[0].RelPath, c.tpl) {
+			t.Errorf("%s: path = %s", c.check, files[0].RelPath)
+		}
+		for _, w := range []string{
+			`security_group_id = "sg-0a1b2c3d4e5f60718"`,
+			`cidr_ipv4         = var.` + c.variable + `["sg-0a1b2c3d4e5f60718"]`,
+			"from_port         = " + c.port,
+			"to_port           = " + c.port,
+			`region            = "eu-west-1"`,
+			"NOT FIXED BY THIS FILE",
+		} {
+			if !strings.Contains(rule, w) {
+				t.Errorf("%s: rule lacks %q:\n%s", c.check, w, rule)
+			}
+		}
+		if strings.Contains(rule, "var.allowed_port") || strings.Contains(rule, "var.allowed_cidr") {
+			t.Errorf("%s: shared variables are back:\n%s", c.check, rule)
 		}
 		for _, f := range files {
 			if strings.Contains(f.Content, "0.0.0.0/0") || strings.Contains(f.Content, "::/0") {
-				t.Errorf("%s contains an internet-wide CIDR:\n%s", f.RelPath, f.Content)
+				t.Errorf("%s contains an internet-wide CIDR", f.RelPath)
 			}
 		}
-		rule := files[0].Content
-		if !strings.Contains(rule, "var.allowed_cidr") || !strings.Contains(rule, `security_group_id = "sg-0a1b2c3d4e5f60718"`) {
-			t.Errorf("rule not bound to variables:\n%s", rule)
+	}
+}
+
+func TestSecurityGroupChecksWithoutKnownPortGenerateNothing(t *testing.T) {
+	for _, check := range []string{
+		"ec2_securitygroup_allow_ingress_from_internet_to_any_port",
+		"ec2_securitygroup_allow_ingress_from_internet_to_all_ports",
+		"ec2_securitygroup_allow_ingress_from_internet_to_high_risk_tcp_ports",
+	} {
+		e := entryFor(t, check)
+		files, err := Render(e, finding.Finding{ResourceID: "sg-0a1b2c3d4e5f60718", Region: "us-east-1"})
+		if err != nil {
+			t.Fatal(err)
 		}
-		if !strings.Contains(rule, "aws_vpc_security_group_ingress_rule") {
-			t.Errorf("unexpected resource type:\n%s", rule)
+		if len(files) != 0 || e.Guidance == "" {
+			t.Errorf("%s: files = %d, guidance empty = %v", check, len(files), e.Guidance == "")
 		}
 	}
-	if checked < 5 {
-		t.Errorf("checked %d security group entries, want at least 5", checked)
+}
+
+func TestTwoSecurityGroupChecksOnOneGroupKeepBothPorts(t *testing.T) {
+	set := NewSet()
+	for _, check := range []string{
+		"ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_22",
+		"ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_3389",
+	} {
+		files, err := Render(entryFor(t, check), finding.Finding{ResourceID: "sg-0a1b2c3d4e5f60718", Region: "us-east-1"})
+		if err != nil {
+			t.Fatal(err)
+		}
+		set.Add(files)
+	}
+	var ports []string
+	for _, f := range setFiles(t, set) {
+		if strings.HasPrefix(f.RelPath, "terraform/sg_restrict_") {
+			ports = append(ports, f.RelPath)
+		}
+	}
+	if len(ports) != 2 {
+		t.Errorf("rule files = %v, want one per port", ports)
+	}
+}
+
+func TestSecurityGroupCIDRValidationMatchesAllowedRanges(t *testing.T) {
+	for _, name := range []string{"ssh", "rdp"} {
+		raw, err := mapping.TemplatesFS.ReadFile("templates/terraform/variables_sg_" + name + ".tf")
+		if err != nil {
+			t.Fatal(err)
+		}
+		var res []*regexp.Regexp
+		for _, m := range regexp.MustCompile(`can\(regex\("([^"]+)", c\)\)`).FindAllStringSubmatch(string(raw), -1) {
+			res = append(res, regexp.MustCompile(m[1]))
+		}
+		if len(res) != 5 {
+			t.Fatalf("%s: found %d ranges, want 5", name, len(res))
+		}
+		accepts := func(c string) bool {
+			p, err := netip.ParsePrefix(c)
+			if err != nil || !p.Addr().Is4() {
+				return false
+			}
+			for _, re := range res {
+				if re.MatchString(c) {
+					return true
+				}
+			}
+			return false
+		}
+		for _, bad := range []string{"0.0.0.0/0", "0.0.0.0/1", "10.0.0.0/7", "1.2.3.0/23", "8.8.0.0/16", "::/0", "172.15.0.0/16", "100.63.0.0/16", "11.0.0.0/8", "1.1.1.1/0", "", "x"} {
+			if accepts(bad) {
+				t.Errorf("%s: %q accepted", name, bad)
+			}
+		}
+		for _, good := range []string{"10.0.0.0/8", "10.1.2.3/32", "172.16.0.0/12", "192.168.0.0/16", "100.64.0.0/10", "203.0.113.0/24", "203.0.113.7/32"} {
+			if !accepts(good) {
+				t.Errorf("%s: %q rejected", name, good)
+			}
+		}
 	}
 }
 
@@ -293,8 +434,10 @@ func TestRegionalTemplateGetsOneFilePerRegion(t *testing.T) {
 
 func TestRiskyTemplatesCarryLoudWarnings(t *testing.T) {
 	cases := map[string][]string{
-		"s3_bucket_secure_transport_policy": {"WARNING", "plain HTTP", "REPLACES the whole bucket policy", "s3_existing_bucket_policies"},
-		"s3_bucket_acl_prohibited":          {"WARNING", "disables all ACLs"},
+		"s3_bucket_secure_transport_policy":   {"WARNING", "plain HTTP", "REPLACES the whole bucket policy", "s3_existing_bucket_policies"},
+		"s3_bucket_acl_prohibited":            {"WARNING", "disables all ACLs"},
+		"s3_bucket_level_public_access_block": {"WARNING", "on purpose", "Origin Access Control"},
+		"s3_bucket_kms_encryption":            {"WARNING", "log", "kms:Decrypt", "regional", "kms_excluded_buckets"},
 	}
 	for check, wants := range cases {
 		files, err := Render(entryFor(t, check), finding.Finding{ResourceID: "example-bucket", Region: "us-east-1"})
@@ -356,6 +499,9 @@ func TestNetworkACLAndEKSAreGuidanceOnly(t *testing.T) {
 		"ec2_networkacl_allow_ingress_tcp_port_22",
 		"ec2_networkacl_allow_ingress_tcp_port_3389",
 		"eks_cluster_private_nodes_enabled",
+		"ec2_securitygroup_allow_ingress_from_internet_to_any_port",
+		"ec2_securitygroup_allow_ingress_from_internet_to_all_ports",
+		"ec2_securitygroup_allow_ingress_from_internet_to_high_risk_tcp_ports",
 	} {
 		e := entryFor(t, check)
 		if len(e.Templates) != 0 || len(e.SharedTemplates) != 0 || e.Guidance == "" {

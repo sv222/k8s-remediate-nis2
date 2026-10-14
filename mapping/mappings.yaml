@@ -3,116 +3,129 @@ entries:
   - scanner: prowler
     check_id: s3_bucket_level_public_access_block
     title: S3 bucket without Block Public Access
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.3"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.1", "ISO27001:2022 A.8.3"]
     templates: ["terraform/s3_public_access_block.tf"]
   - scanner: prowler
     check_id: s3_bucket_public_access
     title: S3 bucket publicly accessible
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.3"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.1", "ISO27001:2022 A.8.3"]
     templates: ["terraform/s3_public_access_block.tf"]
   - scanner: prowler
     check_id: s3_bucket_public_list_acl
     title: S3 bucket publicly listable through ACL
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.3"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.1", "ISO27001:2022 A.8.3"]
     templates: ["terraform/s3_public_access_block.tf"]
   - scanner: prowler
     check_id: s3_bucket_default_encryption
     title: S3 bucket without default encryption (check deprecated in current Prowler)
-    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "ISO27001:2022 A.8.24"]
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "DORA RTS 2024/1774 Art.6", "NIS2 CIR 2024/2690 Annex 9.1", "ISO27001:2022 A.8.24"]
     templates: ["terraform/s3_encryption.tf"]
+    group: s3-default-encryption
+    rank: 1
+    follow_up: "Default encryption applies to new objects only. Existing objects keep their old encryption until you copy or re-encrypt them (for example with S3 Batch Operations)."
   - scanner: prowler
     check_id: s3_bucket_kms_encryption
     title: S3 bucket without SSE-KMS default encryption
-    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "ISO27001:2022 A.8.24"]
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "DORA RTS 2024/1774 Art.6", "NIS2 CIR 2024/2690 Annex 9.1", "ISO27001:2022 A.8.24"]
     templates: ["terraform/s3_encryption_kms.tf"]
     shared_templates: ["terraform/variables_kms_key.tf"]
+    group: s3-default-encryption
+    rank: 2
+    requires_region: true
+    caution: "SSE-KMS breaks S3 and ELB log delivery to this bucket. Readers need kms:Decrypt. KMS keys are regional."
+    follow_up: "Default encryption applies to new objects only. Existing objects are not re-encrypted. Set kms_key_arns for the bucket region, and exclude log target buckets in kms_excluded_buckets."
   - scanner: prowler
     check_id: ec2_securitygroup_allow_ingress_from_internet_to_any_port
     title: Security group open to the internet on any port
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20"]
-    templates: ["terraform/sg_restrict_ingress.tf"]
-    shared_templates: ["terraform/variables_sg_ingress.tf"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.13", "NIS2 CIR 2024/2690 Annex 6.7", "ISO27001:2022 A.8.20"]
+    guidance: "No code is generated on purpose. The finding does not say which port the workload needs, and a guessed port could add access that was never there. Find the open rule: aws ec2 describe-security-groups --group-ids SG. Add a rule for the needed port and your trusted CIDR: aws ec2 authorize-security-group-ingress --group-id SG --protocol tcp --port PORT --cidr TRUSTED_CIDR. Then remove the open rule: aws ec2 revoke-security-group-ingress --group-id SG --ip-permissions IpProtocol=PROTO,FromPort=N,ToPort=N,IpRanges=[{CidrIp=0.0.0.0/0}]. Open rules to many ports usually need a review of what the workload really uses."
   - scanner: prowler
     check_id: ec2_securitygroup_allow_ingress_from_internet_to_all_ports
     title: Security group open to the internet on all ports
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20"]
-    templates: ["terraform/sg_restrict_ingress.tf"]
-    shared_templates: ["terraform/variables_sg_ingress.tf"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.13", "NIS2 CIR 2024/2690 Annex 6.7", "ISO27001:2022 A.8.20"]
+    guidance: "No code is generated on purpose. The finding does not say which port the workload needs, and a guessed port could add access that was never there. Find the open rule: aws ec2 describe-security-groups --group-ids SG. Add a rule for the needed port and your trusted CIDR: aws ec2 authorize-security-group-ingress --group-id SG --protocol tcp --port PORT --cidr TRUSTED_CIDR. Then remove the open rule: aws ec2 revoke-security-group-ingress --group-id SG --ip-permissions IpProtocol=PROTO,FromPort=N,ToPort=N,IpRanges=[{CidrIp=0.0.0.0/0}]. Replace the all-ports rule with rules for the ports the workload really uses."
   - scanner: prowler
     check_id: ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_22
     title: Security group open to the internet on SSH (port 22)
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20"]
-    templates: ["terraform/sg_restrict_ingress.tf"]
-    shared_templates: ["terraform/variables_sg_ingress.tf"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.13", "NIS2 CIR 2024/2690 Annex 6.7", "ISO27001:2022 A.8.20"]
+    templates: ["terraform/sg_restrict_ssh.tf"]
+    shared_templates: ["terraform/variables_sg_ssh.tf"]
+    requires_region: true
+    follow_up: "The internet-open SSH rule is not removed. Set ssh_allowed_cidr for this group, apply, then revoke the 0.0.0.0/0 rule yourself. Until then this finding stays open."
   - scanner: prowler
     check_id: ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_3389
     title: Security group open to the internet on RDP (port 3389)
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20"]
-    templates: ["terraform/sg_restrict_ingress.tf"]
-    shared_templates: ["terraform/variables_sg_ingress.tf"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.13", "NIS2 CIR 2024/2690 Annex 6.7", "ISO27001:2022 A.8.20"]
+    templates: ["terraform/sg_restrict_rdp.tf"]
+    shared_templates: ["terraform/variables_sg_rdp.tf"]
+    requires_region: true
+    follow_up: "The internet-open RDP rule is not removed. Set rdp_allowed_cidr for this group, apply, then revoke the 0.0.0.0/0 rule yourself. Until then this finding stays open."
   - scanner: prowler
     check_id: ec2_securitygroup_allow_ingress_from_internet_to_high_risk_tcp_ports
     title: Security group open to the internet on high-risk TCP ports
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20"]
-    templates: ["terraform/sg_restrict_ingress.tf"]
-    shared_templates: ["terraform/variables_sg_ingress.tf"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.13", "NIS2 CIR 2024/2690 Annex 6.7", "ISO27001:2022 A.8.20"]
+    guidance: "No code is generated on purpose. The finding does not say which port the workload needs, and a guessed port could add access that was never there. Find the open rule: aws ec2 describe-security-groups --group-ids SG. Add a rule for the needed port and your trusted CIDR: aws ec2 authorize-security-group-ingress --group-id SG --protocol tcp --port PORT --cidr TRUSTED_CIDR. Then remove the open rule: aws ec2 revoke-security-group-ingress --group-id SG --ip-permissions IpProtocol=PROTO,FromPort=N,ToPort=N,IpRanges=[{CidrIp=0.0.0.0/0}]. Prowler lists several high-risk ports; handle each port that is open."
   - scanner: prowler
     check_id: s3_bucket_public_write_acl
     title: S3 bucket ACL grants public write access
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.3"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.1", "ISO27001:2022 A.8.3"]
     templates: ["terraform/s3_public_access_block.tf"]
   - scanner: prowler
     check_id: s3_bucket_policy_public_write_access
     title: S3 bucket policy allows public write access
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.3"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.1", "ISO27001:2022 A.8.3"]
     templates: ["terraform/s3_public_access_block.tf"]
   - scanner: prowler
     check_id: eks_cluster_not_publicly_accessible
     title: EKS API server endpoint open to the internet
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.13", "NIS2 CIR 2024/2690 Annex 6.7", "ISO27001:2022 A.8.20"]
     guidance: "Change the existing aws_eks_cluster vpc_config: set endpoint_public_access = false and endpoint_private_access = true, or limit public_access_cidrs to admin ranges. Confirm private connectivity (VPN, Direct Connect or bastion) first, or kubectl access is lost."
   - scanner: prowler
     check_id: s3_bucket_secure_transport_policy
     title: S3 bucket allows requests over plain HTTP
-    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "ISO27001:2022 A.8.24", "ISO27001:2022 A.8.20"]
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "DORA RTS 2024/1774 Art.14", "NIS2 CIR 2024/2690 Annex 9.1", "ISO27001:2022 A.8.24", "ISO27001:2022 A.8.20"]
     templates: ["terraform/s3_secure_transport.tf"]
     shared_templates: ["terraform/variables_s3_policy.tf"]
+    caution: "Denies plain HTTP and REPLACES the whole bucket policy. Put the current policy in s3_existing_bucket_policies first."
   - scanner: prowler
     check_id: s3_bucket_server_access_logging_enabled
     title: S3 bucket without server access logging
-    articles: ["NIS2 Art.21(2)(b)", "DORA Art.10", "ISO27001:2022 A.8.15", "ISO27001:2022 A.8.16"]
+    articles: ["NIS2 Art.21(2)(b)", "DORA Art.10", "DORA RTS 2024/1774 Art.12", "NIS2 CIR 2024/2690 Annex 3.2", "ISO27001:2022 A.8.15", "ISO27001:2022 A.8.16"]
     templates: ["terraform/s3_server_access_logging.tf"]
     shared_templates: ["terraform/variables_access_log.tf"]
+    caution: "The log target bucket must exist in the same region, allow S3 log delivery and not use SSE-KMS."
   - scanner: prowler
     check_id: s3_bucket_acl_prohibited
     title: S3 bucket has ACLs enabled
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.5.15", "ISO27001:2022 A.8.3"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.1", "ISO27001:2022 A.5.15", "ISO27001:2022 A.8.3"]
     templates: ["terraform/s3_acl_prohibited.tf"]
+    caution: "Disables all ACLs of the bucket. Services and partners that depend on ACL grants lose access."
   - scanner: prowler
     check_id: ec2_ebs_default_encryption
     title: EBS default encryption is not enabled
-    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "ISO27001:2022 A.8.24"]
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "DORA RTS 2024/1774 Art.6", "NIS2 CIR 2024/2690 Annex 9.1", "ISO27001:2022 A.8.24"]
     templates: ["terraform/ebs_default_encryption.tf"]
     regional: true
+    follow_up: "Applies to new volumes and snapshot copies in this region only. Existing unencrypted volumes stay unencrypted: snapshot, copy with encryption and replace them."
   - scanner: prowler
     check_id: eks_cluster_private_nodes_enabled
     title: EKS API server has no private endpoint access
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.13", "NIS2 CIR 2024/2690 Annex 6.7", "ISO27001:2022 A.8.20"]
     guidance: "No safe drop-in code exists because the cluster is not in your Terraform state. Enable endpoint_private_access on the existing aws_eks_cluster vpc_config, or run: aws eks update-cluster-config --name CLUSTER --resources-vpc-config endpointPrivateAccess=true,endpointPublicAccess=CURRENT_VALUE. Keep endpointPublicAccess at its current value, or API access may be lost. This check only needs private access to be on. Closing the public endpoint is a separate step (eks_cluster_not_publicly_accessible)."
   - scanner: prowler
     check_id: ec2_networkacl_allow_ingress_any_port
     title: Network ACL allows every port from the internet
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20", "ISO27001:2022 A.8.22"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.13", "NIS2 CIR 2024/2690 Annex 6.7", "ISO27001:2022 A.8.20", "ISO27001:2022 A.8.22"]
     guidance: "No code is generated on purpose. Network ACLs are stateless and cover whole subnets, so a wrong change drops traffic at once and can lock out users. Terraform also cannot edit an entry it does not manage. Review the entries (aws ec2 describe-network-acls), then replace the open allow entry with your trusted range: aws ec2 replace-network-acl-entry --network-acl-id ACL --ingress --rule-number N --protocol tcp --port-range From=443,To=443 --cidr-block TRUSTED_CIDR --rule-action allow. Keep return traffic (ephemeral ports 1024-65535) allowed. The default network ACL of a new VPC allows everything by design; security groups are the main control."
   - scanner: prowler
     check_id: ec2_networkacl_allow_ingress_tcp_port_22
     title: Network ACL allows SSH (port 22) from the internet
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20", "ISO27001:2022 A.8.22"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.13", "NIS2 CIR 2024/2690 Annex 6.7", "ISO27001:2022 A.8.20", "ISO27001:2022 A.8.22"]
     guidance: "No code is generated on purpose. Network ACLs are stateless and cover whole subnets, so a wrong change drops traffic at once and can lock out admins. Terraform also cannot edit an entry it does not manage. Replace the open entry with your admin range: aws ec2 replace-network-acl-entry --network-acl-id ACL --ingress --rule-number N --protocol tcp --port-range From=22,To=22 --cidr-block ADMIN_CIDR --rule-action allow. Test access from the admin range before you remove the old entry."
   - scanner: prowler
     check_id: ec2_networkacl_allow_ingress_tcp_port_3389
     title: Network ACL allows RDP (port 3389) from the internet
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.20", "ISO27001:2022 A.8.22"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.13", "NIS2 CIR 2024/2690 Annex 6.7", "ISO27001:2022 A.8.20", "ISO27001:2022 A.8.22"]
     guidance: "No code is generated on purpose. Network ACLs are stateless and cover whole subnets, so a wrong change drops traffic at once and can lock out admins. Terraform also cannot edit an entry it does not manage. Replace the open entry with your admin range: aws ec2 replace-network-acl-entry --network-acl-id ACL --ingress --rule-number N --protocol tcp --port-range From=3389,To=3389 --cidr-block ADMIN_CIDR --rule-action allow. Test access from the admin range before you remove the old entry."
   - scanner: kube-bench
     benchmark_ids:
@@ -160,8 +173,9 @@ entries:
       rke-cis-1.24: "5.2.2"
       tkgi-1.2.53: "5.2.1"
     title: Privileged containers may be admitted
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.2"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.11", "NIS2 CIR 2024/2690 Annex 6.3", "ISO27001:2022 A.8.9"]
     shared_templates: ["kyverno/block_privileged.yaml"]
+    follow_up: "The policy starts in Audit mode and blocks nothing. It is not applied to any cluster and existing pods are not changed. Review the policy reports, then set validationActions to Deny to block privileged containers."
   - scanner: kube-bench
     benchmark_ids:
       ack-1.0: "5.2.4"
@@ -208,8 +222,9 @@ entries:
       rke-cis-1.24: "5.2.5"
       tkgi-1.2.53: "5.2.4"
     title: Containers may share the host network namespace
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.22"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.13", "NIS2 CIR 2024/2690 Annex 6.8", "ISO27001:2022 A.8.22"]
     shared_templates: ["kyverno/block_hostnet.yaml"]
+    follow_up: "The policy starts in Audit mode and blocks nothing. It is not applied to any cluster and existing pods are not changed. Review the policy reports, then set validationActions to Deny to block host network pods."
   - scanner: kube-bench
     benchmark_ids:
       ack-1.0: "5.2.6"
@@ -251,5 +266,6 @@ entries:
       rke-cis-1.24: "5.2.7"
       tkgi-1.2.53: "5.2.6"
     title: Root containers may be admitted
-    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.2"]
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.11", "NIS2 CIR 2024/2690 Annex 6.3", "ISO27001:2022 A.8.9"]
     shared_templates: ["kyverno/require_nonroot.yaml"]
+    follow_up: "The policy starts in Audit mode and blocks nothing. It is not applied to any cluster and existing pods are not changed. Review the policy reports, then set validationActions to Deny to block root containers."

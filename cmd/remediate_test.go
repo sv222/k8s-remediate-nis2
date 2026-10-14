@@ -51,6 +51,14 @@ func sortedKeys(m map[string]string) []string {
 	return keys
 }
 
+func col(line string, i int) string {
+	cols := strings.Split(line, "|")
+	if i >= len(cols) {
+		return ""
+	}
+	return strings.Trim(strings.TrimSpace(cols[i]), "`")
+}
+
 func TestGolden(t *testing.T) {
 	cases := []struct {
 		name string
@@ -113,23 +121,23 @@ func TestTwoFailingBucketsKeepSeparateFiles(t *testing.T) {
 	}
 	mapping := files["mapping.md"]
 	for rel := range files {
-		if strings.HasPrefix(rel, "terraform/") && !strings.Contains(mapping, rel) {
+		if strings.HasPrefix(rel, "terraform/") && rel != "terraform/versions.tf" && !strings.Contains(mapping, rel) {
 			t.Errorf("%s is not listed in mapping.md", rel)
 		}
 	}
 	for _, line := range strings.Split(mapping, "\n") {
-		if !strings.Contains(line, "| remediated |") {
+		if !strings.Contains(line, "| code generated |") {
 			continue
 		}
-		cols := strings.Split(line, "|")
-		for _, f := range strings.Split(strings.TrimSpace(cols[5]), ", ") {
+		for _, f := range strings.Split(col(line, 5), ", ") {
+			f = strings.Trim(f, "`")
 			if _, ok := files[f]; !ok {
 				t.Errorf("mapping.md points to missing file %q", f)
 			}
 		}
 	}
-	if strings.Count(mapping, "| remediated |") != 3 {
-		t.Errorf("want 3 remediated rows:\n%s", mapping)
+	if strings.Count(mapping, "| code generated |") != 3 {
+		t.Errorf("want 3 code generated rows:\n%s", mapping)
 	}
 }
 
@@ -145,7 +153,7 @@ func TestInvalidResourceIDIsSkippedNeverInjected(t *testing.T) {
 		}
 	}
 	for _, name := range []string{"mapping.md", "evidence.md"} {
-		if !strings.Contains(files[name], "skipped: invalid resource id") {
+		if !strings.Contains(files[name], "| skipped |") || !strings.Contains(files[name], "invalid resource id") {
 			t.Errorf("%s lacks the skipped row", name)
 		}
 	}
@@ -187,7 +195,7 @@ func TestKyvernoPoliciesAreClusterWideAndDeduped(t *testing.T) {
 	mappingMD := files["mapping.md"]
 	hasEtcd := false
 	for _, line := range strings.Split(mappingMD, "\n") {
-		if strings.Contains(line, "| 1.1.12 |") {
+		if strings.Contains(line, "| `1.1.12` |") {
 			hasEtcd = true
 			if !strings.Contains(line, "| no mapping |") {
 				t.Errorf("etcd check must stay unmapped: %s", line)
@@ -198,12 +206,12 @@ func TestKyvernoPoliciesAreClusterWideAndDeduped(t *testing.T) {
 		t.Error("failed etcd check is not listed")
 	}
 	for _, id := range []string{"5.2.2", "5.2.5", "5.2.7"} {
-		if !strings.Contains(mappingMD, "| "+id+" |") || !strings.Contains(mappingMD, "manual (WARN)") {
+		if !strings.Contains(mappingMD, "| `"+id+"` |") || !strings.Contains(mappingMD, "manual (WARN)") {
 			t.Errorf("manual WARN control %s is not remediated or not marked", id)
 		}
 	}
 	for _, id := range []string{"5.2.1", "5.2.3", "5.2.4", "5.2.6"} {
-		if strings.Contains(mappingMD, "| "+id+" |") {
+		if strings.Contains(mappingMD, "| `"+id+"` |") {
 			t.Errorf("unmapped manual WARN control %s must not be listed", id)
 		}
 	}
@@ -276,10 +284,10 @@ func TestAWSGapsStatuses(t *testing.T) {
 	}
 	files := tree(t, out)
 	want := map[string]string{
-		"ec2_ebs_default_encryption":                 "remediated",
-		"s3_bucket_acl_prohibited":                   "remediated",
-		"s3_bucket_secure_transport_policy":          "remediated",
-		"s3_bucket_server_access_logging_enabled":    "remediated",
+		"ec2_ebs_default_encryption":                 "follow-up required",
+		"s3_bucket_acl_prohibited":                   "code generated",
+		"s3_bucket_secure_transport_policy":          "code generated",
+		"s3_bucket_server_access_logging_enabled":    "code generated",
 		"eks_cluster_private_nodes_enabled":          "guidance only",
 		"ec2_networkacl_allow_ingress_any_port":      "guidance only",
 		"ec2_networkacl_allow_ingress_tcp_port_22":   "guidance only",
@@ -287,9 +295,8 @@ func TestAWSGapsStatuses(t *testing.T) {
 	}
 	got := map[string]string{}
 	for _, line := range strings.Split(files["mapping.md"], "\n") {
-		cols := strings.Split(line, "|")
-		if len(cols) > 7 && strings.TrimSpace(cols[1]) == "prowler" {
-			got[strings.TrimSpace(cols[2])] = strings.TrimSpace(cols[6])
+		if col(line, 1) == "prowler" {
+			got[col(line, 2)] = col(line, 6)
 		}
 	}
 	for check, status := range want {

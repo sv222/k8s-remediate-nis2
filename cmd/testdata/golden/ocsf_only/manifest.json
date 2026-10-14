@@ -1,0 +1,52 @@
+{
+  "tool": "k8s-remediate-nis2",
+  "version": "dev",
+  "mapping_version": 1,
+  "mapping_sha256": "f4a4847b9306bfc711b701b34f9fed23f41390d7dda4c0a08e9c0b16b70d5c89",
+  "files": [
+    {
+      "path": "terraform/ebs_default_encryption__000000000000_us-east-1.tf",
+      "sha256": "f81eec51791c18b78395166803dcf9a15255635ba90d8e2550b5ff64aa8c5ba3"
+    },
+    {
+      "path": "terraform/s3_acl_prohibited__acme-backup-dump.tf",
+      "sha256": "1d35e8956d1ba3409676a2056fb21ae41b4532dd6fc60ec30315090e9bb55279"
+    },
+    {
+      "path": "terraform/s3_encryption_kms__acme-backup-dump.tf",
+      "sha256": "d2eada89a186e4234033504e41f1542825a56501c71205752e2d05340667819a"
+    },
+    {
+      "path": "terraform/s3_public_access_block__acme-customer-exports.tf",
+      "sha256": "0fdd5a1ba30ad117648804a07a0bdc58ad010bf85e4de28490fa0741cc6a1cca"
+    },
+    {
+      "path": "terraform/s3_public_access_block__acme-public-logs.tf",
+      "sha256": "6633daeae4aabe0e3e7e65fb9e6469216beb07aa329d3f27e7f6e7f5b453e585"
+    },
+    {
+      "path": "terraform/s3_public_access_block__acme-pubpolicy.tf",
+      "sha256": "c5a3f9bbcac49e82cc378c3a920e2e501318db8bb24a0d167da5444711f37b9a"
+    },
+    {
+      "path": "terraform/sg_restrict_ssh__sg-a899c3f6063affe1f.tf",
+      "sha256": "7dcaff98717f3e1cb1761dc7cfe323212a0d7f40f6ee00e7b4d4dceadbdb7aca"
+    },
+    {
+      "path": "terraform/variables_kms_key.tf",
+      "sha256": "fd19e0942db0c53a49d37286c171af4d5217679a7232ceb336f79bed0193f262"
+    },
+    {
+      "path": "terraform/variables_sg_ssh.tf",
+      "sha256": "710ce99a2f71a1229d94abeb18543cd19040bba4a1e530327b49674f82709dfb"
+    },
+    {
+      "path": "terraform/versions.tf",
+      "sha256": "7bf541d7b20cd96e15cfe5beaacbdcdcc4f9cf8ab2407437224a1f3db2b54907"
+    },
+    {
+      "path": "mapping.md",
+      "sha256": "de1da71baaf6be9d4e481c7578a3dde2f826799a7cbcd0b9937ccab54093b190"
+    }
+  ]
+}

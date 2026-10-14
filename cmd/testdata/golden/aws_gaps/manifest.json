@@ -1,0 +1,44 @@
+{
+  "tool": "k8s-remediate-nis2",
+  "version": "dev",
+  "mapping_version": 1,
+  "mapping_sha256": "f4a4847b9306bfc711b701b34f9fed23f41390d7dda4c0a08e9c0b16b70d5c89",
+  "files": [
+    {
+      "path": "terraform/ebs_default_encryption__000000000000_us-east-1.tf",
+      "sha256": "f81eec51791c18b78395166803dcf9a15255635ba90d8e2550b5ff64aa8c5ba3"
+    },
+    {
+      "path": "terraform/s3_acl_prohibited__nr-plain.tf",
+      "sha256": "c225ad48cdddb76dc3ca3bbaa83179439f3c31b9cce413f2dd74bb4a0d2870bf"
+    },
+    {
+      "path": "terraform/s3_secure_transport__nr-existing-policy.tf",
+      "sha256": "5c3e223d6ad25816623981375d6c530cabf903c56699328d8662df04dd9963bc"
+    },
+    {
+      "path": "terraform/s3_secure_transport__nr-plain.tf",
+      "sha256": "d51f2c03f4ba2037424c952998064611ce253f46530dad0c193eacc46c52e121"
+    },
+    {
+      "path": "terraform/s3_server_access_logging__nr-plain.tf",
+      "sha256": "af40acbc1ccd68d9b26d19128a9ea29a7be4eb3c1e496ea48c0228ac2b3c5d3c"
+    },
+    {
+      "path": "terraform/variables_access_log.tf",
+      "sha256": "8f0921beca7fb3355e38bc2d57c4f638f62de7b45e315c86cbaadffba84f95a4"
+    },
+    {
+      "path": "terraform/variables_s3_policy.tf",
+      "sha256": "db23dc42cbd448d4c16f94cc4f719596497e0dcd350271af475e83daca8830dd"
+    },
+    {
+      "path": "terraform/versions.tf",
+      "sha256": "7bf541d7b20cd96e15cfe5beaacbdcdcc4f9cf8ab2407437224a1f3db2b54907"
+    },
+    {
+      "path": "mapping.md",
+      "sha256": "b73d885285349e209ba17cb54c54aaf255d5ae4a8e53c60e754d994d67ad8a0c"
+    }
+  ]
+}

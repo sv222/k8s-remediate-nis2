@@ -1,0 +1,24 @@
+{
+  "tool": "k8s-remediate-nis2",
+  "version": "dev",
+  "mapping_version": 1,
+  "mapping_sha256": "f4a4847b9306bfc711b701b34f9fed23f41390d7dda4c0a08e9c0b16b70d5c89",
+  "files": [
+    {
+      "path": "terraform/s3_public_access_block__bucket-one.tf",
+      "sha256": "d5739c11d5af0707bf0e9f2971bbeda7a5e877c82501143fd1e9ccb6613e539a"
+    },
+    {
+      "path": "terraform/s3_public_access_block__bucket-two.tf",
+      "sha256": "b42a816021d3f4fbf661e3cfd9cf1fe60be17b9769ff245161019a0831556276"
+    },
+    {
+      "path": "terraform/versions.tf",
+      "sha256": "7bf541d7b20cd96e15cfe5beaacbdcdcc4f9cf8ab2407437224a1f3db2b54907"
+    },
+    {
+      "path": "mapping.md",
+      "sha256": "a1a1e517f476fa3120f5aad4a4ae7fd8f54930de16477c80c913a3a577eaa325"
+    }
+  ]
+}

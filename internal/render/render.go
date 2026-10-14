@@ -20,6 +20,7 @@ const (
 	maxResourceIDLen = 256
 	maxNameLen       = 64
 	placeholderName  = "RESOURCE_IDENTIFIER"
+	versionsTemplate = "terraform/versions.tf"
 )
 
 var (
@@ -33,6 +34,8 @@ var (
 type RenderedFile struct {
 	RelPath string
 	Content string
+	tpl     string
+	data    any
 }
 
 type resourceData struct {
@@ -41,6 +44,7 @@ type resourceData struct {
 	ResourceID          string
 	SanitizedResourceID string
 	Region              string
+	titles              []string
 }
 
 func ValidateResourceID(id string) error {
@@ -50,8 +54,11 @@ func ValidateResourceID(id string) error {
 	if len(id) > maxResourceIDLen {
 		return fmt.Errorf("%w: longer than %d characters", ErrInvalidResourceID, maxResourceIDLen)
 	}
+	if strings.Contains(id, "0.0.0.0/0") || strings.Contains(id, "::/0") {
+		return fmt.Errorf("%w: it contains an internet-wide CIDR", ErrInvalidResourceID)
+	}
 	if !resourceIDRe.MatchString(id) {
-		return fmt.Errorf("%w: %q contains characters outside [A-Za-z0-9._:/@+=,-]", ErrInvalidResourceID, id)
+		return fmt.Errorf("%w: it contains characters outside [A-Za-z0-9._:/@+=,-]", ErrInvalidResourceID)
 	}
 	return nil
 }
@@ -78,15 +85,16 @@ func NormalizeResourceID(id string) string {
 
 func SanitizeResourceID(id string) string {
 	if id == "" {
-		return placeholderName
+		sum := sha256.Sum256(nil)
+		return "unknown_" + hex.EncodeToString(sum[:])[:8]
 	}
-	s := sanitizeRe.ReplaceAllString(id, "_")
+	s := strings.ToLower(sanitizeRe.ReplaceAllString(id, "_"))
 	if len(s) > maxNameLen {
 		s = s[:maxNameLen]
 	}
 	if s != id {
 		sum := sha256.Sum256([]byte(id))
-		s += "_" + hex.EncodeToString(sum[:])[:6]
+		s += "_" + hex.EncodeToString(sum[:])[:8]
 	}
 	return s
 }
@@ -109,13 +117,16 @@ func Render(e mapping.Entry, f finding.Finding) ([]RenderedFile, error) {
 			Title:      e.Title,
 			Articles:   e.Articles,
 			ResourceID: orPlaceholder(id),
+			titles:     []string{e.Title},
 		}
-		if e.Regional {
+		if e.Regional || e.RequiresRegion {
 			if !regionRe.MatchString(f.Region) {
-				return nil, fmt.Errorf("%w: region %q is missing or malformed", ErrInvalidResourceID, f.Region)
+				return nil, fmt.Errorf("%w: the region is missing or malformed", ErrInvalidResourceID)
 			}
 			data.Region = f.Region
-			id = id + "_" + f.Region
+			if e.Regional {
+				id = id + "_" + f.Region
+			}
 		}
 		data.SanitizedResourceID = SanitizeResourceID(id)
 		for _, rel := range e.Templates {
@@ -123,7 +134,7 @@ func Render(e mapping.Entry, f finding.Finding) ([]RenderedFile, error) {
 			if err != nil {
 				return nil, err
 			}
-			out = append(out, RenderedFile{RelPath: ResourcePath(rel, id), Content: content})
+			out = append(out, RenderedFile{RelPath: ResourcePath(rel, id), Content: content, tpl: rel, data: data})
 		}
 	}
 	for _, rel := range e.SharedTemplates {
@@ -131,7 +142,7 @@ func Render(e mapping.Entry, f finding.Finding) ([]RenderedFile, error) {
 		if err != nil {
 			return nil, err
 		}
-		out = append(out, RenderedFile{RelPath: rel, Content: content})
+		out = append(out, RenderedFile{RelPath: rel, Content: content, tpl: rel, data: struct{}{}})
 	}
 	return out, nil
 }
@@ -160,26 +171,83 @@ func orPlaceholder(id string) string {
 }
 
 type Set struct {
-	files map[string]RenderedFile
+	files map[string]*RenderedFile
+	dirty map[string]bool
 }
 
 func NewSet() *Set {
-	return &Set{files: map[string]RenderedFile{}}
+	return &Set{files: map[string]*RenderedFile{}, dirty: map[string]bool{}}
 }
 
 func (s *Set) Add(files []RenderedFile) {
 	for _, f := range files {
-		if _, exists := s.files[f.RelPath]; !exists {
-			s.files[f.RelPath] = f
+		cur, exists := s.files[f.RelPath]
+		if !exists {
+			c := f
+			s.files[f.RelPath] = &c
+			continue
+		}
+		a, okA := cur.data.(resourceData)
+		b, okB := f.data.(resourceData)
+		if !okA || !okB {
+			continue
+		}
+		merged := false
+		for _, t := range b.titles {
+			if !contains(a.titles, t) {
+				a.titles = append(a.titles, t)
+				merged = true
+			}
+		}
+		for _, art := range b.Articles {
+			if !contains(a.Articles, art) {
+				a.Articles = append(append([]string(nil), a.Articles...), art)
+				merged = true
+			}
+		}
+		if merged {
+			a.Title = strings.Join(a.titles, "; ")
+			cur.data = a
+			s.dirty[f.RelPath] = true
 		}
 	}
 }
 
-func (s *Set) Files() []RenderedFile {
-	out := make([]RenderedFile, 0, len(s.files))
-	for _, f := range s.files {
-		out = append(out, f)
+func contains(list []string, v string) bool {
+	for _, x := range list {
+		if x == v {
+			return true
+		}
+	}
+	return false
+}
+
+func (s *Set) Files() ([]RenderedFile, error) {
+	out := make([]RenderedFile, 0, len(s.files)+1)
+	hasTerraform := false
+	for rel, f := range s.files {
+		if s.dirty[rel] {
+			content, err := execute(f.tpl, f.data)
+			if err != nil {
+				return nil, err
+			}
+			f.Content = content
+			s.dirty[rel] = false
+		}
+		if strings.HasPrefix(rel, "terraform/") && rel != versionsTemplate {
+			hasTerraform = true
+		}
+		out = append(out, *f)
+	}
+	if hasTerraform {
+		if _, exists := s.files[versionsTemplate]; !exists {
+			content, err := execute(versionsTemplate, struct{}{})
+			if err != nil {
+				return nil, err
+			}
+			out = append(out, RenderedFile{RelPath: versionsTemplate, Content: content, tpl: versionsTemplate, data: struct{}{}})
+		}
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].RelPath < out[j].RelPath })
-	return out
+	return out, nil
 }

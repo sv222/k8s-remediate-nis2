@@ -1,0 +1,48 @@
+{
+  "tool": "k8s-remediate-nis2",
+  "version": "dev",
+  "mapping_version": 1,
+  "mapping_sha256": "f4a4847b9306bfc711b701b34f9fed23f41390d7dda4c0a08e9c0b16b70d5c89",
+  "files": [
+    {
+      "path": "kyverno/block_hostnet.yaml",
+      "sha256": "39dc55014f52e248240c38264ffec4c8aa2f79ef2879bf285e214a3e7da08007"
+    },
+    {
+      "path": "kyverno/block_privileged.yaml",
+      "sha256": "f682cf7b45ea894180093ae1e11863fe89e86589f73de17ea0c5ee312d5788b6"
+    },
+    {
+      "path": "kyverno/require_nonroot.yaml",
+      "sha256": "792ad6d75a9da4eea9095f444fec7afbe8773c78c5bddc86f82f920ee6337af8"
+    },
+    {
+      "path": "terraform/ebs_default_encryption__000000000000_us-east-1.tf",
+      "sha256": "f81eec51791c18b78395166803dcf9a15255635ba90d8e2550b5ff64aa8c5ba3"
+    },
+    {
+      "path": "terraform/s3_encryption_kms__acme-backup-dump.tf",
+      "sha256": "d2eada89a186e4234033504e41f1542825a56501c71205752e2d05340667819a"
+    },
+    {
+      "path": "terraform/s3_public_access_block__acme-customer-exports.tf",
+      "sha256": "0fdd5a1ba30ad117648804a07a0bdc58ad010bf85e4de28490fa0741cc6a1cca"
+    },
+    {
+      "path": "terraform/s3_public_access_block__acme-public-logs.tf",
+      "sha256": "999b3f1e881d0551ecd8af5bea50e621718b9656e8dd82807e972d3e0ce88fc7"
+    },
+    {
+      "path": "terraform/variables_kms_key.tf",
+      "sha256": "fd19e0942db0c53a49d37286c171af4d5217679a7232ceb336f79bed0193f262"
+    },
+    {
+      "path": "terraform/versions.tf",
+      "sha256": "7bf541d7b20cd96e15cfe5beaacbdcdcc4f9cf8ab2407437224a1f3db2b54907"
+    },
+    {
+      "path": "mapping.md",
+      "sha256": "d90c6d2118f11ad06acf13a05c89a22e09ee4b89e5fcdea5c7a9669dab084f9b"
+    }
+  ]
+}

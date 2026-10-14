@@ -1,5 +1,5 @@
 # Remediation for: S3 bucket allows requests over plain HTTP
-# Articles: NIS2 Art.21(2)(h), DORA Art.9, ISO27001:2022 A.8.24, ISO27001:2022 A.8.20
+# Articles: NIS2 Art.21(2)(h), DORA Art.9, DORA RTS 2024/1774 Art.14, NIS2 CIR 2024/2690 Annex 9.1, ISO27001:2022 A.8.24, ISO27001:2022 A.8.20
 # WARNING: this denies every request to the bucket that does not use HTTPS. Clients, scripts and
 # tools that use plain HTTP lose access to nr-existing-policy. Check the access logs first.
 # WARNING: aws_s3_bucket_policy REPLACES the whole bucket policy. Put the current policy JSON of
