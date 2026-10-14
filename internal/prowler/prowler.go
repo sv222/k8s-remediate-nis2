@@ -10,6 +10,8 @@ import (
 	"github.com/sv222/k8s-remediate-nis2/internal/finding"
 )
 
+const ocsfStatusSuppressed = 3
+
 type legacyRecord struct {
 	FindingUniqueID string `json:"FindingUniqueId"`
 	CheckID         string `json:"CheckID"`
@@ -22,6 +24,8 @@ type legacyRecord struct {
 	ResourceArn     string `json:"ResourceArn"`
 	Region          string `json:"Region"`
 	Description     string `json:"Description"`
+	AccountID       string `json:"AccountId"`
+	Muted           bool   `json:"Muted"`
 }
 
 type ocsfResource struct {
@@ -34,6 +38,8 @@ type ocsfResource struct {
 }
 
 type ocsfRecord struct {
+	Status       string `json:"status"`
+	StatusID     int    `json:"status_id"`
 	StatusCode   string `json:"status_code"`
 	StatusDetail string `json:"status_detail"`
 	Severity     string `json:"severity"`
@@ -48,7 +54,10 @@ type ocsfRecord struct {
 	} `json:"finding_info"`
 	Resources []ocsfResource `json:"resources"`
 	Cloud     struct {
-		Region string `json:"region"`
+		Region  string `json:"region"`
+		Account struct {
+			UID string `json:"uid"`
+		} `json:"account"`
 	} `json:"cloud"`
 }
 
@@ -125,6 +134,8 @@ func parseLegacy(raw json.RawMessage) (finding.Finding, error) {
 		FindingUID:  r.FindingUniqueID,
 		Title:       r.CheckTitle,
 		Status:      normStatus(r.Status),
+		Suppressed:  r.Muted || isSuppressed(r.Status, 0),
+		AccountID:   strings.TrimSpace(r.AccountID),
 		ResourceID:  res,
 		Region:      r.Region,
 		Severity:    strings.ToLower(r.Severity),
@@ -164,12 +175,25 @@ func parseOCSF(raw json.RawMessage) (finding.Finding, error) {
 		FindingUID:  r.FindingInfo.UID,
 		Title:       r.FindingInfo.Title,
 		Status:      normStatus(r.StatusCode),
+		Suppressed:  isSuppressed(r.Status, r.StatusID),
+		AccountID:   strings.TrimSpace(r.Cloud.Account.UID),
 		ResourceID:  res,
 		Region:      region,
 		Severity:    strings.ToLower(r.Severity),
 		Service:     service,
 		Description: desc,
 	}, nil
+}
+
+func isSuppressed(status string, statusID int) bool {
+	if statusID == ocsfStatusSuppressed {
+		return true
+	}
+	switch strings.ToUpper(strings.TrimSpace(status)) {
+	case "SUPPRESSED", "MUTED":
+		return true
+	}
+	return false
 }
 
 func normStatus(s string) string {

@@ -10,6 +10,8 @@ type Finding struct {
 	Manual      bool   `json:"manual,omitempty"`
 	ResourceID  string `json:"resource_id"`
 	Region      string `json:"region"`
+	AccountID   string `json:"account_id,omitempty"`
+	Suppressed  bool   `json:"suppressed,omitempty"`
 	Severity    string `json:"severity"`
 	Service     string `json:"service"`
 	Description string `json:"description"`
