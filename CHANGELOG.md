@@ -7,6 +7,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-14
+
 ### Added
 
 - `make policy-test`: checks the three Kyverno templates with the Kyverno CLI against good and bad pod manifests.
@@ -41,5 +43,6 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Terraform templates for S3 public access block, S3 encryption and security group ingress.
 - `mapping.md` summary and `evidence.md` report with input SHA-256 hashes.
 
-[Unreleased]: https://github.com/sv222/k8s-remediate-nis2/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/sv222/k8s-remediate-nis2/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/sv222/k8s-remediate-nis2/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/sv222/k8s-remediate-nis2/releases/tag/v0.1.0
