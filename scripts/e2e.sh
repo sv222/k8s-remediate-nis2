@@ -100,15 +100,25 @@ log "remediate"
 log "terraform validate, plan, apply"
 cp "$WORK"/rem/terraform/*.tf "$WORK/tf/"
 cp "$SCRIPTS/provider.tf" "$WORK/tf/provider.tf"
+cp "$SCRIPTS/pin_override.tf" "$WORK/tf/pin_override.tf"
 python3 - "$WORK" <<'PY'
-import json, sys
+import glob, json, re, sys
 w = sys.argv[1]
+
+def sg_ids(prefix):
+    ids = []
+    for p in sorted(glob.glob(w + "/rem/terraform/" + prefix + "__*.tf")):
+        ids += re.findall(r'security_group_id = "(sg-[0-9a-f]+)"',open(p, encoding="utf-8").read())
+    if not ids:
+        sys.exit("no generated rule file for " + prefix)
+    return ids
+
 policy = open(w + "/shared/policy_nr-existing-policy.json", encoding="utf-8").read().strip()
 kms = open(w + "/shared/kms_key_arn.txt", encoding="utf-8").read().strip()
 vars_ = {
-    "kms_key_arn": kms,
-    "allowed_cidr": "10.0.0.0/8",
-    "allowed_port": 443,
+    "kms_key_arns": {"us-east-1": kms},
+    "ssh_allowed_cidr": {i: "10.0.0.0/8" for i in sg_ids("sg_restrict_ssh")},
+    "rdp_allowed_cidr": {i: "10.0.0.0/8" for i in sg_ids("sg_restrict_rdp")},
     "access_log_bucket": "nr-log-target",
     "s3_existing_bucket_policies": {"nr-existing-policy": policy},
 }
