@@ -7,10 +7,20 @@ make build
 make vet
 make fmt
 make test
+make fuzz
 ```
 
 Or use Go directly: `go build ./...`, `go vet ./...`, `go test -race ./...`.
-Run `gofmt -l .` and `go mod tidy` before you open a pull request.
+Run `gofmt -s -l .` and `go mod tidy` before you open a pull request.
+
+`make fuzz` runs each native Go fuzz target for `FUZZTIME` (default 20s). A normal
+`go test` runs only the seed corpora, so CI stays fast. Fuzz targets are in
+`internal/prowler`, `internal/kubebench`, `internal/render` and `internal/out`.
+If a fuzz run finds a crash, commit the file it writes under `testdata/fuzz/`.
+
+`make tf-check` (needs Docker) runs `terraform fmt -check` and `terraform validate`
+on the generated code of the test reports and of a random-ID corpus. `make policy-test`
+checks the Kyverno policies with the Kyverno CLI.
 
 ## Add a mapping entry and template
 
@@ -21,6 +31,10 @@ Run `gofmt -l .` and `go mod tidy` before you open a pull request.
 3. Add or update a test input in `cmd/testdata` and the golden files in
    `cmd/testdata/golden`.
 4. Run `go test ./...` and check the output.
+
+Add `follow_up` to an entry when the generated code leaves the risk open (for example
+Audit-mode policies or an open security group rule). Add `caution` for side effects.
+The evidence report uses them to set the status `follow-up required`.
 
 Kyverno templates must be `ValidatingPolicy` (`policies.kyverno.io/v1`) and start in `Audit` mode.
 
@@ -42,7 +56,7 @@ volume at the end.
 - `E2E_WORKDIR` sets the work directory (default `temp/e2e`).
 - `E2E_KEEP=1` keeps the work directory, with scans, logs and `report.md`.
 
-All image versions are pinned in `scripts/e2e.sh`. The workflow
+All image versions are pinned in `scripts/e2e.sh`. The Prowler image is pinned by digest. The workflow
 `.github/workflows/e2e.yml` runs it by hand and once a week, not on every push.
 The emulator is not AWS: a green run proves the generated code is valid and
 that Prowler accepts the result, not that real AWS accepts every change.

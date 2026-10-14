@@ -30,7 +30,7 @@ k8s-remediate-nis2 remediate \
 ```
 
 ```text
-failed findings: 26, files written: 13, output: out
+failed findings: 26, files written: 13 (nothing is applied), output: out
 ```
 
 ```text
@@ -38,17 +38,21 @@ out/
   kyverno/     block_hostnet.yaml  block_privileged.yaml  require_nonroot.yaml
   terraform/   s3_public_access_block__acme-public-logs.tf
                s3_encryption_kms__acme-backup-dump.tf
-               sg_restrict_ingress__sg-a899c3f6063affe1f.tf
-               ... 10 files in total, with shared variables_*.tf
+               sg_restrict_ssh__sg-a899c3f6063affe1f.tf
+               ... 10 files in total, with shared variables_*.tf and versions.tf
   mapping.md
   evidence.md
+  manifest.json
 ```
 
 One generated file, `terraform/s3_public_access_block__acme-public-logs.tf`:
 
 ```hcl
-# Remediation for: S3 bucket without Block Public Access
-# Articles: NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, ISO27001:2022 A.8.3
+# Remediation for: S3 bucket without Block Public Access; S3 bucket publicly accessible
+# Articles: NIS2 Art.21(2)(i), NIS2 Art.21(2)(g), DORA Art.9, DORA RTS 2024/1774 Art.21, NIS2 CIR 2024/2690 Annex 11.1, ISO27001:2022 A.8.3
+# WARNING: Block Public Access removes all public access to acme-public-logs. Buckets that are public on purpose
+# (static websites, public downloads) and CloudFront distributions that read the bucket without Origin Access Control
+# stop serving content to the public. Check who reads the bucket first: aws s3api get-bucket-policy-status --bucket acme-public-logs
 resource "aws_s3_bucket_public_access_block" "remediation_acme-public-logs" {
   bucket = "acme-public-logs"
 
@@ -59,21 +63,25 @@ resource "aws_s3_bucket_public_access_block" "remediation_acme-public-logs" {
 }
 ```
 
-Some rows of `mapping.md` (the Articles and Note columns are left out here):
+Some rows of `mapping.md` (the Articles and Note columns are left out here). `code generated`
+and `follow-up required` mean a file was written, not that the finding is fixed:
 
 ```text
-| Scanner    | Check                               | Resource         | Generated                                             | Status        |
-|------------|-------------------------------------|------------------|-------------------------------------------------------|---------------|
-| prowler    | s3_bucket_public_access             | acme-public-logs | terraform/s3_public_access_block__acme-public-logs.tf | remediated    |
-| prowler    | eks_cluster_not_publicly_accessible | acme-eks         |                                                       | guidance only |
-| kube-bench | 5.2.2                               | cluster          | kyverno/block_privileged.yaml                         | remediated    |
-| kube-bench | 1.2.5                               | cluster          |                                                       | no mapping    |
+| Scanner    | Check                               | Resource         | Generated                                             | Status             |
+|------------|-------------------------------------|------------------|-------------------------------------------------------|--------------------|
+| prowler    | s3_bucket_public_access             | acme-public-logs | terraform/s3_public_access_block__acme-public-logs.tf | code generated     |
+| prowler    | eks_cluster_not_publicly_accessible | acme-eks         |                                                       | guidance only      |
+| kube-bench | 5.2.2                               | cluster          | kyverno/block_privileged.yaml                         | follow-up required |
+| kube-bench | 1.2.5                               | cluster          |                                                       | no mapping         |
 ```
 
-The top of `evidence.md`. It also lists the SHA-256 of each input file.
+The top of `evidence.md`. It says that nothing was applied. It also lists the SHA-256 of
+each input file (of the bytes that were parsed) and of each generated file, the mapping
+version, the AWS account and the open items per row.
 
 ```text
-Findings: 143 | Failed: 26 | Remediated: 13 | Guidance only: 1 | Unmapped: 12 | Skipped: 0
+Records read: 143 | Failed findings (FAIL): 23 | Manual WARN treated as gap: 3 | Passed: 66 | Manual or not assessed: 51 | Other status: 0 | Suppressed (muted): 0 | Duplicate records ignored: 0
+Status of the 26 rows below: code generated: 6 | follow-up required: 6 | guidance only: 2 | no mapping: 12 | skipped: 0
 ```
 
 ## Notice and disclaimer
@@ -83,6 +91,17 @@ Findings: 143 | Failed: 26 | Remediated: 13 | Guidance only: 1 | Unmapped: 12 | 
 > **Important:** The NIS2, DORA and ISO 27001 mappings in this project have NOT
 > been reviewed by legal or compliance experts. Do not use them as legal or
 > audit advice. DORA Art.9 applies only to financial entities.
+>
+> References to Delegated Regulation (EU) 2024/1774 (DORA RTS) and Implementing
+> Regulation (EU) 2024/2690 were checked against the EUR-Lex text for the article
+> or annex title only. Whether a rule applies to your entity was not assessed:
+> 2024/1774 is for financial entities, and 2024/2690 is only for DNS, TLD,
+> cloud, data centre, CDN, managed service, managed security service, marketplace,
+> search engine, social network and trust service providers. The ISO 27001:2022
+> controls are loose matches, not an audit result.
+>
+> **Nothing is applied by this tool.** It writes files. Status `code generated`
+> does not mean a finding is fixed.
 
 ## Quickstart
 
@@ -107,8 +126,15 @@ terraform plan                              # 5. plan, then apply what you under
 Step 3 is yours: read `remediation/mapping.md` and every generated file.
 
 Flags: `--prowler FILE`, `--kube-bench FILE`, `--out DIR` (default `./remediation`),
-`--export-evidence`. Use at least one scanner flag. Exit code `0` means success, also
-when some findings have no mapping. Exit code `2` means an error.
+`--export-evidence`, `--force`. Use at least one scanner flag. The output directory
+must be empty. `--force` allows a non-empty directory and removes only the files listed
+in its `manifest.json` from the previous run, so old `.tf` files cannot be applied by
+accident. Exit code `0` means success, also when some findings have no mapping. Exit
+code `2` means an error.
+
+A Prowler report must hold one AWS account. A report with several accounts is refused:
+run the tool once per account. Muted (suppressed) Prowler findings are not remediated.
+They are counted and listed in `evidence.md`.
 
 ### Safety rules
 
@@ -119,14 +145,22 @@ when some findings have no mapping. Exit code `2` means an error.
   `s3_secure_transport` replaces the whole bucket policy and denies plain HTTP: put the
   current policy into `var.s3_existing_bucket_policies` first. `s3_acl_prohibited`
   disables all ACLs of a bucket.
-- The security group template only adds one narrow rule. You set `var.allowed_cidr`
-  and `var.allowed_port`, and you revoke the open rules yourself.
+- The security group templates only add one narrow rule, and only for SSH (22) or
+  RDP (3389), because those checks name the port. The rule file has a CIDR map per
+  security group ID (`ssh_allowed_cidr`, `rdp_allowed_cidr`), so one group never gets a
+  port that was flagged on another group. You revoke the open rule yourself: the finding
+  stays open until you do. Checks that do not name a port are guidance only.
+- Kyverno policies also match `pods/ephemeralcontainers` (for `kubectl debug`). This was
+  not tested on a live cluster.
+- SSE-KMS breaks S3 and ELB log delivery to a bucket. List log target buckets in
+  `kms_excluded_buckets`. Keys are per region (`kms_key_arns`).
 - Some checks are guidance only on purpose. EKS endpoint settings are not in your
   Terraform state, and a wrong change cuts off `kubectl`. Network ACLs are stateless and
   cover whole subnets, so a wrong rule drops traffic at once. For these, `mapping.md`
   gives exact steps, not code.
 - Resource IDs are validated before they reach a template. Bad IDs are listed as
-  `skipped: invalid resource id`.
+  `skipped`. In the reports, IDs are shown as code spans with a strict character set, so a
+  crafted ID cannot add links or images.
 
 ### Supported input
 
@@ -149,17 +183,18 @@ DORA references are in `mapping.md`.
 |---|---|---|---|---|---|
 | prowler | `s3_bucket_level_public_access_block`, `s3_bucket_public_access`, `s3_bucket_public_list_acl`, `s3_bucket_public_write_acl`, `s3_bucket_policy_public_write_access` | Turns on all four S3 Block Public Access settings | (i), (g) | A.8.3 | template |
 | prowler | `s3_bucket_default_encryption` (deprecated in current Prowler) | Default SSE-S3 (AES256) encryption | (h) | A.8.24 | template |
-| prowler | `s3_bucket_kms_encryption` | Default SSE-KMS encryption with `var.kms_key_arn` | (h) | A.8.24 | template |
+| prowler | `s3_bucket_kms_encryption` | Default SSE-KMS encryption with a key per region (`var.kms_key_arns`). Replaces the SSE-S3 file for the same bucket | (h) | A.8.24 | template |
 | prowler | `s3_bucket_secure_transport_policy` | Bucket policy that denies plain HTTP | (h) | A.8.24, A.8.20 | template |
 | prowler | `s3_bucket_server_access_logging_enabled` | Server access logs to `var.access_log_bucket` | (b) | A.8.15, A.8.16 | template |
 | prowler | `s3_bucket_acl_prohibited` | `BucketOwnerEnforced`, which disables ACLs | (i), (g) | A.5.15, A.8.3 | template |
 | prowler | `ec2_ebs_default_encryption` | Default EBS encryption, one file per region | (h) | A.8.24 | template |
-| prowler | `ec2_securitygroup_allow_ingress_from_internet_to_any_port`, `..._to_all_ports`, `..._to_tcp_port_22`, `..._to_tcp_port_3389`, `..._to_high_risk_tcp_ports` | Adds one narrow ingress rule | (i), (g) | A.8.20 | template |
+| prowler | `ec2_securitygroup_allow_ingress_from_internet_to_tcp_port_22`, `..._to_tcp_port_3389` | Adds one narrow ingress rule for port 22 or 3389 with a CIDR per group. The open rule stays | (i), (g) | A.8.20 | template |
+| prowler | `ec2_securitygroup_allow_ingress_from_internet_to_any_port`, `..._to_all_ports`, `..._to_high_risk_tcp_ports` | Steps to replace the open rule. No code, because the port is unknown | (i), (g) | A.8.20 | guidance |
 | prowler | `eks_cluster_not_publicly_accessible`, `eks_cluster_private_nodes_enabled` | Steps to limit the public endpoint and enable the private one | (i), (g) | A.8.20 | guidance |
 | prowler | `ec2_networkacl_allow_ingress_any_port`, `..._tcp_port_22`, `..._tcp_port_3389` | Steps to narrow the open entry | (i), (g) | A.8.20, A.8.22 | guidance |
-| kube-bench | privileged containers (5.2.2; 5.2.1 and 4.2.1 in other benchmarks) | Kyverno `nis2-block-privileged` | (i), (g) | A.8.2 | template |
+| kube-bench | privileged containers (5.2.2; 5.2.1 and 4.2.1 in other benchmarks) | Kyverno `nis2-block-privileged` | (i), (g) | A.8.9 | template |
 | kube-bench | host network (5.2.5; 5.2.4 and 4.2.4) | Kyverno `nis2-block-hostnetwork` | (i), (g) | A.8.22 | template |
-| kube-bench | root containers (5.2.7; 5.2.6 and 4.2.6) | Kyverno `nis2-require-nonroot` | (i), (g) | A.8.2 | template |
+| kube-bench | root containers (5.2.7; 5.2.6 and 4.2.6) | Kyverno `nis2-require-nonroot` | (i), (g) | A.8.9 | template |
 
 The `regional` option applies to `ec2_ebs_default_encryption`. This setting exists per
 AWS region, so the template gets the region of the finding and the file name includes it.
@@ -177,9 +212,10 @@ flowchart LR
   C --> H[out/evidence.md]
 ```
 
-- **It never widens access.** Templates only tighten settings. The security group
-  template adds a narrow rule and deletes nothing. `var.allowed_cidr` rejects
-  `0.0.0.0/0` and wide public ranges.
+- **It does not widen access.** Templates only tighten settings. Each security group
+  rule has a fixed port and a CIDR chosen for that group. The CIDR variables reject
+  `0.0.0.0/0` and wide public ranges, and tests check that no generated `.tf` contains an
+  internet-wide CIDR.
 - **Guidance instead of unsafe automation.** If a change could lock out users or edit a
   resource Terraform does not own, the tool writes steps, not code.
 - **The mapping is data.** Checks, articles and templates live in
@@ -196,11 +232,13 @@ still reports `FAIL`.
 | Prowler scan | FAIL | PASS |
 |---|---|---|
 | Before | 50 | 51 |
-| After `terraform apply` (36 resources added) | 13 | 88 |
+| After `terraform apply` (33 resources added) | 13 | 88 |
 | After the guidance follow-up steps | 0 | 103 |
 
 The 13 failures after `apply` are open security group rules, network ACL entries and
-EKS settings. The tool leaves these to you on purpose. The check
+EKS settings. The tool leaves these to you on purpose. The e2e script also checks that
+the SSH group got only port 22 and the RDP group only port 3389. It does not model log
+delivery: the emulator accepts SSE-KMS on the log target bucket, which real AWS does not. The check
 `ec2_securitygroup_allow_ingress_from_internet_to_any_port` cannot be created in the
 emulator, so it was not tested. The emulator has no `UpdateClusterConfig`, so the EKS
 step recreated the mock cluster with the target settings.
@@ -210,12 +248,25 @@ step recreated the mock cluster with the target settings.
   are manual `WARN` checks, and the tool handles them. kube-bench chose `cis-1.12` itself.
 - **Kyverno:** `make policy-test` runs the three policies through the Kyverno 1.19.1 CLI
   against good and bad pods. A real Kyverno 1.19.1 admission also tested the three policies.
-- **Unit tests:** `make test` compares output with golden files in `cmd/testdata/golden`.
-  CI runs build, vet, test, gofmt and `go mod tidy`.
+- **Unit and property tests:** `make test` compares output with golden files in
+  `cmd/testdata/golden`. Property tests check that no generated `.tf` contains an
+  internet-wide CIDR for random resource IDs, that file names stay inside the output
+  directory and are unique on case-insensitive file systems, and that report tables keep
+  their shape with hostile input.
+- **Fuzz tests:** native Go fuzz targets cover the Prowler and kube-bench parsers, resource
+  ID sanitizing, the template renderer and Markdown escaping. `make fuzz` runs each for
+  `FUZZTIME` (20s by default). A normal `go test` runs only the seed corpora.
+- **Terraform check:** `make tf-check` runs `terraform fmt -check` and `validate` (1.16.5,
+  AWS provider 6.67.0) on the generated code of the test reports and of a random-ID corpus.
+- **CI:** build, vet, test with the race detector, gofmt, `go mod tidy`, staticcheck,
+  govulncheck, the Kyverno policy test and the Terraform check.
 
 Not verified:
 
 - Real AWS accounts. A green emulator run does not prove that AWS accepts every change.
+- Kyverno matching of the `pods/ephemeralcontainers` subresource on a live cluster. The
+  Kyverno CLI test loads the policies but does not model subresource requests.
+- The release workflow (SBOM, cosign signature). It runs only on a tag.
 - kube-bench output from EKS, AKS or GKE.
 - Other kube-bench benchmark versions end to end. IDs are checked against kube-bench 0.16.0 only.
 - Review of the mappings by legal or compliance experts.

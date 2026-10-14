@@ -7,6 +7,40 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Security
+
+- Security group fix: SSH and RDP have their own templates with a fixed port and a CIDR per security group ID (`ssh_allowed_cidr`, `rdp_allowed_cidr`). Before, all flagged groups shared one port and one CIDR, so a group flagged only for RDP could get SSH. Checks that do not say which port is open (`..._to_any_port`, `..._to_all_ports`, `..._to_high_risk_tcp_ports`) are now guidance only.
+- Kyverno policies for privileged and root containers also match `pods/ephemeralcontainers`, so `kubectl debug` cannot add a privileged container in `Deny` mode. Not tested on a live cluster.
+- Markdown reports show check, resource, region and file names as code spans with a strict character set. Other text is escaped. A crafted resource ID can no longer add links or images to `mapping.md` or `evidence.md`.
+- Resource IDs that contain `0.0.0.0/0` or `::/0` are rejected.
+
+### Changed
+
+- Row statuses are now `code generated`, `follow-up required`, `guidance only`, `no mapping` and `skipped`. The old status `remediated` and the count `Remediated: N` are gone: they counted written files, not fixed findings. `evidence.md` says that nothing was applied and lists what stays open per row (open security group rule, Audit-mode policies, existing objects and volumes that stay unencrypted).
+- The output directory must be empty. Use `--force` to replace the files of a previous run. Only files listed in the old `manifest.json` are removed.
+- Input with findings of more than one AWS account is refused. Run the tool once per account.
+- Muted Prowler findings (OCSF `status` `Suppressed`, `status_id` 3, or legacy `Muted`) are not remediated. They are counted and listed in `evidence.md`.
+- `evidence.md` counts only `FAIL` findings as failed. PASS, MANUAL, other statuses, suppressed findings and duplicate records are reported separately. Duplicate records are ignored.
+- `evidence.md` has the SHA-256 of the bytes that were parsed (not of a second read), the SHA-256 of every generated file, the mapping version and SHA-256, the account, and a UTC time with a note about its source.
+- `manifest.json` lists every written file with its SHA-256, the tool version and the mapping version.
+- Tool version falls back to the Go build info, so `go install` builds report the module version instead of `dev`.
+- Generated Terraform gets `versions.tf` with a provider constraint (`>= 6.0, < 7.0`).
+- A shared file gets the titles and articles of every check that maps to it, not only the first.
+- `s3_bucket_default_encryption` and `s3_bucket_kms_encryption` on one bucket write only the KMS file. Before they wrote two conflicting resources.
+- File and resource names are lower case. A name that changes (case, special characters, length) gets an 8 character hash, so names never collide on case-insensitive file systems.
+- KMS template: warning about log delivery and `kms:Decrypt`, one key per region (`kms_key_arns`), and `kms_excluded_buckets` for log target buckets.
+- Block Public Access template starts with a warning.
+- Security group and KMS files set the `region` argument (AWS provider 6.0 or later).
+- ISO 27001 `A.8.2` (privileged access rights) was replaced by `A.8.9` (configuration management) for privileged and root containers. Added references to Delegated Regulation (EU) 2024/1774 (DORA RTS) and Implementing Regulation (EU) 2024/2690. The mapping is still not reviewed by experts.
+
+### Added
+
+- `--force` flag.
+- Native Go fuzz tests for the Prowler and kube-bench parsers, resource ID sanitizing, the template renderer and Markdown escaping. Property tests for CIDRs, file names and report shape. `make fuzz` runs them.
+- `make tf-check` (`scripts/tfcheck.sh`): `terraform fmt -check` and `validate` on the generated code of the test reports and of a random-ID corpus.
+- CI jobs for `staticcheck`, `govulncheck`, `make policy-test` and `make tf-check`. Dependabot for Go modules and GitHub Actions.
+- Release: GitHub Actions pinned by commit SHA, pinned GoReleaser, `-trimpath`, SBOM (Syft) and keyless cosign signature of `checksums.txt`. These run only on a tag and were not run locally.
+
 ## [0.2.0] - 2026-10-14
 
 ### Added
