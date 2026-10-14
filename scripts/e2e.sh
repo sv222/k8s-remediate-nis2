@@ -46,7 +46,7 @@ trap cleanup EXIT
 envs=(-e "AWS_ENDPOINT_URL=$ENDPOINT" -e AWS_ACCESS_KEY_ID=test -e AWS_SECRET_ACCESS_KEY=test -e AWS_DEFAULT_REGION=us-east-1 -e AWS_PAGER= -e HOME=/tmp)
 
 awscli() {
-  docker run --rm --network "$NET" --user "$UIDGID" -v "$WORK/shared:/work" -v "$SCRIPTS:/scripts:ro" "${envs[@]}" --entrypoint bash "$AWSCLI_IMAGE" "$@"
+  docker run --rm --cpus 2 --network "$NET" --user "$UIDGID" -v "$WORK/shared:/work" -v "$SCRIPTS:/scripts:ro" "${envs[@]}" --entrypoint bash "$AWSCLI_IMAGE" "$@"
 }
 
 prowler_scan() {
@@ -61,7 +61,7 @@ prowler_scan() {
 }
 
 terraform_run() {
-  docker run --rm --network "$NET" --user "$UIDGID" -v "$WORK/tf:/tf" -w /tf -v "$WORK/plugins:/plugins" \
+  docker run --rm --cpus 2 --network "$NET" --user "$UIDGID" -v "$WORK/tf:/tf" -w /tf -v "$WORK/plugins:/plugins" \
     -e TF_PLUGIN_CACHE_DIR=/plugins -e TF_IN_AUTOMATION=1 -e TF_INPUT=0 "${envs[@]}" "$TERRAFORM_IMAGE" "$@"
 }
 
@@ -70,7 +70,7 @@ mkdir -p "$WORK"/{bin,shared,scans,plugins,tf}
 chmod 777 "$WORK" "$WORK"/{bin,shared,scans,plugins,tf}
 
 log "build the CLI in $GO_IMAGE"
-docker run --rm -v "$ROOT:/src:ro" -v "$WORK/bin:/out" -v "$GOVOL:/go" -w /src \
+docker run --rm --cpus 2 -v "$ROOT:/src:ro" -v "$WORK/bin:/out" -v "$GOVOL:/go" -w /src \
   -e CGO_ENABLED=0 -e GOFLAGS=-buildvcs=false -e GOCACHE=/go/cache \
   "$GO_IMAGE" sh -c "go build -trimpath -o /out/k8s-remediate-nis2 ./cmd/k8s-remediate-nis2 && chown $UIDGID /out/k8s-remediate-nis2"
 

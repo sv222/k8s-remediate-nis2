@@ -46,10 +46,10 @@ def main():
     final, final_failing = load(args.final)
 
     with open(args.mapping, encoding="utf-8") as fh:
-        mapping_rows = [ln for ln in fh if ln.startswith("| prowler |")]
+        mapping_rows = [ln for ln in fh if ln.startswith("| `prowler` |")]
     status_of = defaultdict(set)
     for ln in mapping_rows:
-        cols = [c.strip() for c in ln.strip().strip("|").split("|")]
+        cols = [c.strip().strip("`") for c in ln.strip().strip("|").split("|")]
         status_of[cols[1]].add(cols[5])
 
     lines = [
@@ -59,7 +59,7 @@ def main():
     errors = []
     for check in checks:
         st = status_of.get(check, set())
-        if "remediated" in st:
+        if "code generated" in st or "follow-up required" in st:
             path = "template"
         elif "guidance only" in st:
             path = "guidance"
