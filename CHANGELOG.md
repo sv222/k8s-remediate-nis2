@@ -7,6 +7,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-14
+
 ### Security
 
 - Security group fix: SSH and RDP have their own templates with a fixed port and a CIDR per security group ID (`ssh_allowed_cidr`, `rdp_allowed_cidr`). Before, all flagged groups shared one port and one CIDR, so a group flagged only for RDP could get SSH. Checks that do not say which port is open (`..._to_any_port`, `..._to_all_ports`, `..._to_high_risk_tcp_ports`) are now guidance only.
@@ -77,6 +79,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Terraform templates for S3 public access block, S3 encryption and security group ingress.
 - `mapping.md` summary and `evidence.md` report with input SHA-256 hashes.
 
-[Unreleased]: https://github.com/sv222/k8s-remediate-nis2/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/sv222/k8s-remediate-nis2/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/sv222/k8s-remediate-nis2/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/sv222/k8s-remediate-nis2/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/sv222/k8s-remediate-nis2/releases/tag/v0.1.0
