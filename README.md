@@ -105,7 +105,7 @@ Status of the 26 rows below: code generated: 6 | follow-up required: 6 | guidanc
 
 ## Quickstart
 
-Install with Go 1.23 or later, or build from source:
+Install with Go 1.26 or later, or build from source:
 
 ```sh
 go install github.com/sv222/k8s-remediate-nis2/cmd/k8s-remediate-nis2@latest
