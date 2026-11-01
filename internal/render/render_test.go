@@ -434,10 +434,12 @@ func TestRegionalTemplateGetsOneFilePerRegion(t *testing.T) {
 
 func TestRiskyTemplatesCarryLoudWarnings(t *testing.T) {
 	cases := map[string][]string{
-		"s3_bucket_secure_transport_policy":   {"WARNING", "plain HTTP", "REPLACES the whole bucket policy", "s3_existing_bucket_policies"},
-		"s3_bucket_acl_prohibited":            {"WARNING", "disables all ACLs"},
-		"s3_bucket_level_public_access_block": {"WARNING", "on purpose", "Origin Access Control"},
-		"s3_bucket_kms_encryption":            {"WARNING", "log", "kms:Decrypt", "regional", "kms_excluded_buckets"},
+		"s3_bucket_secure_transport_policy":     {"WARNING", "plain HTTP", "REPLACES the whole bucket policy", "s3_existing_bucket_policies"},
+		"s3_bucket_acl_prohibited":              {"WARNING", "disables all ACLs"},
+		"s3_bucket_level_public_access_block":   {"WARNING", "on purpose", "Origin Access Control"},
+		"s3_bucket_kms_encryption":              {"WARNING", "log", "kms:Decrypt", "regional", "kms_excluded_buckets"},
+		"iam_password_policy_minimum_length_14": {"WARNING", "REPLACES the whole password policy", "max_password_age"},
+		"cloudtrail_multi_region_enabled":       {"WARNING", "second copy", "cloudtrail.amazonaws.com"},
 	}
 	for check, wants := range cases {
 		files, err := Render(entryFor(t, check), finding.Finding{ResourceID: "example-bucket", Region: "us-east-1"})
@@ -506,6 +508,94 @@ func TestNetworkACLAndEKSAreGuidanceOnly(t *testing.T) {
 		e := entryFor(t, check)
 		if len(e.Templates) != 0 || len(e.SharedTemplates) != 0 || e.Guidance == "" {
 			t.Errorf("%s: must be guidance only: %+v", check, e)
+		}
+	}
+}
+
+func TestIdentityLoggingAndEncryptionGapsAreGuidanceOnly(t *testing.T) {
+	for _, check := range []string{
+		"iam_root_mfa_enabled",
+		"iam_user_mfa_enabled_console_access",
+		"iam_no_root_access_key",
+		"cloudtrail_log_file_validation_enabled",
+		"cloudtrail_kms_encryption_enabled",
+		"eks_control_plane_logging_all_types_enabled",
+		"eks_cluster_kms_cmk_encryption_in_secrets_enabled",
+		"rds_instance_storage_encrypted",
+		"kms_cmk_rotation_enabled",
+		"ec2_securitygroup_default_restrict_traffic",
+	} {
+		e := entryFor(t, check)
+		if len(e.Templates) != 0 || len(e.SharedTemplates) != 0 || e.Guidance == "" {
+			t.Errorf("%s: must be guidance only: %+v", check, e)
+		}
+	}
+}
+
+func TestPasswordPolicyChecksShareOneFile(t *testing.T) {
+	set := NewSet()
+	for _, check := range []string{"iam_password_policy_minimum_length_14", "iam_password_policy_reuse_24"} {
+		files, err := Render(entryFor(t, check), finding.Finding{ResourceID: "000000000000", Region: "us-east-1"})
+		if err != nil {
+			t.Fatal(err)
+		}
+		set.Add(files)
+	}
+	files := setFiles(t, set)
+	var policy []RenderedFile
+	for _, f := range files {
+		if strings.HasPrefix(f.RelPath, "terraform/iam_password_policy") {
+			policy = append(policy, f)
+		}
+	}
+	if len(policy) != 1 {
+		t.Fatalf("policy files = %d, want 1", len(policy))
+	}
+	for _, w := range []string{"minimum_password_length        = 14", "password_reuse_prevention      = 24", "shorter than 14", "reuse of the last 24"} {
+		if !strings.Contains(policy[0].Content, w) {
+			t.Errorf("missing %q:\n%s", w, policy[0].Content)
+		}
+	}
+}
+
+func TestCloudTrailIsOneSharedFile(t *testing.T) {
+	set := NewSet()
+	for _, region := range []string{"us-east-1", "eu-west-1"} {
+		files, err := Render(entryFor(t, "cloudtrail_multi_region_enabled"), finding.Finding{ResourceID: "000000000000", Region: region})
+		if err != nil {
+			t.Fatal(err)
+		}
+		set.Add(files)
+	}
+	var trails int
+	for _, f := range setFiles(t, set) {
+		if f.RelPath == "terraform/cloudtrail_multi_region.tf" {
+			trails++
+			for _, w := range []string{"is_multi_region_trail         = true", "enable_log_file_validation    = true", "var.cloudtrail_bucket"} {
+				if !strings.Contains(f.Content, w) {
+					t.Errorf("missing %q:\n%s", w, f.Content)
+				}
+			}
+		}
+	}
+	if trails != 1 {
+		t.Errorf("trail files = %d, want 1", trails)
+	}
+}
+
+func TestFlowLogNeedsRegionAndUsesTheVPC(t *testing.T) {
+	e := entryFor(t, "vpc_flow_logs_enabled")
+	if _, err := Render(e, finding.Finding{ResourceID: "vpc-0a1b2c3d4e5f60718"}); !errors.Is(err, ErrInvalidResourceID) {
+		t.Errorf("missing region: err = %v, want ErrInvalidResourceID", err)
+	}
+	files, err := Render(e, finding.Finding{ResourceID: "vpc-0a1b2c3d4e5f60718", Region: "eu-west-1"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	c := files[0].Content
+	for _, w := range []string{`region               = "eu-west-1"`, `vpc_id               = "vpc-0a1b2c3d4e5f60718"`, `traffic_type         = "ALL"`, "var.flow_log_bucket_arn"} {
+		if !strings.Contains(c, w) {
+			t.Errorf("missing %q:\n%s", w, c)
 		}
 	}
 }

@@ -2,7 +2,7 @@
   "tool": "k8s-remediate-nis2",
   "version": "dev",
   "mapping_version": 1,
-  "mapping_sha256": "f4a4847b9306bfc711b701b34f9fed23f41390d7dda4c0a08e9c0b16b70d5c89",
+  "mapping_sha256": "a60ed575a78345f2a7335bff32abe7d874a4cac6a10a1549cd5ea0bfc8f7a443",
   "files": [
     {
       "path": "terraform/s3_public_access_block__bucket-one.tf",
@@ -18,7 +18,7 @@
     },
     {
       "path": "mapping.md",
-      "sha256": "a1a1e517f476fa3120f5aad4a4ae7fd8f54930de16477c80c913a3a577eaa325"
+      "sha256": "3eaa234f8b15fa48d7729d43e18a69f6c146d3b0039a1597f51973a0fb1fc9b2"
     }
   ]
 }
