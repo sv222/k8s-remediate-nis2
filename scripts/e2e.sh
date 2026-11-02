@@ -55,7 +55,7 @@ prowler_scan() {
   docker run --rm --network "$NET" --cpus 2 --memory 2g -v "$WORK/scans:/scans" "${envs[@]}" "$PROWLER_IMAGE" \
     aws -f us-east-1 --scan-unused-services -M json-ocsf -o "/scans/$name" --output-filename scan --no-banner \
     --check $(tr '\n' ' ' < "$SCRIPTS/checks.txt") >"$WORK/scans/$name.log" 2>&1 || rc=$?
-  docker run --rm -v "$WORK/scans:/scans" --entrypoint chmod "$PROWLER_IMAGE" -R a+rwX /scans
+  docker run --rm -v "$WORK/scans:/scans" --entrypoint chmod "$PROWLER_IMAGE" -R a+rwX "/scans/$name"
   [ "$rc" = 0 ] || [ "$rc" = 3 ] || { tail -30 "$WORK/scans/$name.log" >&2; die "prowler failed with exit code $rc"; }
   [ -s "$WORK/scans/$name/scan.ocsf.json" ] || die "prowler wrote no OCSF report for $name"
   grep -E "Failed|Passed" "$WORK/scans/$name.log" | sed 's/\x1b\[[0-9;]*m//g' | head -1
