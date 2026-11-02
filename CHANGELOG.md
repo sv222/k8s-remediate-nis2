@@ -7,6 +7,20 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-03
+
+### Added
+
+- Terraform templates for `iam_password_policy_minimum_length_14` and `iam_password_policy_reuse_24` (one account password policy file per account, shared by both checks), `cloudtrail_multi_region_enabled` (one multi-region trail with log file validation, `var.cloudtrail_bucket`) and `vpc_flow_logs_enabled` (flow logs of all traffic to `var.flow_log_bucket_arn`, one file per VPC).
+- Guidance-only entries for `iam_root_mfa_enabled`, `iam_user_mfa_enabled_console_access`, `iam_no_root_access_key`, `cloudtrail_log_file_validation_enabled`, `cloudtrail_kms_encryption_enabled`, `eks_control_plane_logging_all_types_enabled`, `eks_cluster_kms_cmk_encryption_in_secrets_enabled`, `rds_instance_storage_encrypted`, `kms_cmk_rotation_enabled` and `ec2_securitygroup_default_restrict_traffic`. These change resources that are not in your Terraform state, need a person (MFA), or cannot be undone (EKS secrets encryption), so no code is generated.
+- NIS2 Art.21(2)(j) (multi-factor authentication) is used for the MFA checks.
+- Test report `cmd/testdata/prowler_aws_more.json` with golden files, and the new Terraform in `make tf-check`.
+
+### Changed
+
+- Go 1.26 is required. cobra 1.10.2 and sigs.k8s.io/yaml 1.6.0.
+- The unmapped sample in `cmd/testdata/prowler_two_buckets.json` is now `iam_root_hardware_mfa_enabled`, because `iam_root_mfa_enabled` has a mapping.
+
 ## [0.3.0] - 2026-10-14
 
 ### Security
@@ -79,7 +93,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Terraform templates for S3 public access block, S3 encryption and security group ingress.
 - `mapping.md` summary and `evidence.md` report with input SHA-256 hashes.
 
-[Unreleased]: https://github.com/sv222/k8s-remediate-nis2/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/sv222/k8s-remediate-nis2/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/sv222/k8s-remediate-nis2/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/sv222/k8s-remediate-nis2/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/sv222/k8s-remediate-nis2/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/sv222/k8s-remediate-nis2/releases/tag/v0.1.0

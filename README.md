@@ -150,13 +150,19 @@ They are counted and listed in `evidence.md`.
   security group ID (`ssh_allowed_cidr`, `rdp_allowed_cidr`), so one group never gets a
   port that was flagged on another group. You revoke the open rule yourself: the finding
   stays open until you do. Checks that do not name a port are guidance only.
+- `iam_password_policy` replaces the whole account password policy. Copy settings you
+  keep, such as `max_password_age`, into the file first. Existing passwords are not checked
+  until users change them.
+- `cloudtrail_multi_region` creates a new trail. If a trail already logs management events,
+  the new one is a paid second copy: turn on multi-region for the existing trail instead.
 - Kyverno policies also match `pods/ephemeralcontainers` (for `kubectl debug`). This was
   not tested on a live cluster.
 - SSE-KMS breaks S3 and ELB log delivery to a bucket. List log target buckets in
   `kms_excluded_buckets`. Keys are per region (`kms_key_arns`).
 - Some checks are guidance only on purpose. EKS endpoint settings are not in your
-  Terraform state, and a wrong change cuts off `kubectl`. Network ACLs are stateless and
-  cover whole subnets, so a wrong rule drops traffic at once. For these, `mapping.md`
+  Terraform state, and a wrong change cuts off `kubectl`. MFA needs the person who holds
+  the device, and EKS secrets encryption cannot be turned off again. Network ACLs are
+  stateless and cover whole subnets, so a wrong rule drops traffic at once. For these, `mapping.md`
   gives exact steps, not code.
 - Resource IDs are validated before they reach a template. Bad IDs are listed as
   `skipped`. In the reports, IDs are shown as code spans with a strict character set, so a
@@ -176,8 +182,8 @@ They are counted and listed in `evidence.md`.
 
 Generated from `mapping/mappings.yaml`. NIS2 letters are Article 21(2) points:
 (b) incident handling, (g) basic cyber hygiene, (h) cryptography and encryption,
-(i) access control and asset management. These are short summaries, not legal text.
-DORA references are in `mapping.md`.
+(i) access control and asset management, (j) multi-factor authentication. These are short
+summaries, not legal text. DORA references are in `mapping.md`.
 
 | Scanner | Check | What the fix does | NIS2 | ISO 27001:2022 | Type |
 |---|---|---|---|---|---|
@@ -192,6 +198,18 @@ DORA references are in `mapping.md`.
 | prowler | `ec2_securitygroup_allow_ingress_from_internet_to_any_port`, `..._to_all_ports`, `..._to_high_risk_tcp_ports` | Steps to replace the open rule. No code, because the port is unknown | (i), (g) | A.8.20 | guidance |
 | prowler | `eks_cluster_not_publicly_accessible`, `eks_cluster_private_nodes_enabled` | Steps to limit the public endpoint and enable the private one | (i), (g) | A.8.20 | guidance |
 | prowler | `ec2_networkacl_allow_ingress_any_port`, `..._tcp_port_22`, `..._tcp_port_3389` | Steps to narrow the open entry | (i), (g) | A.8.20, A.8.22 | guidance |
+| prowler | `ec2_securitygroup_default_restrict_traffic` | Steps to move users off the default security group and remove its rules | (i), (g) | A.8.20, A.8.22 | guidance |
+| prowler | `iam_password_policy_minimum_length_14`, `iam_password_policy_reuse_24` | Account password policy: 14 characters, all character types, no reuse of the last 24. One file per account | (i), (g) | A.5.17 | template |
+| prowler | `iam_root_mfa_enabled`, `iam_user_mfa_enabled_console_access` | Steps to add MFA, or to remove an unused console password | (j), (i) | A.8.5 | guidance |
+| prowler | `iam_no_root_access_key` | Steps to find what uses the root keys, then delete them | (i), (g) | A.8.2 | guidance |
+| prowler | `cloudtrail_multi_region_enabled` | One multi-region trail with log file validation to `var.cloudtrail_bucket` | (b) | A.8.15, A.8.16 | template |
+| prowler | `cloudtrail_log_file_validation_enabled` | Steps to turn on log file validation for the trail | (b) | A.8.15 | guidance |
+| prowler | `cloudtrail_kms_encryption_enabled` | Steps to encrypt the trail logs with a KMS key | (h) | A.8.24 | guidance |
+| prowler | `vpc_flow_logs_enabled` | Flow logs of all traffic of the VPC to `var.flow_log_bucket_arn` | (b) | A.8.15, A.8.16 | template |
+| prowler | `eks_control_plane_logging_all_types_enabled` | Steps to turn on all five control plane log types | (b) | A.8.15, A.8.16 | guidance |
+| prowler | `eks_cluster_kms_cmk_encryption_in_secrets_enabled` | Steps to encrypt Kubernetes secrets with a KMS key. This cannot be undone | (h) | A.8.24 | guidance |
+| prowler | `rds_instance_storage_encrypted` | Steps to move to an encrypted copy of the instance | (h) | A.8.24 | guidance |
+| prowler | `kms_cmk_rotation_enabled` | Steps to turn on automatic key rotation | (h) | A.8.24 | guidance |
 | kube-bench | privileged containers (5.2.2; 5.2.1 and 4.2.1 in other benchmarks) | Kyverno `nis2-block-privileged` | (i), (g) | A.8.9 | template |
 | kube-bench | host network (5.2.5; 5.2.4 and 4.2.4) | Kyverno `nis2-block-hostnetwork` | (i), (g) | A.8.22 | template |
 | kube-bench | root containers (5.2.7; 5.2.6 and 4.2.6) | Kyverno `nis2-require-nonroot` | (i), (g) | A.8.9 | template |
@@ -243,6 +261,11 @@ delivery: the emulator accepts SSE-KMS on the log target bucket, which real AWS 
 emulator, so it was not tested. The emulator has no `UpdateClusterConfig`, so the EKS
 step recreated the mock cluster with the target settings.
 
+The 14 checks added in 0.4.0 (IAM, CloudTrail, VPC flow logs, EKS logging, KMS, RDS and the
+default security group) are not in this e2e test yet. Their unit and golden tests use a
+hand-made report in the Prowler 5.45 OCSF format (`cmd/testdata/prowler_aws_more.json`), and
+`make tf-check` validates their Terraform.
+
 - **kube-bench:** a real kube-bench 0.16.0 run on Kubernetes 1.37 (kind) gave 63 PASS,
   12 FAIL and 56 WARN with the default service account. Controls 5.2.2, 5.2.5 and 5.2.7
   are manual `WARN` checks, and the tool handles them. kube-bench chose `cis-1.12` itself.
@@ -263,6 +286,7 @@ step recreated the mock cluster with the target settings.
 
 Not verified:
 
+- The checks added in 0.4.0 against the emulator or real AWS.
 - Real AWS accounts. A green emulator run does not prove that AWS accepts every change.
 - Kyverno matching of the `pods/ephemeralcontainers` subresource on a live cluster. The
   Kyverno CLI test loads the policies but does not model subresource requests.
@@ -273,10 +297,11 @@ Not verified:
 
 ## Limitations and roadmap
 
-- The mapping set is small. Many failed checks show `no mapping`.
+- The mapping set covers 35 Prowler checks. Many other failed checks still show `no mapping`.
 - The tool does not scan and does not remove existing rules.
 - Terraform files are snippets per resource. You merge them into your own code and state.
-- Roadmap: review of the mappings by compliance experts, more Prowler checks, and
+- Roadmap: review of the mappings by compliance experts, e2e tests for the checks added in
+  0.4.0, more Prowler checks (for example GuardDuty, Config and more encryption at rest), and
   kube-bench tests with managed Kubernetes output.
 
 ## Contributing
