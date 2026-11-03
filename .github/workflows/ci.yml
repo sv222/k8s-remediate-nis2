@@ -10,7 +10,11 @@ permissions:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -25,6 +29,7 @@ jobs:
       - name: Test (fuzz seed corpora run as normal tests)
         run: go test -race ./...
       - name: gofmt
+        if: runner.os == 'Linux'
         run: |
           out=$(gofmt -s -l .)
           if [ -n "$out" ]; then
@@ -32,6 +37,7 @@ jobs:
             exit 1
           fi
       - name: go mod tidy
+        if: runner.os == 'Linux'
         run: |
           go mod tidy
           git diff --exit-code go.mod go.sum
