@@ -7,6 +7,19 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Added
+
+- Prowler ASFF input (`prowler -M json-asff`). The format is detected, or set with `--input-format auto|ocsf|json|asff`. The resource name is taken from the ARN, so ASFF and OCSF reports of the same scan give the same files. Muted findings (ASFF `WARNING`) and findings with `Workflow.Status` `SUPPRESSED` are not remediated.
+- `--format sarif` writes SARIF 2.1.0 to stdout for GitHub code scanning and other CI tools. The summary line goes to stderr. Files are still written to `--out`.
+- kube-bench mappings for managed Kubernetes (`eks-*`, `aks-*` and `gke-*` benchmarks): guidance for the kubelet checks (anonymous auth, authorization mode, client CA, read-only port), for RBAC (cluster-admin, wildcards, default service accounts, service account tokens) and for the Pod Security Standard Baseline check of `gke-1.6.0` and later.
+- Kyverno policies `nis2-block-hostpid`, `nis2-block-hostipc` and `nis2-block-privilege-escalation`, mapped for every kube-bench benchmark that has these controls. They start in Audit mode, like the other policies.
+- Test reports `cmd/testdata/kube_bench_eks.json`, `kube_bench_aks.json` and `kube_bench_gke.json` with golden files. They are real kube-bench 0.16.0 JSON for `eks-1.8.0`, `aks-1.8` and `gke-1.9.0`, with statuses set by hand.
+- The e2e test covers the 14 checks added in 0.4.0. It seeds 11 of them in the emulator, applies the Terraform, runs the guidance steps and checks that Prowler reports them fixed. `cloudtrail_kms_encryption_enabled` stays `FAIL` because the emulator does not store the KMS key of a trail. The three IAM credential report checks cannot be seeded in the emulator.
+
+### Changed
+
+- `cis-1.12` control 5.2.3 (host PID) is now mapped, so the kube-bench demo report has one more row and writes `block_hostpid.yaml`.
+
 ## [0.4.0] - 2026-11-03
 
 ### Added
