@@ -30,12 +30,12 @@ k8s-remediate-nis2 remediate \
 ```
 
 ```text
-failed findings: 26, files written: 13 (nothing is applied), output: out
+failed findings: 27, files written: 14 (nothing is applied), output: out
 ```
 
 ```text
 out/
-  kyverno/     block_hostnet.yaml  block_privileged.yaml  require_nonroot.yaml
+  kyverno/     block_hostnet.yaml  block_hostpid.yaml  block_privileged.yaml  require_nonroot.yaml
   terraform/   s3_public_access_block__acme-public-logs.tf
                s3_encryption_kms__acme-backup-dump.tf
                sg_restrict_ssh__sg-a899c3f6063affe1f.tf
@@ -80,8 +80,8 @@ each input file (of the bytes that were parsed) and of each generated file, the 
 version, the AWS account and the open items per row.
 
 ```text
-Records read: 143 | Failed findings (FAIL): 23 | Manual WARN treated as gap: 3 | Passed: 66 | Manual or not assessed: 51 | Other status: 0 | Suppressed (muted): 0 | Duplicate records ignored: 0
-Status of the 26 rows below: code generated: 6 | follow-up required: 6 | guidance only: 2 | no mapping: 12 | skipped: 0
+Records read: 143 | Failed findings (FAIL): 23 | Manual WARN treated as gap: 4 | Passed: 66 | Manual or not assessed: 50 | Other status: 0 | Suppressed (muted): 0 | Duplicate records ignored: 0
+Status of the 27 rows below: code generated: 6 | follow-up required: 7 | guidance only: 2 | no mapping: 12 | skipped: 0
 ```
 
 ## Notice and disclaimer
@@ -125,12 +125,24 @@ terraform plan                              # 5. plan, then apply what you under
 
 Step 3 is yours: read `remediation/mapping.md` and every generated file.
 
-Flags: `--prowler FILE`, `--kube-bench FILE`, `--out DIR` (default `./remediation`),
-`--export-evidence`, `--force`. Use at least one scanner flag. The output directory
+Flags: `--prowler FILE`, `--input-format auto|ocsf|json|asff` (default `auto`), `--kube-bench FILE`,
+`--out DIR` (default `./remediation`), `--format text|sarif` (default `text`), `--export-evidence`,
+`--force`. Use at least one scanner flag. The output directory
 must be empty. `--force` allows a non-empty directory and removes only the files listed
 in its `manifest.json` from the previous run, so old `.tf` files cannot be applied by
 accident. Exit code `0` means success, also when some findings have no mapping. Exit
 code `2` means an error.
+
+`--format sarif` prints SARIF 2.1.0 to stdout and the summary line to stderr. Each row of
+`mapping.md` is one result. Its location is the first generated file, or the input report when
+nothing was generated. Use a relative `--out` and input path, so code scanning can link the files:
+
+```sh
+k8s-remediate-nis2 remediate --prowler prowler.ocsf.json --out remediation --format sarif > nis2.sarif
+```
+
+Upload `nis2.sarif` with `github/codeql-action/upload-sarif`. Severity `critical` and `high` become
+`error`, `medium` becomes `warning`, the rest `note`. kube-bench findings are `medium`.
 
 A Prowler report must hold one AWS account. A report with several accounts is refused:
 run the tool once per account. Muted (suppressed) Prowler findings are not remediated.
@@ -170,10 +182,16 @@ They are counted and listed in `evidence.md`.
 
 ### Supported input
 
-- Prowler `json-ocsf` (`prowler -M json-ocsf`) and the legacy `json` of Prowler 3.
-  Prowler ASFF output is not supported.
+- Prowler `json-ocsf` (`prowler -M json-ocsf`), `json-asff` (`prowler -M json-asff`) and the
+  legacy `json` of Prowler 3. The format is detected per record. `--input-format` makes a
+  mismatch an error. ASFF has only the resource ARN, so the resource name is taken from the
+  ARN (`arn:aws:s3:::bucket` becomes `bucket`, `.../vpc/vpc-1` becomes `vpc-1`, account-wide
+  ARNs become the account ID). ASFF `WARNING` (muted in Prowler) and `Workflow.Status`
+  `SUPPRESSED` count as suppressed. Findings of other Security Hub products are refused.
 - kube-bench JSON. IDs are mapped for the CIS, EKS, AKS, GKE, ACK, k3s, RKE, RKE2,
-  OpenShift, MicroK8s and TKGI benchmarks listed in `mapping/mappings.yaml`.
+  OpenShift, MicroK8s and TKGI benchmarks listed in `mapping/mappings.yaml`. The kubelet,
+  RBAC and Pod Security Standard entries are mapped for the managed benchmarks (`eks-*`,
+  `aks-*`, `gke-*`) only.
 - In `cis-1.12`, kube-bench reports the pod security controls as manual `WARN`, never
   `FAIL`. The tool treats a manual `WARN` of a mapped control as a gap. It also reads the
   `(Manual)` ending of the control text, because `type` can be empty.
@@ -213,6 +231,12 @@ summaries, not legal text. DORA references are in `mapping.md`.
 | kube-bench | privileged containers (5.2.2; 5.2.1 and 4.2.1 in other benchmarks) | Kyverno `nis2-block-privileged` | (i), (g) | A.8.9 | template |
 | kube-bench | host network (5.2.5; 5.2.4 and 4.2.4) | Kyverno `nis2-block-hostnetwork` | (i), (g) | A.8.22 | template |
 | kube-bench | root containers (5.2.7; 5.2.6 and 4.2.6) | Kyverno `nis2-require-nonroot` | (i), (g) | A.8.9 | template |
+| kube-bench | host PID (5.2.3; 5.2.2 and 4.2.2) | Kyverno `nis2-block-hostpid` | (i), (g) | A.8.9 | template |
+| kube-bench | host IPC (5.2.4; 5.2.3 and 4.2.3) | Kyverno `nis2-block-hostipc` | (i), (g) | A.8.9 | template |
+| kube-bench | `allowPrivilegeEscalation` (5.2.6; 5.2.5 and 4.2.5) | Kyverno `nis2-block-privilege-escalation`. It rejects `true`, not an unset field | (i), (g) | A.8.9 | template |
+| kube-bench (EKS, AKS, GKE) | kubelet anonymous auth, authorization mode, client CA, read-only port (3.2.1 to 3.2.4) | Steps per provider: node template, nodeadm or node image upgrade | (i), (g) | A.8.5, A.5.15, A.8.9 | guidance |
+| kube-bench (EKS, AKS, GKE) | cluster-admin, wildcards, default service accounts, service account tokens (4.1.1, 4.1.3, 4.1.5, 4.1.6; 4.1.4 and 4.1.5 in GKE 1.6+) | `kubectl` and `jq` commands to find and narrow them | (i) | A.8.2, A.5.15, A.5.18 | guidance |
+| kube-bench (GKE 1.6+) | Pod Security Standard Baseline (4.2.1) | Steps to label namespaces with `pod-security.kubernetes.io/enforce=baseline` after a dry run | (i), (g) | A.8.9 | guidance |
 
 The `regional` option applies to `ec2_ebs_default_encryption`. This setting exists per
 AWS region, so the template gets the region of the finding and the file name includes it.
@@ -242,35 +266,52 @@ flowchart LR
 ## How it was tested
 
 `make e2e` (`scripts/e2e.sh`, needs Docker) tests the AWS fixes against the Floci AWS
-emulator. It creates bad resources for 20 Prowler checks and runs real Prowler 5.45. It
+emulator. It creates bad resources for 34 Prowler checks and runs real Prowler 5.45. It
 runs `remediate`, then Terraform 1.16.5 `validate`, `plan` and `apply`. Then it does the
 follow-up steps from the guidance text and runs Prowler again. It fails if a covered check
 still reports `FAIL`.
 
 | Prowler scan | FAIL | PASS |
 |---|---|---|
-| Before | 50 | 51 |
-| After `terraform apply` (33 resources added) | 13 | 88 |
-| After the guidance follow-up steps | 0 | 103 |
+| Before | 73 | 59 |
+| After `terraform apply` (47 resources added) | 22 | 112 |
+| After the guidance follow-up steps | 2 | 134 |
 
-The 13 failures after `apply` are open security group rules, network ACL entries and
-EKS settings. The tool leaves these to you on purpose. The e2e script also checks that
-the SSH group got only port 22 and the RDP group only port 3389. It does not model log
-delivery: the emulator accepts SSE-KMS on the log target bucket, which real AWS does not. The check
+The 22 failures after `apply` are open security group rules, network ACL entries, the
+default security groups, EKS settings, the existing trail, the KMS key and the RDS instance.
+The tool leaves these to you on purpose. The follow-up steps run the commands of the guidance
+text: for example the RDS instance moves to an encrypted copy of a snapshot. The 2 failures
+left are `cloudtrail_kms_encryption_enabled`: the emulator does not store the KMS key of a
+trail, so this check stays `FAIL` and the test expects that. The e2e script also checks that
+the SSH group got only port 22 and the RDP group only port 3389, and that the password
+policy, the multi-region trail and the flow logs of every VPC have the values of the
+templates. It does not model log delivery: the emulator accepts SSE-KMS on the log target
+bucket, which real AWS does not. The check
 `ec2_securitygroup_allow_ingress_from_internet_to_any_port` cannot be created in the
-emulator, so it was not tested. The emulator has no `UpdateClusterConfig`, so the EKS
-step recreated the mock cluster with the target settings.
-
-The 14 checks added in 0.4.0 (IAM, CloudTrail, VPC flow logs, EKS logging, KMS, RDS and the
-default security group) are not in this e2e test yet. Their unit and golden tests use a
-hand-made report in the Prowler 5.45 OCSF format (`cmd/testdata/prowler_aws_more.json`), and
-`make tf-check` validates their Terraform.
+emulator, so it was not tested. The emulator has no `UpdateClusterConfig` and no
+`AssociateEncryptionConfig`, so the EKS step recreated the mock cluster with the target
+endpoint, logging and secrets encryption settings. `iam_root_mfa_enabled`,
+`iam_no_root_access_key` and `iam_user_mfa_enabled_console_access` cannot be seeded: the
+emulator has no root credentials and writes `TRUE`/`FALSE` in the credential report, which
+Prowler compares in lower case. The emulator runs with `FLOCI_SERVICES_RDS_MOCK=true`, so the
+RDS instance has no real database engine.
 
 - **kube-bench:** a real kube-bench 0.16.0 run on Kubernetes 1.37 (kind) gave 63 PASS,
-  12 FAIL and 56 WARN with the default service account. Controls 5.2.2, 5.2.5 and 5.2.7
+  12 FAIL and 56 WARN with the default service account. Controls 5.2.2, 5.2.3, 5.2.5 and 5.2.7
   are manual `WARN` checks, and the tool handles them. kube-bench chose `cis-1.12` itself.
-- **Kyverno:** `make policy-test` runs the three policies through the Kyverno 1.19.1 CLI
-  against good and bad pods. A real Kyverno 1.19.1 admission also tested the three policies.
+- **Managed kube-bench:** `cmd/testdata/kube_bench_{eks,aks,gke}.json` are the JSON of kube-bench
+  0.16.0 run with `--benchmark eks-1.8.0`, `aks-1.8` and `gke-1.9.0` outside a cluster. The
+  statuses of the automated checks were set by hand, because that run had no kubelet or
+  `kubectl`. Golden tests cover them. The IDs of all mapped controls are checked against the
+  kube-bench 0.16.0 config (`mapping/testdata/kube_bench_0.16.0_ids.tsv`).
+- **Prowler ASFF:** `cmd/testdata/prowler_asff.json` is `prowler_ocsf.json` converted with the
+  field rules of Prowler 5.45 (`prowler/lib/outputs/asff/asff.py`). A test checks that both give
+  the same output. `internal/prowler/testdata/asff.json` is real Prowler 5.45 ASFF output.
+- **SARIF:** the output of the demo reports validates against the SARIF 2.1.0 JSON schema. An
+  upload to GitHub code scanning was not tested.
+- **Kyverno:** `make policy-test` runs the six policies through the Kyverno 1.19.1 CLI
+  against good and bad pods. A real Kyverno 1.19.1 admission tested the first three policies,
+  not the host PID, host IPC and privilege escalation policies.
 - **Unit and property tests:** `make test` compares output with golden files in
   `cmd/testdata/golden`. Property tests check that no generated `.tf` contains an
   internet-wide CIDR for random resource IDs, that file names stay inside the output
@@ -286,23 +327,25 @@ hand-made report in the Prowler 5.45 OCSF format (`cmd/testdata/prowler_aws_more
 
 Not verified:
 
-- The checks added in 0.4.0 against the emulator or real AWS.
+- The three IAM credential report checks against the emulator, and the CloudTrail KMS step.
 - Real AWS accounts. A green emulator run does not prove that AWS accepts every change.
 - Kyverno matching of the `pods/ephemeralcontainers` subresource on a live cluster. The
   Kyverno CLI test loads the policies but does not model subresource requests.
 - The release workflow (SBOM, cosign signature). It runs only on a tag.
-- kube-bench output from EKS, AKS or GKE.
+- kube-bench output from a real EKS, AKS or GKE cluster. The guidance for these providers was not
+  run against them.
 - Other kube-bench benchmark versions end to end. IDs are checked against kube-bench 0.16.0 only.
 - Review of the mappings by legal or compliance experts.
 
 ## Limitations and roadmap
 
-- The mapping set covers 35 Prowler checks. Many other failed checks still show `no mapping`.
+- The mapping set covers 35 Prowler checks and 15 kube-bench controls. Many other failed
+  checks still show `no mapping`.
 - The tool does not scan and does not remove existing rules.
 - Terraform files are snippets per resource. You merge them into your own code and state.
-- Roadmap: review of the mappings by compliance experts, e2e tests for the checks added in
-  0.4.0, more Prowler checks (for example GuardDuty, Config and more encryption at rest), and
-  kube-bench tests with managed Kubernetes output.
+- Roadmap: review of the mappings by compliance experts, more Prowler checks (for example
+  GuardDuty, Config and more encryption at rest), kube-bench runs on real EKS, AKS and GKE
+  clusters, and a tested upload of the SARIF output to GitHub code scanning.
 
 ## Contributing
 
