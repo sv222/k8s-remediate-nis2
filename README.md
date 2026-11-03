@@ -230,7 +230,7 @@ flowchart LR
   C --> H[out/evidence.md]
 ```
 
-- **It does not widen access.** Templates only tighten settings. Each security group
+- **It does not widen access.** Templates only tighten settings, with one exception: the IAM password policy template replaces the whole account policy, so it can weaken a stricter existing length, `max_password_age` or `hard_expiry`. Each security group
   rule has a fixed port and a CIDR chosen for that group. The CIDR variables reject
   `0.0.0.0/0` and wide public ranges, and tests check that no generated `.tf` contains an
   internet-wide CIDR.
