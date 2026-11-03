@@ -70,6 +70,9 @@ func TestGolden(t *testing.T) {
 		{"two_buckets", []string{"--prowler", "testdata/prowler_two_buckets.json"}},
 		{"aws_gaps", []string{"--prowler", "testdata/prowler_aws_gaps.json"}},
 		{"aws_more", []string{"--prowler", "testdata/prowler_aws_more.json"}},
+		{"kube_bench_eks", []string{"--kube-bench", "testdata/kube_bench_eks.json"}},
+		{"kube_bench_aks", []string{"--kube-bench", "testdata/kube_bench_aks.json"}},
+		{"kube_bench_gke", []string{"--kube-bench", "testdata/kube_bench_gke.json"}},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {

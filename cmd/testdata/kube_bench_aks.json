@@ -1,0 +1,1121 @@
+{
+  "Controls": [
+    {
+      "id": "1",
+      "version": "aks-1.8",
+      "detected_version": "1.33",
+      "text": "Control Plane Components",
+      "node_type": "master",
+      "tests": null,
+      "total_pass": 0,
+      "total_fail": 0,
+      "total_warn": 0,
+      "total_info": 0
+    },
+    {
+      "id": "2",
+      "version": "aks-1.8",
+      "detected_version": "1.33",
+      "text": "Control Plane Configuration",
+      "node_type": "controlplane",
+      "tests": [
+        {
+          "section": "2.1",
+          "type": "",
+          "pass": 0,
+          "fail": 0,
+          "warn": 1,
+          "info": 0,
+          "desc": "Logging",
+          "results": [
+            {
+              "test_number": "2.1.1",
+              "test_desc": "Enable audit Logs",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Azure audit logs are enabled and managed in the Azure portal. To enable log collection for\nthe Kubernetes master components in your AKS cluster, open the Azure portal in a web\nbrowser and complete the following steps:\n1. Select the resource group for your AKS cluster, such as myResourceGroup. Don't\n   select the resource group that contains your individual AKS cluster resources, such\n   as MC_myResourceGroup_myAKSCluster_eastus.\n2. On the left-hand side, choose Diagnostic settings.\n3. Select your AKS cluster, such as myAKSCluster, then choose to Add diagnostic setting.\n4. Enter a name, such as myAKSClusterLogs, then select the option to Send to Log Analytics.\n5. Select an existing workspace or create a new one. If you create a workspace, provide\n   a workspace name, a resource group, and a location.\n6. In the list of available logs, select the logs you wish to enable. For this example,\n   enable the kube-audit and kube-audit-admin logs. Common logs include the kube-\n   apiserver, kube-controller-manager, and kube-scheduler. You can return and change\n   the collected logs once Log Analytics workspaces are enabled.\n7. When ready, select Save to enable collection of the selected logs.\n",
+              "test_info": [
+                "Azure audit logs are enabled and managed in the Azure portal. To enable log collection for\nthe Kubernetes master components in your AKS cluster, open the Azure portal in a web\nbrowser and complete the following steps:\n1. Select the resource group for your AKS cluster, such as myResourceGroup. Don't\n   select the resource group that contains your individual AKS cluster resources, such\n   as MC_myResourceGroup_myAKSCluster_eastus.\n2. On the left-hand side, choose Diagnostic settings.\n3. Select your AKS cluster, such as myAKSCluster, then choose to Add diagnostic setting.\n4. Enter a name, such as myAKSClusterLogs, then select the option to Send to Log Analytics.\n5. Select an existing workspace or create a new one. If you create a workspace, provide\n   a workspace name, a resource group, and a location.\n6. In the list of available logs, select the logs you wish to enable. For this example,\n   enable the kube-audit and kube-audit-admin logs. Common logs include the kube-\n   apiserver, kube-controller-manager, and kube-scheduler. You can return and change\n   the collected logs once Log Analytics workspaces are enabled.\n7. When ready, select Save to enable collection of the selected logs.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            }
+          ]
+        }
+      ],
+      "total_pass": 0,
+      "total_fail": 0,
+      "total_warn": 1,
+      "total_info": 0
+    },
+    {
+      "id": "3",
+      "version": "aks-1.8",
+      "detected_version": "1.33",
+      "text": "Worker Node Security Configuration",
+      "node_type": "node",
+      "tests": [
+        {
+          "section": "3.1",
+          "type": "",
+          "pass": 4,
+          "fail": 0,
+          "warn": 0,
+          "info": 0,
+          "desc": "Worker Node Configuration Files",
+          "results": [
+            {
+              "test_number": "3.1.1",
+              "test_desc": "Ensure that the kubeconfig file permissions are set to 644 or more restrictive (Automated)",
+              "audit": "/bin/sh -c 'if test -e /etc/kubernetes/kubelet.conf; then stat -c permissions=%a /etc/kubernetes/kubelet.conf; fi' ",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "",
+              "remediation": "Run the below command (based on the file location on your system) on each worker node.\nFor example:\n  chmod 644 /etc/kubernetes/kubelet.conf\n",
+              "test_info": [
+                "Run the below command (based on the file location on your system) on each worker node.\nFor example:\n  chmod 644 /etc/kubernetes/kubelet.conf\n"
+              ],
+              "status": "PASS",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": "'permissions' is present"
+            },
+            {
+              "test_number": "3.1.2",
+              "test_desc": "Ensure that the kubelet kubeconfig file ownership is set to root:root (Automated)",
+              "audit": "/bin/sh -c 'if test -e /etc/kubernetes/kubelet.conf; then stat -c %U:%G /etc/kubernetes/kubelet.conf; fi' ",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "",
+              "remediation": "Run the below command (based on the file location on your system) on each worker node.\nFor example:\n  chown root:root /etc/kubernetes/kubelet.conf\n",
+              "test_info": [
+                "Run the below command (based on the file location on your system) on each worker node.\nFor example:\n  chown root:root /etc/kubernetes/kubelet.conf\n"
+              ],
+              "status": "PASS",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": "'root:root' is present"
+            },
+            {
+              "test_number": "3.1.3",
+              "test_desc": "Ensure that the azure.json file has permissions set to 644 or more restrictive (Automated)",
+              "audit": "/bin/sh -c 'if test -e /var/lib/kubelet/config.yaml; then stat -c permissions=%a /var/lib/kubelet/config.yaml; fi' ",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "",
+              "remediation": "Run the following command on each worker node:\n  chmod 644 $azurejson\n",
+              "test_info": [
+                "Run the following command on each worker node:\n  chmod 644 $azurejson\n"
+              ],
+              "status": "PASS",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": "'permissions' is present"
+            },
+            {
+              "test_number": "3.1.4",
+              "test_desc": "Ensure that the azure.json file ownership is set to root:root (Automated)",
+              "audit": "/bin/sh -c 'if test -e /var/lib/kubelet/config.yaml; then stat -c %U:%G /var/lib/kubelet/config.yaml; fi' ",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "",
+              "remediation": "Run the following command on each worker node:\n  chown root:root $azurejson\n",
+              "test_info": [
+                "Run the following command on each worker node:\n  chown root:root $azurejson\n"
+              ],
+              "status": "PASS",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": "'root:root' is present"
+            }
+          ]
+        },
+        {
+          "section": "3.2",
+          "type": "",
+          "pass": 8,
+          "fail": 1,
+          "warn": 0,
+          "info": 0,
+          "desc": "Kubelet",
+          "results": [
+            {
+              "test_number": "3.2.1",
+              "test_desc": "Ensure that the --anonymous-auth argument is set to false (Automated)",
+              "audit": "/bin/ps -fC $kubeletbin",
+              "AuditEnv": "",
+              "AuditConfig": "/bin/cat /var/lib/kubelet/config.yaml",
+              "type": "",
+              "remediation": "If using a Kubelet config file, edit the file to set authentication: anonymous: enabled to\nfalse.\nIf using executable arguments, edit the kubelet service file\n/etc/systemd/system/kubelet.service.d/10-kubeadm.conf on each worker node and\nset the below parameter in KUBELET_SYSTEM_PODS_ARGS variable.\n--anonymous-auth=false\nBased on your system, restart the kubelet service. For example:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\n",
+              "test_info": [
+                "If using a Kubelet config file, edit the file to set authentication: anonymous: enabled to\nfalse.\nIf using executable arguments, edit the kubelet service file\n/etc/systemd/system/kubelet.service.d/10-kubeadm.conf on each worker node and\nset the below parameter in KUBELET_SYSTEM_PODS_ARGS variable.\n--anonymous-auth=false\nBased on your system, restart the kubelet service. For example:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\n"
+              ],
+              "status": "PASS",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": ""
+            },
+            {
+              "test_number": "3.2.2",
+              "test_desc": "Ensure that the --authorization-mode argument is not set to AlwaysAllow (Automated)",
+              "audit": "/bin/ps -fC $kubeletbin",
+              "AuditEnv": "",
+              "AuditConfig": "/bin/cat /var/lib/kubelet/config.yaml",
+              "type": "",
+              "remediation": "If using a Kubelet config file, edit the file to set authorization: mode to Webhook. If\nusing executable arguments, edit the kubelet service file\n/etc/systemd/system/kubelet.service.d/10-kubeadm.conf on each worker node and\nset the below parameter in KUBELET_AUTHZ_ARGS variable.\n--authorization-mode=Webhook\nBased on your system, restart the kubelet service. For example:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\n",
+              "test_info": [
+                "If using a Kubelet config file, edit the file to set authorization: mode to Webhook. If\nusing executable arguments, edit the kubelet service file\n/etc/systemd/system/kubelet.service.d/10-kubeadm.conf on each worker node and\nset the below parameter in KUBELET_AUTHZ_ARGS variable.\n--authorization-mode=Webhook\nBased on your system, restart the kubelet service. For example:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\n"
+              ],
+              "status": "PASS",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": ""
+            },
+            {
+              "test_number": "3.2.3",
+              "test_desc": "Ensure that the --client-ca-file argument is set as appropriate (Automated)",
+              "audit": "/bin/ps -fC $kubeletbin",
+              "AuditEnv": "",
+              "AuditConfig": "/bin/cat /var/lib/kubelet/config.yaml",
+              "type": "",
+              "remediation": "If using a Kubelet config file, edit the file to set authentication: x509: clientCAFile to\nthe location of the client CA file.\nIf using command line arguments, edit the kubelet service file\n/etc/systemd/system/kubelet.service.d/10-kubeadm.conf on each worker node and\nset the below parameter in KUBELET_AUTHZ_ARGS variable.\n--client-ca-file=<path/to/client-ca-file>\nBased on your system, restart the kubelet service. For example:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\n",
+              "test_info": [
+                "If using a Kubelet config file, edit the file to set authentication: x509: clientCAFile to\nthe location of the client CA file.\nIf using command line arguments, edit the kubelet service file\n/etc/systemd/system/kubelet.service.d/10-kubeadm.conf on each worker node and\nset the below parameter in KUBELET_AUTHZ_ARGS variable.\n--client-ca-file=<path/to/client-ca-file>\nBased on your system, restart the kubelet service. For example:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\n"
+              ],
+              "status": "PASS",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": ""
+            },
+            {
+              "test_number": "3.2.4",
+              "test_desc": "Ensure that the --read-only-port is secured (Automated)",
+              "audit": "/bin/ps -fC $kubeletbin",
+              "AuditEnv": "",
+              "AuditConfig": "/bin/cat /var/lib/kubelet/config.yaml",
+              "type": "",
+              "remediation": "If using a Kubelet config file, edit the file to set readOnlyPort to 0.\nIf using command line arguments, edit the kubelet service file\n/etc/systemd/system/kubelet.service.d/10-kubeadm.conf on each worker node and\nset the below parameter in KUBELET_SYSTEM_PODS_ARGS variable.\n--read-only-port=0\nBased on your system, restart the kubelet service. For example:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\n",
+              "test_info": [
+                "If using a Kubelet config file, edit the file to set readOnlyPort to 0.\nIf using command line arguments, edit the kubelet service file\n/etc/systemd/system/kubelet.service.d/10-kubeadm.conf on each worker node and\nset the below parameter in KUBELET_SYSTEM_PODS_ARGS variable.\n--read-only-port=0\nBased on your system, restart the kubelet service. For example:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\n"
+              ],
+              "status": "FAIL",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": ""
+            },
+            {
+              "test_number": "3.2.5",
+              "test_desc": "Ensure that the --streaming-connection-idle-timeout argument is not set to 0 (Automated)",
+              "audit": "/bin/ps -fC $kubeletbin",
+              "AuditEnv": "",
+              "AuditConfig": "/bin/cat /var/lib/kubelet/config.yaml",
+              "type": "",
+              "remediation": "If using a Kubelet config file, edit the file to set streamingConnectionIdleTimeout to a\nvalue other than 0.\nIf using command line arguments, edit the kubelet service file\n/etc/systemd/system/kubelet.service.d/10-kubeadm.conf on each worker node and\nset the below parameter in KUBELET_SYSTEM_PODS_ARGS variable.\n--streaming-connection-idle-timeout=5m\nBased on your system, restart the kubelet service. For example:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\n",
+              "test_info": [
+                "If using a Kubelet config file, edit the file to set streamingConnectionIdleTimeout to a\nvalue other than 0.\nIf using command line arguments, edit the kubelet service file\n/etc/systemd/system/kubelet.service.d/10-kubeadm.conf on each worker node and\nset the below parameter in KUBELET_SYSTEM_PODS_ARGS variable.\n--streaming-connection-idle-timeout=5m\nBased on your system, restart the kubelet service. For example:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\n"
+              ],
+              "status": "PASS",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": ""
+            },
+            {
+              "test_number": "3.2.6",
+              "test_desc": "Ensure that the --make-iptables-util-chains argument is set to true (Automated) ",
+              "audit": "/bin/ps -fC $kubeletbin",
+              "AuditEnv": "",
+              "AuditConfig": "/bin/cat /var/lib/kubelet/config.yaml",
+              "type": "",
+              "remediation": "If using a Kubelet config file, edit the file to set makeIPTablesUtilChains: true.\nIf using command line arguments, edit the kubelet service file\n/etc/systemd/system/kubelet.service.d/10-kubeadm.conf on each worker node and\nremove the --make-iptables-util-chains argument from the\nKUBELET_SYSTEM_PODS_ARGS variable.\nBased on your system, restart the kubelet service. For example:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\n",
+              "test_info": [
+                "If using a Kubelet config file, edit the file to set makeIPTablesUtilChains: true.\nIf using command line arguments, edit the kubelet service file\n/etc/systemd/system/kubelet.service.d/10-kubeadm.conf on each worker node and\nremove the --make-iptables-util-chains argument from the\nKUBELET_SYSTEM_PODS_ARGS variable.\nBased on your system, restart the kubelet service. For example:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\n"
+              ],
+              "status": "PASS",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": ""
+            },
+            {
+              "test_number": "3.2.7",
+              "test_desc": "Ensure that the --eventRecordQPS argument is set to 0 or a level which ensures appropriate event capture (Automated)",
+              "audit": "/bin/ps -fC $kubeletbin",
+              "AuditEnv": "",
+              "AuditConfig": "/bin/cat /var/lib/kubelet/config.yaml",
+              "type": "",
+              "remediation": "If using a Kubelet config file, edit the file to set the 'eventRecordQPS' value to an appropriate level (e.g., 5).\nIf using executable arguments, check the Kubelet service file `/etc/systemd/system/kubelet.service.d/10-kubeadm.conf` on each worker node, and add the following parameter to the `KUBELET_ARGS` variable:\n--eventRecordQPS=5\nEnsure that there is no conflicting `--eventRecordQPS` setting in the service file that overrides the config file.\nAfter making the changes, restart the Kubelet service:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\nsystemctl status kubelet -l\n",
+              "test_info": [
+                "If using a Kubelet config file, edit the file to set the 'eventRecordQPS' value to an appropriate level (e.g., 5).\nIf using executable arguments, check the Kubelet service file `/etc/systemd/system/kubelet.service.d/10-kubeadm.conf` on each worker node, and add the following parameter to the `KUBELET_ARGS` variable:\n--eventRecordQPS=5\nEnsure that there is no conflicting `--eventRecordQPS` setting in the service file that overrides the config file.\nAfter making the changes, restart the Kubelet service:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\nsystemctl status kubelet -l\n"
+              ],
+              "status": "PASS",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": ""
+            },
+            {
+              "test_number": "3.2.8",
+              "test_desc": "Ensure that the --rotate-certificates argument is not set to false (Automated)",
+              "audit": "/bin/ps -fC $kubeletbin",
+              "AuditEnv": "",
+              "AuditConfig": "/bin/cat /var/lib/kubelet/config.yaml",
+              "type": "",
+              "remediation": "If modifying the Kubelet config file, edit the `kubelet-config.json` file located at `/etc/kubernetes/kubelet/kubelet-config.json` and set the following parameter to `true`:\n\"rotateCertificates\": true\nEnsure that the Kubelet service file located at `/etc/systemd/system/kubelet.service.d/10-kubelet-args.conf` does not define the `--rotate-certificates` argument as `false`, as this would override the config file.\nIf using executable arguments, add the following line to the `KUBELET_CERTIFICATE_ARGS` variable:\n--rotate-certificates=true\nAfter making the necessary changes, restart the Kubelet service:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\nsystemctl status kubelet -l\n",
+              "test_info": [
+                "If modifying the Kubelet config file, edit the `kubelet-config.json` file located at `/etc/kubernetes/kubelet/kubelet-config.json` and set the following parameter to `true`:\n\"rotateCertificates\": true\nEnsure that the Kubelet service file located at `/etc/systemd/system/kubelet.service.d/10-kubelet-args.conf` does not define the `--rotate-certificates` argument as `false`, as this would override the config file.\nIf using executable arguments, add the following line to the `KUBELET_CERTIFICATE_ARGS` variable:\n--rotate-certificates=true\nAfter making the necessary changes, restart the Kubelet service:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\nsystemctl status kubelet -l\n"
+              ],
+              "status": "PASS",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": ""
+            },
+            {
+              "test_number": "3.2.9",
+              "test_desc": "Ensure that the RotateKubeletServerCertificate argument is set to true (Automated)",
+              "audit": "/bin/ps -fC $kubeletbin",
+              "AuditEnv": "",
+              "AuditConfig": "/bin/cat /var/lib/kubelet/config.yaml",
+              "type": "",
+              "remediation": "Edit the kubelet service file /etc/systemd/system/kubelet.service.d/10-kubeadm.conf\non each worker node and set the below parameter in KUBELET_CERTIFICATE_ARGS variable.\n--feature-gates=RotateKubeletServerCertificate=true\nBased on your system, restart the kubelet service. For example:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\n",
+              "test_info": [
+                "Edit the kubelet service file /etc/systemd/system/kubelet.service.d/10-kubeadm.conf\non each worker node and set the below parameter in KUBELET_CERTIFICATE_ARGS variable.\n--feature-gates=RotateKubeletServerCertificate=true\nBased on your system, restart the kubelet service. For example:\nsystemctl daemon-reload\nsystemctl restart kubelet.service\n"
+              ],
+              "status": "PASS",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": ""
+            }
+          ]
+        }
+      ],
+      "total_pass": 12,
+      "total_fail": 1,
+      "total_warn": 0,
+      "total_info": 0
+    },
+    {
+      "id": "4",
+      "version": "aks-1.8",
+      "detected_version": "1.33",
+      "text": "Policies",
+      "node_type": "policies",
+      "tests": [
+        {
+          "section": "4.1",
+          "type": "",
+          "pass": 0,
+          "fail": 0,
+          "warn": 12,
+          "info": 0,
+          "desc": "RBAC and Service Accounts",
+          "results": [
+            {
+              "test_number": "4.1.1",
+              "test_desc": "Ensure that the cluster-admin role is only used where required (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Identify all clusterrolebindings to the cluster-admin role using:\n  kubectl get clusterrolebindings --no-headers | grep cluster-admin\nReview if each of them actually needs this role. If not, remove the binding:\n  kubectl delete clusterrolebinding <binding-name>\nWhere possible, assign a less privileged ClusterRole.\n",
+              "test_info": [
+                "Identify all clusterrolebindings to the cluster-admin role using:\n  kubectl get clusterrolebindings --no-headers | grep cluster-admin\nReview if each of them actually needs this role. If not, remove the binding:\n  kubectl delete clusterrolebinding <binding-name>\nWhere possible, assign a less privileged ClusterRole.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.1.2",
+              "test_desc": "Minimize access to secrets (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Identify all roles that grant access to secrets via get/list/watch verbs.\nUse `kubectl edit role -n <namespace> <name>` to remove these permissions.\nAlternatively, create a new least-privileged role that excludes secret access.\n",
+              "test_info": [
+                "Identify all roles that grant access to secrets via get/list/watch verbs.\nUse `kubectl edit role -n <namespace> <name>` to remove these permissions.\nAlternatively, create a new least-privileged role that excludes secret access.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.1.3",
+              "test_desc": "Minimize wildcard use in Roles and ClusterRoles (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Identify roles and clusterroles using wildcards (*) in 'verbs', 'resources', or 'apiGroups'.\nReplace wildcards with specific values to enforce least privilege access.\nUse `kubectl edit role -n <namespace> <name>` or `kubectl edit clusterrole <name>` to update.\n",
+              "test_info": [
+                "Identify roles and clusterroles using wildcards (*) in 'verbs', 'resources', or 'apiGroups'.\nReplace wildcards with specific values to enforce least privilege access.\nUse `kubectl edit role -n <namespace> <name>` or `kubectl edit clusterrole <name>` to update.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.1.4",
+              "test_desc": "Minimize access to create pods (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Review all roles and clusterroles that have \"create\" permission on \"pods\".\n Where possible, remove or restrict this permission to only required service accounts.\nUse:\n  - `kubectl edit role -n <namespace> <role>`\n  - `kubectl edit clusterrole <name>`\nApply least privilege principle across the cluster.\n",
+              "test_info": [
+                "Review all roles and clusterroles that have \"create\" permission on \"pods\".\n Where possible, remove or restrict this permission to only required service accounts.\nUse:\n  - `kubectl edit role -n <namespace> <role>`\n  - `kubectl edit clusterrole <name>`\nApply least privilege principle across the cluster.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.1.5",
+              "test_desc": "Ensure that default service accounts are not actively used (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "1. Avoid using default service accounts for workloads.\n2. Set `automountServiceAccountToken: false` on all default SAs:\n   kubectl patch serviceaccount default -n <namespace> -p '{\"automountServiceAccountToken\": false}'\n3. Use custom service accounts with only the necessary permissions.\n",
+              "test_info": [
+                "1. Avoid using default service accounts for workloads.\n2. Set `automountServiceAccountToken: false` on all default SAs:\n   kubectl patch serviceaccount default -n <namespace> -p '{\"automountServiceAccountToken\": false}'\n3. Use custom service accounts with only the necessary permissions.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.1.6",
+              "test_desc": "Ensure that Service Account Tokens are only mounted where necessary (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Pods that do not need access to the Kubernetes API should not mount service account tokens.\nTo disable token mounting in a pod definition:\n```yaml\nspec:\n  automountServiceAccountToken: false\n```\nOr patch an existing pod's spec (recommended via workload template):\nPatch not possible for running pods \u2014 update the deployment YAML or recreate pods with updated spec.\n",
+              "test_info": [
+                "Pods that do not need access to the Kubernetes API should not mount service account tokens.\nTo disable token mounting in a pod definition:\n```yaml\nspec:\n  automountServiceAccountToken: false\n```\nOr patch an existing pod's spec (recommended via workload template):\nPatch not possible for running pods \u2014 update the deployment YAML or recreate pods with updated spec.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.1.7",
+              "test_desc": "Limit use of the Bind, Impersonate and Escalate permissions in the Kubernetes cluster (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Review ClusterRoles and Roles that grant the bind, impersonate, or escalate verbs.\nThese permissions should only be granted where they are strictly required for cluster operation.\nRemove these privileges from non-system users and service accounts where possible.\nTake care not to remove required permissions from Kubernetes system roles such as\nsystem:masters or clusterrole-aggregation-controller, as this may impact cluster functionality.\n",
+              "test_info": [
+                "Review ClusterRoles and Roles that grant the bind, impersonate, or escalate verbs.\nThese permissions should only be granted where they are strictly required for cluster operation.\nRemove these privileges from non-system users and service accounts where possible.\nTake care not to remove required permissions from Kubernetes system roles such as\nsystem:masters or clusterrole-aggregation-controller, as this may impact cluster functionality.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.1.8",
+              "test_desc": "Minimize access to create Persistent Volumes (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Review ClusterRoles and Roles that grant create access to PersistentVolume resources.\nCreation of PersistentVolumes should be limited to trusted administrators only.\nWhere possible, remove create permissions on PersistentVolume objects from non-administrative\nusers and service accounts to reduce the risk of privilege escalation via hostPath volumes.\n",
+              "test_info": [
+                "Review ClusterRoles and Roles that grant create access to PersistentVolume resources.\nCreation of PersistentVolumes should be limited to trusted administrators only.\nWhere possible, remove create permissions on PersistentVolume objects from non-administrative\nusers and service accounts to reduce the risk of privilege escalation via hostPath volumes.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.1.9",
+              "test_desc": "Minimize access to the proxy sub-resource of Nodes (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Review ClusterRoles and Roles that grant access to the proxy sub-resource of Node objects.\nLimit access to this sub-resource to trusted administrators only.\nRemoving unnecessary access reduces the risk of privilege escalation via the kubelet API\nand ensures cluster security controls, like audit logging and admission control, remain effective.\n",
+              "test_info": [
+                "Review ClusterRoles and Roles that grant access to the proxy sub-resource of Node objects.\nLimit access to this sub-resource to trusted administrators only.\nRemoving unnecessary access reduces the risk of privilege escalation via the kubelet API\nand ensures cluster security controls, like audit logging and admission control, remain effective.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.1.10",
+              "test_desc": "Minimize access to the approval sub-resource of CertificateSigningRequests objects (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Review ClusterRoles and Roles that grant access to update the approval sub-resource of CertificateSigningRequests (CSR) objects.\nLimit this access to trusted administrators only.\nRemoving unnecessary access reduces the risk of privilege escalation via approval of high-privileged certificates,\nwhich could allow creation of new cluster-admin level users.\n",
+              "test_info": [
+                "Review ClusterRoles and Roles that grant access to update the approval sub-resource of CertificateSigningRequests (CSR) objects.\nLimit this access to trusted administrators only.\nRemoving unnecessary access reduces the risk of privilege escalation via approval of high-privileged certificates,\nwhich could allow creation of new cluster-admin level users.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.1.11",
+              "test_desc": "Minimize access to webhook configuration objects (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Review ClusterRoles and Roles that grant access to create, modify, or delete\nvalidatingwebhookconfigurations or mutatingwebhookconfigurations.\nLimit this access to trusted administrators only.\nRemoving unnecessary access reduces the risk of privilege escalation or disruption\nof cluster operations via malicious or misconfigured webhooks.\n",
+              "test_info": [
+                "Review ClusterRoles and Roles that grant access to create, modify, or delete\nvalidatingwebhookconfigurations or mutatingwebhookconfigurations.\nLimit this access to trusted administrators only.\nRemoving unnecessary access reduces the risk of privilege escalation or disruption\nof cluster operations via malicious or misconfigured webhooks.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.1.12",
+              "test_desc": "Minimize access to the service account token creation (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Review ClusterRoles and Roles that grant access to create the token sub-resource of ServiceAccount objects.\nLimit this access to trusted administrators only.\nRemoving unnecessary access reduces the risk of privilege escalation or persistent unauthorized access\nto the cluster via service account tokens.\n",
+              "test_info": [
+                "Review ClusterRoles and Roles that grant access to create the token sub-resource of ServiceAccount objects.\nLimit this access to trusted administrators only.\nRemoving unnecessary access reduces the risk of privilege escalation or persistent unauthorized access\nto the cluster via service account tokens.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            }
+          ]
+        },
+        {
+          "section": "4.2",
+          "type": "",
+          "pass": 0,
+          "fail": 0,
+          "warn": 5,
+          "info": 0,
+          "desc": "Pod Security Policies",
+          "results": [
+            {
+              "test_number": "4.2.1",
+              "test_desc": "Minimize the admission of privileged containers (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Add a Pod Security Admission (PSA) policy to each namespace in the cluster to restrict the admission of privileged containers.\nTo enforce a restricted policy for a specific namespace, use the following command:\nkubectl label --overwrite ns NAMESPACE pod-security.kubernetes.io/enforce=restricted\nYou can also enforce PSA for all namespaces:\nkubectl label --overwrite ns --all pod-security.kubernetes.io/warn=baseline\nAdditionally, review the namespaces that should be excluded (e.g., `kube-system`, `gatekeeper-system`, `azure-arc`, `azure-extensions-usage-system`) and adjust your filtering if necessary.\nTo enable Pod Security Policies, refer to the detailed documentation for Kubernetes and Azure integration at:\nhttps://learn.microsoft.com/en-us/azure/governance/policy/concepts/policy-for-kubernetes\n",
+              "test_info": [
+                "Add a Pod Security Admission (PSA) policy to each namespace in the cluster to restrict the admission of privileged containers.\nTo enforce a restricted policy for a specific namespace, use the following command:\nkubectl label --overwrite ns NAMESPACE pod-security.kubernetes.io/enforce=restricted\nYou can also enforce PSA for all namespaces:\nkubectl label --overwrite ns --all pod-security.kubernetes.io/warn=baseline\nAdditionally, review the namespaces that should be excluded (e.g., `kube-system`, `gatekeeper-system`, `azure-arc`, `azure-extensions-usage-system`) and adjust your filtering if necessary.\nTo enable Pod Security Policies, refer to the detailed documentation for Kubernetes and Azure integration at:\nhttps://learn.microsoft.com/en-us/azure/governance/policy/concepts/policy-for-kubernetes\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.2.2",
+              "test_desc": "Minimize the admission of containers wishing to share the host process ID namespace (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Add a policy to each namespace in the cluster that restricts the admission of containers with hostPID. For namespaces that need it, ensure RBAC controls limit access to a specific service account.\nYou can label your namespaces as follows to restrict or enforce the policy:\nkubectl label --overwrite ns NAMESPACE pod-security.kubernetes.io/enforce=restricted\nYou can also use the following to warn about policies:\nkubectl label --overwrite ns --all pod-security.kubernetes.io/warn=baseline\nFor more information, refer to the official Kubernetes and Azure documentation on policies:\nhttps://learn.microsoft.com/en-us/azure/governance/policy/concepts/policy-for-kubernetes\n",
+              "test_info": [
+                "Add a policy to each namespace in the cluster that restricts the admission of containers with hostPID. For namespaces that need it, ensure RBAC controls limit access to a specific service account.\nYou can label your namespaces as follows to restrict or enforce the policy:\nkubectl label --overwrite ns NAMESPACE pod-security.kubernetes.io/enforce=restricted\nYou can also use the following to warn about policies:\nkubectl label --overwrite ns --all pod-security.kubernetes.io/warn=baseline\nFor more information, refer to the official Kubernetes and Azure documentation on policies:\nhttps://learn.microsoft.com/en-us/azure/governance/policy/concepts/policy-for-kubernetes\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.2.3",
+              "test_desc": "Minimize the admission of containers wishing to share the host IPC namespace (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Add policies to each namespace in the cluster which has user workloads to restrict the admission of hostIPC containers.\nYou can label your namespaces as follows to restrict or enforce the policy:\nkubectl label --overwrite ns NAMESPACE pod-security.kubernetes.io/enforce=restricted\nYou can also use the following to warn about policies:\nkubectl label --overwrite ns --all pod-security.kubernetes.io/warn=baseline\nFor more information, refer to the official Kubernetes and Azure documentation on policies:\nhttps://learn.microsoft.com/en-us/azure/governance/policy/concepts/policy-for-kubernetes\n",
+              "test_info": [
+                "Add policies to each namespace in the cluster which has user workloads to restrict the admission of hostIPC containers.\nYou can label your namespaces as follows to restrict or enforce the policy:\nkubectl label --overwrite ns NAMESPACE pod-security.kubernetes.io/enforce=restricted\nYou can also use the following to warn about policies:\nkubectl label --overwrite ns --all pod-security.kubernetes.io/warn=baseline\nFor more information, refer to the official Kubernetes and Azure documentation on policies:\nhttps://learn.microsoft.com/en-us/azure/governance/policy/concepts/policy-for-kubernetes\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.2.4",
+              "test_desc": "Minimize the admission of containers wishing to share the host network namespace (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Add policies to each namespace in the cluster which has user workloads to restrict the admission of hostNetwork containers.\nYou can label your namespaces as follows to restrict or enforce the policy:\nkubectl label --overwrite ns NAMESPACE pod-security.kubernetes.io/enforce=restricted\nYou can also use the following to warn about policies:\nkubectl label --overwrite ns --all pod-security.kubernetes.io/warn=baseline\nFor more information, refer to the official Kubernetes and Azure documentation on policies:\nhttps://learn.microsoft.com/en-us/azure/governance/policy/concepts/policy-for-kubernetes\n",
+              "test_info": [
+                "Add policies to each namespace in the cluster which has user workloads to restrict the admission of hostNetwork containers.\nYou can label your namespaces as follows to restrict or enforce the policy:\nkubectl label --overwrite ns NAMESPACE pod-security.kubernetes.io/enforce=restricted\nYou can also use the following to warn about policies:\nkubectl label --overwrite ns --all pod-security.kubernetes.io/warn=baseline\nFor more information, refer to the official Kubernetes and Azure documentation on policies:\nhttps://learn.microsoft.com/en-us/azure/governance/policy/concepts/policy-for-kubernetes\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.2.5",
+              "test_desc": "Minimize the admission of containers with allowPrivilegeEscalation (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Add policies to each namespace in the cluster which has user workloads to restrict the admission of containers with .spec.allowPrivilegeEscalation set to true.\nYou can label your namespaces as follows to restrict or enforce the policy:\nkubectl label --overwrite ns NAMESPACE pod-security.kubernetes.io/enforce=restricted\nYou can also use the following to warn about policies:\nkubectl label --overwrite ns --all pod-security.kubernetes.io/warn=baseline\nFor more information, refer to the official Kubernetes and Azure documentation on policies:\nhttps://learn.microsoft.com/en-us/azure/governance/policy/concepts/policy-for-kubernetes\n",
+              "test_info": [
+                "Add policies to each namespace in the cluster which has user workloads to restrict the admission of containers with .spec.allowPrivilegeEscalation set to true.\nYou can label your namespaces as follows to restrict or enforce the policy:\nkubectl label --overwrite ns NAMESPACE pod-security.kubernetes.io/enforce=restricted\nYou can also use the following to warn about policies:\nkubectl label --overwrite ns --all pod-security.kubernetes.io/warn=baseline\nFor more information, refer to the official Kubernetes and Azure documentation on policies:\nhttps://learn.microsoft.com/en-us/azure/governance/policy/concepts/policy-for-kubernetes\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            }
+          ]
+        },
+        {
+          "section": "4.4",
+          "type": "",
+          "pass": 0,
+          "fail": 0,
+          "warn": 1,
+          "info": 1,
+          "desc": "CNI Plugin",
+          "results": [
+            {
+              "test_number": "4.4.1",
+              "test_desc": "Ensure latest CNI version is used (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Review the documentation of AWS CNI plugin, and ensure latest CNI version is used.\n",
+              "test_info": [
+                "Review the documentation of AWS CNI plugin, and ensure latest CNI version is used.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.4.2",
+              "test_desc": "Ensure that all Namespaces have Network Policies defined (Automated)",
+              "audit": "ns_without_np=$(comm -23 \\\n  <(kubectl get ns -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\\n' | sort) \\\n  <(kubectl get networkpolicy --all-namespaces -o jsonpath='{.items[*].metadata.namespace}' | tr ' ' '\\n' | sort))\nif [ -z \"$ns_without_np\" ]; then echo \"ALL_NAMESPACES_HAVE_NETWORKPOLICIES\"; else echo \"MISSING_NETWORKPOLICIES\"; fi\n",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "skip",
+              "remediation": "Define at least one NetworkPolicy in each namespace to control pod-level traffic. Example:\n\nkubectl apply -n <namespace> -f - <<EOF\napiVersion: networking.k8s.io/v1\nkind: NetworkPolicy\nmetadata:\n  name: default-deny-all\nspec:\n  podSelector: {}\n  policyTypes:\n    - Ingress\n    - Egress\nEOF\n\nThis denies all traffic unless explicitly allowed. Review and adjust policies per namespace as needed.\n",
+              "test_info": [
+                "Define at least one NetworkPolicy in each namespace to control pod-level traffic. Example:\n\nkubectl apply -n <namespace> -f - <<EOF\napiVersion: networking.k8s.io/v1\nkind: NetworkPolicy\nmetadata:\n  name: default-deny-all\nspec:\n  podSelector: {}\n  policyTypes:\n    - Ingress\n    - Egress\nEOF\n\nThis denies all traffic unless explicitly allowed. Review and adjust policies per namespace as needed.\n"
+              ],
+              "status": "INFO",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as skip"
+            }
+          ]
+        },
+        {
+          "section": "4.5",
+          "type": "",
+          "pass": 0,
+          "fail": 0,
+          "warn": 1,
+          "info": 1,
+          "desc": "Secrets Management",
+          "results": [
+            {
+              "test_number": "4.5.1",
+              "test_desc": "Prefer using secrets as files over secrets as environment variables (Automated)",
+              "audit": "output=$(kubectl get all --all-namespaces -o jsonpath='{range .items[?(@..secretKeyRef)]} {.kind} {.metadata.name} {\"\\n\"}{end}')\nif [ -z \"$output\" ]; then echo \"NO_ENV_SECRET_REFERENCES\"; else echo \"ENV_SECRET_REFERENCES_FOUND\"; fi\n",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "skip",
+              "remediation": "Refactor application deployments to mount secrets as files instead of passing them as environment variables.\nAvoid using `envFrom` or `env` with `secretKeyRef` in container specs.\n",
+              "test_info": [
+                "Refactor application deployments to mount secrets as files instead of passing them as environment variables.\nAvoid using `envFrom` or `env` with `secretKeyRef` in container specs.\n"
+              ],
+              "status": "INFO",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as skip"
+            },
+            {
+              "test_number": "4.5.2",
+              "test_desc": "Consider external secret storage (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Refer to the secrets management options offered by your cloud provider or a third-party\nsecrets management solution.\n",
+              "test_info": [
+                "Refer to the secrets management options offered by your cloud provider or a third-party\nsecrets management solution.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            }
+          ]
+        },
+        {
+          "section": "4.6",
+          "type": "",
+          "pass": 0,
+          "fail": 1,
+          "warn": 2,
+          "info": 0,
+          "desc": "General Policies",
+          "results": [
+            {
+              "test_number": "4.6.1",
+              "test_desc": "Create administrative boundaries between resources using namespaces (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Follow the documentation and create namespaces for objects in your deployment as you need\nthem.\n",
+              "test_info": [
+                "Follow the documentation and create namespaces for objects in your deployment as you need\nthem.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.6.2",
+              "test_desc": "Apply Security Context to Your Pods and Containers (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Follow the Kubernetes documentation and apply security contexts to your pods. For a\nsuggested list of security contexts, you may refer to the CIS Security Benchmark for Docker\nContainers.\n",
+              "test_info": [
+                "Follow the Kubernetes documentation and apply security contexts to your pods. For a\nsuggested list of security contexts, you may refer to the CIS Security Benchmark for Docker\nContainers.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "4.6.3",
+              "test_desc": "The default namespace should not be used (Automated)",
+              "audit": "output=$(kubectl get all -n default --no-headers 2>/dev/null | grep -v '^service\\s\\+kubernetes\\s' || true)\nif [ -z \"$output\" ]; then echo \"DEFAULT_NAMESPACE_UNUSED\"; else echo \"DEFAULT_NAMESPACE_IN_USE\"; fi\n",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "",
+              "remediation": "Avoid using the default namespace for user workloads.\n- Create separate namespaces for your applications and infrastructure components.\n- Move any user-defined resources out of the default namespace.\n\nExample to create a namespace:\nkubectl create namespace my-namespace\n\nExample to move resources:\nkubectl get deployment my-app -n default -o yaml | sed 's/namespace: default/namespace: my-namespace/' | kubectl apply -f -\nkubectl delete deployment my-app -n default\n",
+              "test_info": [
+                "Avoid using the default namespace for user workloads.\n- Create separate namespaces for your applications and infrastructure components.\n- Move any user-defined resources out of the default namespace.\n\nExample to create a namespace:\nkubectl create namespace my-namespace\n\nExample to move resources:\nkubectl get deployment my-app -n default -o yaml | sed 's/namespace: default/namespace: my-namespace/' | kubectl apply -f -\nkubectl delete deployment my-app -n default\n"
+              ],
+              "status": "FAIL",
+              "actual_value": "",
+              "scored": true,
+              "IsMultiple": false,
+              "expected_result": "'DEFAULT_NAMESPACE_UNUSED' is equal to 'DEFAULT_NAMESPACE_UNUSED'"
+            }
+          ]
+        }
+      ],
+      "total_pass": 0,
+      "total_fail": 1,
+      "total_warn": 21,
+      "total_info": 2
+    },
+    {
+      "id": "5",
+      "version": "aks-1.8",
+      "detected_version": "1.33",
+      "text": "Managed Services",
+      "node_type": "managedservices",
+      "tests": [
+        {
+          "section": "5.1",
+          "type": "",
+          "pass": 0,
+          "fail": 0,
+          "warn": 4,
+          "info": 0,
+          "desc": "Image Registry and Image Scanning",
+          "results": [
+            {
+              "test_number": "5.1.1",
+              "test_desc": "Ensure Image Vulnerability Scanning using Microsoft Defender for Cloud (MDC) image scanning or a third party provider (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Enable MDC for Container Registries by running the following Azure CLI command:\naz security pricing create --name ContainerRegistry --tier Standard\nAlternatively, use the following command to enable image scanning for your container registry:\naz resource update --ids /subscriptions/{subscription-id}/resourceGroups/{resource-group-name}/providers/Microsoft.ContainerRegistry/registries/{registry-name} --set properties.enabled=true\nReplace `subscription-id`, `resource-group-name`, and `registry-name` with the correct values for your environment.\nPlease note that enabling MDC for Container Registries will incur additional costs, so be sure to review the pricing information provided in the Azure documentation before enabling it.\n",
+              "test_info": [
+                "Enable MDC for Container Registries by running the following Azure CLI command:\naz security pricing create --name ContainerRegistry --tier Standard\nAlternatively, use the following command to enable image scanning for your container registry:\naz resource update --ids /subscriptions/{subscription-id}/resourceGroups/{resource-group-name}/providers/Microsoft.ContainerRegistry/registries/{registry-name} --set properties.enabled=true\nReplace `subscription-id`, `resource-group-name`, and `registry-name` with the correct values for your environment.\nPlease note that enabling MDC for Container Registries will incur additional costs, so be sure to review the pricing information provided in the Azure documentation before enabling it.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "5.1.2",
+              "test_desc": "Minimize user access to Azure Container Registry (ACR) (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Azure Container Registry\nIf you use Azure Container Registry (ACR) as your container image store, you need to grant\npermissions to the service principal for your AKS cluster to read and pull images. Currently,\nthe recommended configuration is to use the az aks create or az aks update command to\nintegrate with a registry and assign the appropriate role for the service principal. For\ndetailed steps, see Authenticate with Azure Container Registry from Azure Kubernetes\nService.\nTo avoid needing an Owner or Azure account administrator role, you can configure a\nservice principal manually or use an existing service principal to authenticate ACR from\nAKS. For more information, see ACR authentication with service principals or Authenticate\nfrom Kubernetes with a pull secret.\n",
+              "test_info": [
+                "Azure Container Registry\nIf you use Azure Container Registry (ACR) as your container image store, you need to grant\npermissions to the service principal for your AKS cluster to read and pull images. Currently,\nthe recommended configuration is to use the az aks create or az aks update command to\nintegrate with a registry and assign the appropriate role for the service principal. For\ndetailed steps, see Authenticate with Azure Container Registry from Azure Kubernetes\nService.\nTo avoid needing an Owner or Azure account administrator role, you can configure a\nservice principal manually or use an existing service principal to authenticate ACR from\nAKS. For more information, see ACR authentication with service principals or Authenticate\nfrom Kubernetes with a pull secret.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "5.1.3",
+              "test_desc": "Minimize cluster access to read-only for Azure Container Registry (ACR) (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "No remediation",
+              "test_info": [
+                "No remediation"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "5.1.4",
+              "test_desc": "Minimize Container Registries to only those approved (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "If you are using **Azure Container Registry**, you can restrict access using firewall rules as described in the official documentation:\nhttps://docs.microsoft.com/en-us/azure/container-registry/container-registry-firewall-access-rules\nFor other non-AKS repositories, you can use **admission controllers** or **Azure Policy** to enforce registry access restrictions.\nLimiting or locking down egress traffic to specific container registries is also recommended. For more information, refer to:\nhttps://docs.microsoft.com/en-us/azure/aks/limit-egress-traffic\n",
+              "test_info": [
+                "If you are using **Azure Container Registry**, you can restrict access using firewall rules as described in the official documentation:\nhttps://docs.microsoft.com/en-us/azure/container-registry/container-registry-firewall-access-rules\nFor other non-AKS repositories, you can use **admission controllers** or **Azure Policy** to enforce registry access restrictions.\nLimiting or locking down egress traffic to specific container registries is also recommended. For more information, refer to:\nhttps://docs.microsoft.com/en-us/azure/aks/limit-egress-traffic\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            }
+          ]
+        },
+        {
+          "section": "5.2",
+          "type": "",
+          "pass": 0,
+          "fail": 0,
+          "warn": 1,
+          "info": 0,
+          "desc": "Access and identity options for Azure Kubernetes Service (AKS)",
+          "results": [
+            {
+              "test_number": "5.2.1",
+              "test_desc": "Prefer using dedicated AKS Service Accounts (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Azure Active Directory integration\nThe security of AKS clusters can be enhanced with the integration of Azure Active Directory\n(AD). Built on decades of enterprise identity management, Azure AD is a multi-tenant,\ncloud-based directory, and identity management service that combines core directory\nservices, application access management, and identity protection. With Azure AD, you can\nintegrate on-premises identities into AKS clusters to provide a single source for account\nmanagement and security.\nAzure Active Directory integration with AKS clusters\nWith Azure AD-integrated AKS clusters, you can grant users or groups access to Kubernetes\nresources within a namespace or across the cluster. To obtain a kubectl configuration\ncontext, a user can run the az aks get-credentials command. When a user then interacts\nwith the AKS cluster with kubectl, they're prompted to sign in with their Azure AD\ncredentials. This approach provides a single source for user account management and\npassword credentials. The user can only access the resources as defined by the cluster\nadministrator.\nAzure AD authentication is provided to AKS clusters with OpenID Connect. OpenID Connect\nis an identity layer built on top of the OAuth 2.0 protocol. For more information on OpenID\nConnect, see the Open ID connect documentation. From inside of the Kubernetes cluster,\nWebhook Token Authentication is used to verify authentication tokens. Webhook token\nauthentication is configured and managed as part of the AKS cluster.\n",
+              "test_info": [
+                "Azure Active Directory integration\nThe security of AKS clusters can be enhanced with the integration of Azure Active Directory\n(AD). Built on decades of enterprise identity management, Azure AD is a multi-tenant,\ncloud-based directory, and identity management service that combines core directory\nservices, application access management, and identity protection. With Azure AD, you can\nintegrate on-premises identities into AKS clusters to provide a single source for account\nmanagement and security.\nAzure Active Directory integration with AKS clusters\nWith Azure AD-integrated AKS clusters, you can grant users or groups access to Kubernetes\nresources within a namespace or across the cluster. To obtain a kubectl configuration\ncontext, a user can run the az aks get-credentials command. When a user then interacts\nwith the AKS cluster with kubectl, they're prompted to sign in with their Azure AD\ncredentials. This approach provides a single source for user account management and\npassword credentials. The user can only access the resources as defined by the cluster\nadministrator.\nAzure AD authentication is provided to AKS clusters with OpenID Connect. OpenID Connect\nis an identity layer built on top of the OAuth 2.0 protocol. For more information on OpenID\nConnect, see the Open ID connect documentation. From inside of the Kubernetes cluster,\nWebhook Token Authentication is used to verify authentication tokens. Webhook token\nauthentication is configured and managed as part of the AKS cluster.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            }
+          ]
+        },
+        {
+          "section": "5.3",
+          "type": "",
+          "pass": 0,
+          "fail": 0,
+          "warn": 1,
+          "info": 0,
+          "desc": "Key Management Service (KMS)",
+          "results": [
+            {
+              "test_number": "5.3.1",
+              "test_desc": "Ensure Kubernetes Secrets are encrypted (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "No remediation",
+              "test_info": [
+                "No remediation"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            }
+          ]
+        },
+        {
+          "section": "5.4",
+          "type": "",
+          "pass": 0,
+          "fail": 0,
+          "warn": 5,
+          "info": 0,
+          "desc": "Cluster Networking",
+          "results": [
+            {
+              "test_number": "5.4.1",
+              "test_desc": "Restrict Access to the Control Plane Endpoint (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "By enabling private endpoint access to the Kubernetes API server, all communication between your nodes and the API server stays within your VPC. You can also limit the IP addresses that can access your API server from the internet, or completely disable internet access to the API server.\nWith this in mind, you can update your cluster accordingly using the AKS CLI to ensure that Private Endpoint Access is enabled.\nIf you choose to also enable Public Endpoint Access then you should also configure a list of allowable CIDR blocks, resulting in restricted access from the internet. If you specify no CIDR blocks, then the public API server endpoint is able to receive and process requests from all IP addresses by defaulting to ['0.0.0.0/0'].\nExample:\naz aks update --name ${CLUSTER_NAME} --resource-group ${RESOURCE_GROUP} --api-server-access-profile enablePrivateCluster=true --api-server-access-profile authorizedIpRanges=192.168.1.0/24\n",
+              "test_info": [
+                "By enabling private endpoint access to the Kubernetes API server, all communication between your nodes and the API server stays within your VPC. You can also limit the IP addresses that can access your API server from the internet, or completely disable internet access to the API server.\nWith this in mind, you can update your cluster accordingly using the AKS CLI to ensure that Private Endpoint Access is enabled.\nIf you choose to also enable Public Endpoint Access then you should also configure a list of allowable CIDR blocks, resulting in restricted access from the internet. If you specify no CIDR blocks, then the public API server endpoint is able to receive and process requests from all IP addresses by defaulting to ['0.0.0.0/0'].\nExample:\naz aks update --name ${CLUSTER_NAME} --resource-group ${RESOURCE_GROUP} --api-server-access-profile enablePrivateCluster=true --api-server-access-profile authorizedIpRanges=192.168.1.0/24\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "5.4.2",
+              "test_desc": "Ensure clusters are created with Private Endpoint Enabled and Public Access Disabled (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "To use a private endpoint, create a new private endpoint in your virtual network, then create a link between your virtual network and a new private DNS zone.\nYou can also restrict access to the public endpoint by enabling only specific CIDR blocks to access it. For example:\naz aks update --name ${CLUSTER_NAME} --resource-group ${RESOURCE_GROUP} --api-server-access-profile enablePublicFqdn=false\nThis command disables the public API endpoint for your AKS cluster.\n",
+              "test_info": [
+                "To use a private endpoint, create a new private endpoint in your virtual network, then create a link between your virtual network and a new private DNS zone.\nYou can also restrict access to the public endpoint by enabling only specific CIDR blocks to access it. For example:\naz aks update --name ${CLUSTER_NAME} --resource-group ${RESOURCE_GROUP} --api-server-access-profile enablePublicFqdn=false\nThis command disables the public API endpoint for your AKS cluster.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "5.4.3",
+              "test_desc": "Ensure clusters are created with Private Nodes (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "To create a private cluster, use the following command:\naz aks create \\\n--resource-group <private-cluster-resource-group> \\\n--name <private-cluster-name> \\\n--load-balancer-sku standard \\\n--enable-private-cluster \\\n--network-plugin azure \\\n--vnet-subnet-id <subnet-id> \\\n--docker-bridge-address <docker-bridge-address> \\\n--dns-service-ip <dns-service-ip> \\\n--service-cidr <service-cidr>\nEnsure that --enable-private-cluster flag is set to enable private nodes in your cluster.\n",
+              "test_info": [
+                "To create a private cluster, use the following command:\naz aks create \\\n--resource-group <private-cluster-resource-group> \\\n--name <private-cluster-name> \\\n--load-balancer-sku standard \\\n--enable-private-cluster \\\n--network-plugin azure \\\n--vnet-subnet-id <subnet-id> \\\n--docker-bridge-address <docker-bridge-address> \\\n--dns-service-ip <dns-service-ip> \\\n--service-cidr <service-cidr>\nEnsure that --enable-private-cluster flag is set to enable private nodes in your cluster.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "5.4.4",
+              "test_desc": "Ensure Network Policy is Enabled and set as appropriate (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "Utilize Calico or another network policy engine to segment and isolate your traffic.\nEnable network policies on your AKS cluster by following the Azure documentation or using the `az aks` CLI to enable the network policy add-on.\n",
+              "test_info": [
+                "Utilize Calico or another network policy engine to segment and isolate your traffic.\nEnable network policies on your AKS cluster by following the Azure documentation or using the `az aks` CLI to enable the network policy add-on.\n"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "5.4.5",
+              "test_desc": "Encrypt traffic to HTTPS load balancers with TLS certificates (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "No remediation",
+              "test_info": [
+                "No remediation"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            }
+          ]
+        },
+        {
+          "section": "5.5",
+          "type": "",
+          "pass": 0,
+          "fail": 0,
+          "warn": 2,
+          "info": 0,
+          "desc": "Authentication and Authorization",
+          "results": [
+            {
+              "test_number": "5.5.1",
+              "test_desc": "Manage Kubernetes RBAC users with Azure AD (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "No remediation",
+              "test_info": [
+                "No remediation"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            },
+            {
+              "test_number": "5.5.2",
+              "test_desc": "Use Azure RBAC for Kubernetes Authorization (Manual)",
+              "audit": "",
+              "AuditEnv": "",
+              "AuditConfig": "",
+              "type": "manual",
+              "remediation": "No remediation",
+              "test_info": [
+                "No remediation"
+              ],
+              "status": "WARN",
+              "actual_value": "",
+              "scored": false,
+              "IsMultiple": false,
+              "expected_result": "",
+              "reason": "Test marked as a manual test"
+            }
+          ]
+        }
+      ],
+      "total_pass": 0,
+      "total_fail": 0,
+      "total_warn": 13,
+      "total_info": 0
+    }
+  ],
+  "Totals": {
+    "total_pass": 12,
+    "total_fail": 2,
+    "total_warn": 35,
+    "total_info": 2
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "tool": "k8s-remediate-nis2",
+  "version": "dev",
+  "mapping_version": 1,
+  "mapping_sha256": "835420e3824a0e4e7021e407d570697fa6f43d9844b5fa7ca149724a831b74c0",
+  "files": [
+    {
+      "path": "mapping.md",
+      "sha256": "cfeb749fe5702f6dd833c61f2eeb20039e704207433111f25d68e622fa409ec1"
+    }
+  ]
+}
