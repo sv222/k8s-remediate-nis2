@@ -30,6 +30,8 @@ const (
 type SummaryRow struct {
 	Scanner    string
 	CheckID    string
+	Title      string
+	Source     string
 	ResourceID string
 	Severity   string
 	Region     string
