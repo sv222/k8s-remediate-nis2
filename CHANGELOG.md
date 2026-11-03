@@ -7,6 +7,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-03
+
 ### Added
 
 - Prowler ASFF input (`prowler -M json-asff`). The format is detected, or set with `--input-format auto|ocsf|json|asff`. The resource name is taken from the ARN, so ASFF and OCSF reports of the same scan give the same files. Muted findings (ASFF `WARNING`) and findings with `Workflow.Status` `SUPPRESSED` are not remediated.
