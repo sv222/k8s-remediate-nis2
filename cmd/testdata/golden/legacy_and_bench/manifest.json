@@ -2,11 +2,15 @@
   "tool": "k8s-remediate-nis2",
   "version": "dev",
   "mapping_version": 1,
-  "mapping_sha256": "a60ed575a78345f2a7335bff32abe7d874a4cac6a10a1549cd5ea0bfc8f7a443",
+  "mapping_sha256": "835420e3824a0e4e7021e407d570697fa6f43d9844b5fa7ca149724a831b74c0",
   "files": [
     {
       "path": "kyverno/block_hostnet.yaml",
       "sha256": "39dc55014f52e248240c38264ffec4c8aa2f79ef2879bf285e214a3e7da08007"
+    },
+    {
+      "path": "kyverno/block_hostpid.yaml",
+      "sha256": "778501f77c3bac87684313004a8d699a301ac88e3b9e655ee62a1ebdf71d040b"
     },
     {
       "path": "kyverno/block_privileged.yaml",
@@ -42,7 +46,7 @@
     },
     {
       "path": "mapping.md",
-      "sha256": "d90c6d2118f11ad06acf13a05c89a22e09ee4b89e5fcdea5c7a9669dab084f9b"
+      "sha256": "7ec7388711e86664b86620ce237bf65070ac4caf6b11165ff5070355e941683e"
     }
   ]
 }

@@ -136,7 +136,7 @@ func TestSARIFGoesToStdoutAndSummaryToStderr(t *testing.T) {
 	if err := root.Execute(); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.HasPrefix(stderr.String(), "failed findings: 26,") {
+	if !strings.HasPrefix(stderr.String(), "failed findings: 27,") {
 		t.Errorf("stderr = %q", stderr.String())
 	}
 	var log struct {
@@ -150,7 +150,7 @@ func TestSARIFGoesToStdoutAndSummaryToStderr(t *testing.T) {
 	if err := json.Unmarshal(stdout.Bytes(), &log); err != nil {
 		t.Fatalf("stdout is not JSON: %v\n%s", err, stdout.String())
 	}
-	if log.Version != "2.1.0" || len(log.Runs) != 1 || len(log.Runs[0].Results) != 26 {
+	if log.Version != "2.1.0" || len(log.Runs) != 1 || len(log.Runs[0].Results) != 27 {
 		t.Fatalf("unexpected SARIF: %+v", log)
 	}
 	rules := map[string]bool{}
@@ -248,7 +248,7 @@ func TestKyvernoPoliciesAreClusterWideAndDeduped(t *testing.T) {
 		}
 	}
 	sort.Strings(policies)
-	want := "kyverno/block_hostnet.yaml,kyverno/block_privileged.yaml,kyverno/require_nonroot.yaml"
+	want := "kyverno/block_hostnet.yaml,kyverno/block_hostpid.yaml,kyverno/block_privileged.yaml,kyverno/require_nonroot.yaml"
 	if strings.Join(policies, ",") != want {
 		t.Errorf("policies = %v", policies)
 	}
@@ -265,14 +265,14 @@ func TestKyvernoPoliciesAreClusterWideAndDeduped(t *testing.T) {
 	if !hasEtcd {
 		t.Error("failed etcd check is not listed")
 	}
-	for _, id := range []string{"5.2.2", "5.2.5", "5.2.7"} {
+	for _, id := range []string{"5.2.2", "5.2.3", "5.2.5", "5.2.7"} {
 		if !strings.Contains(mappingMD, "| `"+id+"` |") || !strings.Contains(mappingMD, "manual (WARN)") {
 			t.Errorf("manual WARN control %s is not remediated or not marked", id)
 		}
 	}
-	for _, id := range []string{"5.2.1", "5.2.3", "5.2.4", "5.2.6"} {
+	for _, id := range []string{"5.2.1", "5.2.4", "5.2.6", "5.2.8"} {
 		if strings.Contains(mappingMD, "| `"+id+"` |") {
-			t.Errorf("unmapped manual WARN control %s must not be listed", id)
+			t.Errorf("passed or unmapped manual WARN control %s must not be listed", id)
 		}
 	}
 }
