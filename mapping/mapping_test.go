@@ -44,7 +44,16 @@ func TestKubeBenchLookupIsVersionAware(t *testing.T) {
 		{"cis-1.6", "5.2.4", "host network", true},
 		{"cis-1.8", "5.2.7", "Root", true},
 		{"eks-1.2.0", "4.2.6", "Root", true},
-		{"cis-1.6", "5.2.2", "", false},
+		{"cis-1.6", "5.2.2", "host process ID", true},
+		{"cis-1.12", "5.2.6", "privilege escalation", true},
+		{"eks-1.8.0", "3.2.1", "anonymous", true},
+		{"eks-1.8.0", "4.1.5", "Default service accounts", true},
+		{"aks-1.8", "3.2.4", "read-only port", true},
+		{"gke-1.9.0", "4.1.4", "Default service accounts", true},
+		{"gke-1.9.0", "4.2.1", "Baseline", true},
+		{"gke-1.9.0", "4.2.2", "", false},
+		{"cis-1.12", "4.2.1", "", false},
+		{"cis-1.6", "5.2.9", "", false},
 		{"cis-1.8", "1.1.12", "", false},
 		{"", "5.2.2", "", false},
 		{"cis-9.9", "5.2.2", "", false},
@@ -149,6 +158,24 @@ func TestProwlerCheckIDsExistInProwler5(t *testing.T) {
 	}
 }
 
+var roles = map[string]string{
+	"Privileged containers may be admitted":               "privileged",
+	"Containers may share the host process ID namespace":  "hostpid",
+	"Containers may share the host IPC namespace":         "hostipc",
+	"Containers may share the host network namespace":     "hostnet",
+	"Containers may allow privilege escalation":           "privesc",
+	"Root containers may be admitted":                     "root",
+	"Pod Security Standard Baseline is not enforced":      "pss-baseline",
+	"Kubelet accepts anonymous requests":                  "kubelet-anonymous",
+	"Kubelet authorization mode is AlwaysAllow":           "kubelet-authz",
+	"Kubelet has no client CA file":                       "kubelet-client-ca",
+	"Kubelet read-only port is open":                      "kubelet-read-only-port",
+	"cluster-admin is bound more than needed":             "rbac-cluster-admin",
+	"Roles use wildcards":                                 "rbac-wildcard",
+	"Default service accounts are used":                   "rbac-default-sa",
+	"Service account tokens are mounted where not needed": "rbac-sa-token",
+}
+
 func TestKubeBenchIDsMatchKubeBenchConfig(t *testing.T) {
 	data, err := os.ReadFile("testdata/kube_bench_0.16.0_ids.tsv")
 	if err != nil {
@@ -166,15 +193,8 @@ func TestKubeBenchIDsMatchKubeBenchConfig(t *testing.T) {
 		if e.Scanner != "kube-bench" {
 			continue
 		}
-		var role string
-		switch {
-		case strings.Contains(e.Title, "Privileged"):
-			role = "privileged"
-		case strings.Contains(e.Title, "host network"):
-			role = "hostnet"
-		case strings.Contains(e.Title, "Root"):
-			role = "root"
-		default:
+		role, ok := roles[e.Title]
+		if !ok {
 			t.Fatalf("entry %q has no known role", e.Title)
 		}
 		for bench, id := range e.BenchmarkIDs {
