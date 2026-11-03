@@ -304,13 +304,62 @@ func TestEvidenceDoesNotCountFilesAsRemediated(t *testing.T) {
 
 func TestAllKubernetesPoliciesCoverEphemeralContainers(t *testing.T) {
 	out := filepath.Join(t.TempDir(), "o")
-	if _, err := execute(t, "remediate", "--kube-bench", "testdata/kube_bench.json", "--out", out); err != nil {
+	if _, err := execute(t, "remediate", "--kube-bench", "testdata/kube_bench_eks.json", "--out", out); err != nil {
 		t.Fatal(err)
 	}
 	files := tree(t, out)
-	for _, rel := range []string{"kyverno/block_privileged.yaml", "kyverno/require_nonroot.yaml"} {
+	for _, rel := range []string{"kyverno/block_privileged.yaml", "kyverno/block_privilege_escalation.yaml"} {
 		if !strings.Contains(files[rel], "pods/ephemeralcontainers") {
 			t.Errorf("%s does not match the ephemeralcontainers subresource", rel)
+		}
+	}
+	out = filepath.Join(t.TempDir(), "o")
+	if _, err := execute(t, "remediate", "--kube-bench", "testdata/kube_bench.json", "--out", out); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(tree(t, out)["kyverno/require_nonroot.yaml"], "pods/ephemeralcontainers") {
+		t.Error("require_nonroot.yaml does not match the ephemeralcontainers subresource")
+	}
+}
+
+func TestManagedKubeBenchRows(t *testing.T) {
+	cases := []struct {
+		input  string
+		want   map[string]string
+		absent []string
+	}{
+		{"testdata/kube_bench_eks.json", map[string]string{
+			"3.2.1": "guidance only", "3.2.4": "guidance only", "4.1.1": "guidance only", "4.1.5": "guidance only",
+			"4.2.1": "follow-up required", "4.2.4": "follow-up required", "4.2.5": "follow-up required", "4.1.2": "no mapping",
+		}, []string{"3.1.1", "3.2.2", "4.1.4", "4.2.2", "5.1.1"}},
+		{"testdata/kube_bench_aks.json", map[string]string{
+			"3.2.4": "guidance only", "4.1.6": "guidance only", "4.2.2": "follow-up required", "4.2.3": "follow-up required", "4.6.3": "no mapping",
+		}, []string{"3.2.1", "4.1.2", "5.4.1"}},
+		{"testdata/kube_bench_gke.json", map[string]string{
+			"4.1.1": "guidance only", "4.1.3": "guidance only", "4.1.4": "guidance only", "4.1.5": "guidance only",
+			"4.2.1": "guidance only", "4.1.10": "no mapping", "5.2.1": "no mapping",
+		}, []string{"3.1.1", "4.1.6", "5.6.3"}},
+	}
+	for _, c := range cases {
+		out := filepath.Join(t.TempDir(), "o")
+		if _, err := execute(t, "remediate", "--kube-bench", c.input, "--out", out); err != nil {
+			t.Fatal(err)
+		}
+		got := map[string]string{}
+		for _, line := range strings.Split(tree(t, out)["mapping.md"], "\n") {
+			if strings.HasPrefix(line, "| `kube-bench` |") {
+				got[col(line, 2)] = col(line, 6)
+			}
+		}
+		for id, status := range c.want {
+			if got[id] != status {
+				t.Errorf("%s %s: status %q, want %q", c.input, id, got[id], status)
+			}
+		}
+		for _, id := range c.absent {
+			if _, ok := got[id]; ok {
+				t.Errorf("%s %s: passed or unmapped manual control is listed", c.input, id)
+			}
 		}
 	}
 }
