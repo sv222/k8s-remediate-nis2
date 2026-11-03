@@ -33,6 +33,7 @@ def main():
     ap.add_argument("--mapping", required=True)
     ap.add_argument("--not-seedable", default="")
     ap.add_argument("--note", action="append", default=[])
+    ap.add_argument("--not-fixable", action="append", default=[])
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
 
@@ -40,6 +41,7 @@ def main():
         checks = [x.strip() for x in fh if x.strip()]
     skip = {x for x in args.not_seedable.split(",") if x}
     notes = dict(n.split("=", 1) for n in args.note)
+    unfixable = dict(n.split("=", 1) for n in args.not_fixable)
 
     before, _ = load(args.before)
     mid, mid_failing = load(args.templates)
@@ -74,11 +76,13 @@ def main():
         else:
             if b_fail == 0:
                 errors.append("%s: no FAIL before, the seed did not create a bad resource" % check)
-            if f_fail != 0:
+            if f_fail != 0 and check not in unfixable:
                 errors.append("%s: %d FAIL left after the fix: %s" % (check, f_fail, sorted(final_failing[check])))
             if "no mapping" in st or not st:
                 errors.append("%s: remediate produced no mapped row" % check)
             result = "fixed" if (b_fail > 0 and f_fail == 0) else "NOT FIXED"
+            if check in unfixable and f_fail != 0:
+                result = "FAIL stays (" + unfixable[check] + ")"
             if check in notes:
                 result += " (" + notes[check] + ")"
         lines.append("| %s | %s | %s | %s | %s | %s |" % (check, path, cell(before, check), cell(mid, check), cell(final, check), result))

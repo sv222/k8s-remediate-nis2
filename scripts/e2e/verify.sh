@@ -33,3 +33,17 @@ rdp_new=$(sg_ports nr-open-rdp)
 [ "$ssh_new" = "22" ] || { echo "nr-open-ssh got ports [$ssh_new] from the narrow rule, want only 22" >&2; exit 1; }
 [ "$rdp_new" = "3389" ] || { echo "nr-open-rdp got ports [$rdp_new] from the narrow rule, want only 3389" >&2; exit 1; }
 echo "ok: each security group got only the port it was flagged for (22 and 3389)"
+
+pp=$(aws iam get-account-password-policy --query 'PasswordPolicy.[MinimumPasswordLength,PasswordReusePrevention]' --output text)
+[ "$pp" = "$(printf '14\t24')" ] || { echo "password policy is [$pp], want 14 and 24" >&2; exit 1; }
+echo "ok: password policy needs 14 characters and blocks the last 24 passwords"
+
+trail=$(aws cloudtrail describe-trails --query 'trailList[?Name==`nis2-multi-region`].[IsMultiRegionTrail,LogFileValidationEnabled,S3BucketName]' --output text)
+[ "$trail" = "$(printf 'True\tTrue\tnr-trail-logs')" ] || { echo "multi-region trail is [$trail]" >&2; exit 1; }
+echo "ok: trail nis2-multi-region is multi-region with log file validation"
+
+for vpc in $(aws ec2 describe-vpcs --query 'Vpcs[].VpcId' --output text); do
+  fl=$(aws ec2 describe-flow-logs --filter "Name=resource-id,Values=$vpc" --query 'FlowLogs[0].[TrafficType,LogDestination]' --output text)
+  [ "$fl" = "$(printf 'ALL\tarn:aws:s3:::nr-flow-logs')" ] || { echo "flow log of $vpc is [$fl]" >&2; exit 1; }
+done
+echo "ok: every VPC sends flow logs of all traffic to nr-flow-logs"

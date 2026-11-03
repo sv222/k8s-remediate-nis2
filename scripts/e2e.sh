@@ -18,7 +18,7 @@ NET=$PREFIX-net
 EMU=$PREFIX-floci
 GOVOL=$PREFIX-gomod
 ENDPOINT=http://$EMU:4566
-NOT_SEEDABLE=${E2E_NOT_SEEDABLE:-ec2_securitygroup_allow_ingress_from_internet_to_any_port}
+NOT_SEEDABLE=${E2E_NOT_SEEDABLE:-ec2_securitygroup_allow_ingress_from_internet_to_any_port,iam_root_mfa_enabled,iam_no_root_access_key,iam_user_mfa_enabled_console_access}
 EKS_NOTE="the emulator has no UpdateClusterConfig, so the mock cluster was recreated with the target settings"
 
 UIDGID="$(id -u):$(id -g)"
@@ -82,7 +82,7 @@ if ! docker network inspect "$NET" >/dev/null 2>&1; then
 fi
 docker rm -f "$EMU" >/dev/null 2>&1 || true
 docker run -d --name "$EMU" --network "$NET" --memory 1g --cpus 2 \
-  -e FLOCI_SERVICES_EKS_MOCK=true -e FLOCI_SERVICES_EC2_MOCK=true -e "FLOCI_HOSTNAME=$EMU" "$FLOCI_IMAGE" >/dev/null
+  -e FLOCI_SERVICES_EKS_MOCK=true -e FLOCI_SERVICES_EC2_MOCK=true -e FLOCI_SERVICES_RDS_MOCK=true -e "FLOCI_HOSTNAME=$EMU" "$FLOCI_IMAGE" >/dev/null
 for _ in $(seq 60); do
   [ "$(docker inspect -f '{{.State.Health.Status}}' "$EMU")" = healthy ] && break
   sleep 2
@@ -122,6 +122,8 @@ vars_ = {
     "rdp_allowed_cidr": {i: "10.0.0.0/8" for i in sg_ids("sg_restrict_rdp")},
     "access_log_bucket": "nr-log-target",
     "s3_existing_bucket_policies": {"nr-existing-policy": policy},
+    "cloudtrail_bucket": "nr-trail-logs",
+    "flow_log_bucket_arn": "arn:aws:s3:::nr-flow-logs",
 }
 json.dump(vars_, open(w + "/tf/e2e.auto.tfvars.json", "w"))
 PY
@@ -158,4 +160,7 @@ python3 "$SCRIPTS/report.py" --checks "$SCRIPTS/checks.txt" \
   --not-seedable "$NOT_SEEDABLE" \
   --note "eks_cluster_private_nodes_enabled=$EKS_NOTE" \
   --note "eks_cluster_not_publicly_accessible=$EKS_NOTE" \
+  --note "eks_control_plane_logging_all_types_enabled=$EKS_NOTE" \
+  --note "eks_cluster_kms_cmk_encryption_in_secrets_enabled=$EKS_NOTE" \
+  --not-fixable "cloudtrail_kms_encryption_enabled=the emulator does not store the KMS key of a trail" \
   --out "$WORK/report.md"
