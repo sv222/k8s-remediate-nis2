@@ -2,17 +2,32 @@ package out
 
 import (
 	"encoding/json"
+	"net/url"
+	"path/filepath"
+	"strings"
 	"testing"
 )
 
 func TestSARIF(t *testing.T) {
+	absSrc, err := filepath.Abs(filepath.Join(t.TempDir(), "abs dir", "bench.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	slashed := filepath.ToSlash(absSrc)
+	if !strings.HasPrefix(slashed, "/") {
+		slashed = "/" + slashed
+	}
+	wantURI := (&url.URL{Scheme: "file", Path: slashed}).String()
+	if !strings.HasPrefix(wantURI, "file:///") || !strings.HasSuffix(wantURI, "/abs%20dir/bench.json") {
+		t.Fatalf("bad expected uri %q", wantURI)
+	}
 	rep := Report{Rows: []SummaryRow{
 		{Scanner: "prowler", CheckID: "s3_bucket_public_access", Title: "S3 bucket publicly accessible", Source: "in/p.json", ResourceID: "b1",
 			Severity: "high", Region: "us-east-1", Account: "1", Articles: []string{"NIS2 Art.21(2)(i)"},
 			Files: []string{"terraform/s3_public_access_block__b1.tf"}, Status: StatusCodeGenerated, Note: "Not applied."},
 		{Scanner: "prowler", CheckID: "s3_bucket_public_access", Title: "S3 bucket publicly accessible", Source: "in/p.json", ResourceID: "b2",
 			Severity: "high", Status: StatusCodeGenerated},
-		{Scanner: "kube-bench", CheckID: "1.2.5", Title: "Ensure x (Automated)", Source: "/abs dir/bench.json", ResourceID: "cluster",
+		{Scanner: "kube-bench", CheckID: "1.2.5", Title: "Ensure x (Automated)", Source: absSrc, ResourceID: "cluster",
 			Severity: "medium", Status: StatusNoMapping},
 		{Scanner: "prowler", CheckID: "x", Source: "p.json", ResourceID: "r", Severity: "low", Status: StatusNoMapping},
 	}}
@@ -64,7 +79,7 @@ func TestSARIF(t *testing.T) {
 	want := []struct{ rule, level, uri string }{
 		{"prowler/s3_bucket_public_access", "error", "out/terraform/s3_public_access_block__b1.tf"},
 		{"prowler/s3_bucket_public_access", "error", "in/p.json"},
-		{"kube-bench/1.2.5", "warning", "file:///abs%20dir/bench.json"},
+		{"kube-bench/1.2.5", "warning", wantURI},
 		{"prowler/x", "note", "p.json"},
 	}
 	for i, w := range want {
