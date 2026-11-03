@@ -65,13 +65,13 @@
     "ResourceArn": "arn:aws:eks:eu-central-1:123456789012:cluster/prod"
   },
   {
-    "FindingUniqueId": "prowler-aws-iam_root_mfa_enabled-123456789012-eu-central-1-root",
+    "FindingUniqueId": "prowler-aws-iam_root_hardware_mfa_enabled-123456789012-eu-central-1-root",
     "Provider": "aws",
-    "CheckID": "iam_root_mfa_enabled",
-    "CheckTitle": "Ensure MFA is enabled for the root account | urgent",
+    "CheckID": "iam_root_hardware_mfa_enabled",
+    "CheckTitle": "Ensure hardware MFA is enabled for the root account | urgent",
     "ServiceName": "iam",
     "Status": "FAIL",
-    "StatusExtended": "MFA is not enabled for root.",
+    "StatusExtended": "Root account has a virtual MFA instead of a hardware MFA device.",
     "Severity": "critical",
     "Region": "us-east-1",
     "ResourceId": "<root_account>",

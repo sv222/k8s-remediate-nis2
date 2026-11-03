@@ -127,6 +127,84 @@ entries:
     title: Network ACL allows RDP (port 3389) from the internet
     articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.13", "NIS2 CIR 2024/2690 Annex 6.7", "ISO27001:2022 A.8.20", "ISO27001:2022 A.8.22"]
     guidance: "No code is generated on purpose. Network ACLs are stateless and cover whole subnets, so a wrong change drops traffic at once and can lock out admins. Terraform also cannot edit an entry it does not manage. Replace the open entry with your admin range: aws ec2 replace-network-acl-entry --network-acl-id ACL --ingress --rule-number N --protocol tcp --port-range From=3389,To=3389 --cidr-block ADMIN_CIDR --rule-action allow. Test access from the admin range before you remove the old entry."
+  - scanner: prowler
+    check_id: iam_password_policy_minimum_length_14
+    title: IAM password policy allows passwords shorter than 14 characters
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.6", "ISO27001:2022 A.5.17"]
+    templates: ["terraform/iam_password_policy.tf"]
+    caution: "Replaces the whole account password policy. Copy settings you keep, such as max_password_age, into the file first."
+    follow_up: "Existing passwords are not checked against the new rules. They comply after the next password change."
+  - scanner: prowler
+    check_id: iam_password_policy_reuse_24
+    title: IAM password policy does not prevent reuse of the last 24 passwords
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.6", "ISO27001:2022 A.5.17"]
+    templates: ["terraform/iam_password_policy.tf"]
+    caution: "Replaces the whole account password policy. Copy settings you keep, such as max_password_age, into the file first."
+    follow_up: "Existing passwords are not checked against the new rules. They comply after the next password change."
+  - scanner: prowler
+    check_id: iam_root_mfa_enabled
+    title: Root user has no MFA
+    articles: ["NIS2 Art.21(2)(j)", "NIS2 Art.21(2)(i)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.7", "ISO27001:2022 A.8.5"]
+    guidance: "No code is generated: Terraform and the AWS API cannot add MFA to the root user. Sign in as the root user, open Security credentials and assign an MFA device (passkey, security key or authenticator app). Keep the device and the recovery details in a safe place that more than one admin can reach."
+  - scanner: prowler
+    check_id: iam_user_mfa_enabled_console_access
+    title: IAM user with console password has no MFA
+    articles: ["NIS2 Art.21(2)(j)", "NIS2 Art.21(2)(i)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.7", "ISO27001:2022 A.8.5"]
+    guidance: "No code is generated: an MFA device belongs to the person who holds it, so each user adds it. Find users with a console password and no MFA: aws iam generate-credential-report, then aws iam get-credential-report (columns password_enabled and mfa_active). Ask each user to assign an MFA device under Security credentials. If a user does not need the console, remove the password: aws iam delete-login-profile --user-name USER. A policy that denies actions without aws:MultiFactorAuthPresent can enforce MFA, but test it on one user first, or users are locked out."
+  - scanner: prowler
+    check_id: iam_no_root_access_key
+    title: Root user has access keys
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.3", "ISO27001:2022 A.8.2"]
+    guidance: "No code is generated: root access keys are not managed by Terraform. Find out if the keys are used: aws iam generate-credential-report, then aws iam get-credential-report (row <root_account>, columns access_key_1_last_used_date and access_key_2_last_used_date). Move any use to an IAM role. Then sign in as the root user, open Security credentials, deactivate the keys, wait to see that nothing breaks, and delete them."
+  - scanner: prowler
+    check_id: cloudtrail_multi_region_enabled
+    title: No multi-region CloudTrail trail is logging
+    articles: ["NIS2 Art.21(2)(b)", "DORA Art.10", "DORA RTS 2024/1774 Art.12", "NIS2 CIR 2024/2690 Annex 3.2", "ISO27001:2022 A.8.15", "ISO27001:2022 A.8.16"]
+    shared_templates: ["terraform/cloudtrail_multi_region.tf", "terraform/variables_cloudtrail.tf"]
+    caution: "Creates a new trail. If another trail already logs management events, the new one is a paid second copy: turn on multi-region for the existing trail instead. The bucket in cloudtrail_bucket must let CloudTrail write."
+  - scanner: prowler
+    check_id: cloudtrail_log_file_validation_enabled
+    title: CloudTrail log file validation is not enabled
+    articles: ["NIS2 Art.21(2)(b)", "DORA Art.10", "DORA RTS 2024/1774 Art.12", "NIS2 CIR 2024/2690 Annex 3.2", "ISO27001:2022 A.8.15"]
+    guidance: "No code is generated because the trail is not in your Terraform state. Turn on validation: aws cloudtrail update-trail --name TRAIL --enable-log-file-validation. If the trail is in your Terraform code, set enable_log_file_validation = true there instead, or the next apply turns it off again. Only log files written after the change get digest files."
+  - scanner: prowler
+    check_id: cloudtrail_kms_encryption_enabled
+    title: CloudTrail logs are not encrypted with a KMS key
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "DORA RTS 2024/1774 Art.6", "NIS2 CIR 2024/2690 Annex 9.1", "ISO27001:2022 A.8.24"]
+    guidance: "No code is generated because the trail and the key policy are not in your Terraform state. Use a symmetric customer-managed KMS key in the region of the trail bucket. Its key policy must let cloudtrail.amazonaws.com use kms:GenerateDataKey* and let log readers use kms:Decrypt. Then run: aws cloudtrail update-trail --name TRAIL --kms-key-id KEY_ARN. A wrong key policy stops log delivery, so check aws cloudtrail get-trail-status --name TRAIL after the change. Log files written before the change keep their old encryption."
+  - scanner: prowler
+    check_id: eks_control_plane_logging_all_types_enabled
+    title: EKS control plane logging is not enabled for all log types
+    articles: ["NIS2 Art.21(2)(b)", "DORA Art.10", "DORA RTS 2024/1774 Art.12", "NIS2 CIR 2024/2690 Annex 3.2", "ISO27001:2022 A.8.15", "ISO27001:2022 A.8.16"]
+    guidance: 'No safe drop-in code exists because the cluster is not in your Terraform state. Turn on all five log types: aws eks update-cluster-config --name CLUSTER --logging ''{"clusterLogging":[{"types":["api","audit","authenticator","controllerManager","scheduler"],"enabled":true}]}''. If the cluster is in your Terraform code, set enabled_cluster_log_types on aws_eks_cluster instead. Logs go to the CloudWatch Logs group /aws/eks/CLUSTER/cluster and are charged by volume: set a retention period on it.'
+  - scanner: prowler
+    check_id: eks_cluster_kms_cmk_encryption_in_secrets_enabled
+    title: EKS secrets are not encrypted with a KMS key
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "DORA RTS 2024/1774 Art.6", "NIS2 CIR 2024/2690 Annex 9.1", "ISO27001:2022 A.8.24"]
+    guidance: 'No safe drop-in code exists because the cluster is not in your Terraform state. Secrets encryption cannot be turned off once it is on, and if the key is disabled or deleted the cluster cannot read its secrets. Use a symmetric customer-managed KMS key in the cluster region and keep it from being deleted. Then run: aws eks associate-encryption-config --cluster-name CLUSTER --encryption-config ''[{"resources":["secrets"],"provider":{"keyArn":"KEY_ARN"}}]''. When the update is done, rewrite the existing secrets so they are encrypted with the key: kubectl get secrets --all-namespaces -o json | kubectl annotate --overwrite -f - kms-encryption-timestamp=TIME.'
+  - scanner: prowler
+    check_id: rds_instance_storage_encrypted
+    title: RDS instance storage is not encrypted
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "DORA RTS 2024/1774 Art.6", "NIS2 CIR 2024/2690 Annex 9.1", "ISO27001:2022 A.8.24"]
+    guidance: "No code is generated: encryption at rest cannot be turned on for an existing DB instance. Take a snapshot, copy it with encryption (aws rds copy-db-snapshot --source-db-snapshot-identifier SNAP --target-db-snapshot-identifier SNAP-encrypted --kms-key-id KEY), restore a new instance from the copy, and move the application to the new endpoint. Plan a write freeze or downtime for the switch. Delete the old instance only after the new one works."
+  - scanner: prowler
+    check_id: kms_cmk_rotation_enabled
+    title: KMS key has no automatic rotation
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "DORA RTS 2024/1774 Art.6", "DORA RTS 2024/1774 Art.7", "NIS2 CIR 2024/2690 Annex 9.1", "ISO27001:2022 A.8.24"]
+    guidance: "No code is generated because the key is not in your Terraform state. Turn on rotation: aws kms enable-key-rotation --key-id KEY. AWS keeps the old key material, so data encrypted before still decrypts. If the key is in your Terraform code, set enable_key_rotation = true on aws_kms_key instead, or the next apply turns it off again."
+  - scanner: prowler
+    check_id: vpc_flow_logs_enabled
+    title: VPC flow logs are not enabled
+    articles: ["NIS2 Art.21(2)(b)", "DORA Art.10", "DORA RTS 2024/1774 Art.12", "NIS2 CIR 2024/2690 Annex 3.2", "ISO27001:2022 A.8.15", "ISO27001:2022 A.8.16"]
+    templates: ["terraform/vpc_flow_logs.tf"]
+    shared_templates: ["terraform/variables_flow_log.tf"]
+    requires_region: true
+    caution: "The bucket in flow_log_bucket_arn must exist and let delivery.logs.amazonaws.com write. Flow logs are charged by volume."
+  - scanner: prowler
+    check_id: ec2_securitygroup_default_restrict_traffic
+    title: Default security group allows traffic
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.13", "NIS2 CIR 2024/2690 Annex 6.7", "ISO27001:2022 A.8.20", "ISO27001:2022 A.8.22"]
+    guidance: "No code is generated on purpose. Removing the rules of a default security group cuts off every instance or interface that still uses it. Find them: aws ec2 describe-network-interfaces --filters Name=group-id,Values=SG. Move them to their own security groups. Then list the rules (aws ec2 describe-security-group-rules --filters Name=group-id,Values=SG) and remove each one with aws ec2 revoke-security-group-ingress or aws ec2 revoke-security-group-egress --group-id SG --security-group-rule-ids RULE. The default group itself cannot be deleted."
   - scanner: kube-bench
     benchmark_ids:
       ack-1.0: "5.2.1"

@@ -47,7 +47,7 @@ log "build the CLI and write the generated files"
 gorun "go build -trimpath -o /work/bin/k8s-remediate-nis2 ./cmd/k8s-remediate-nis2 \
   && go test ./internal/render -run TestPropertyTerraformCheckCorpus -count=1 \
   && cd /src/cmd/testdata \
-  && for pair in 'legacy_and_bench:--prowler prowler_legacy.json --kube-bench kube_bench.json' 'ocsf_only:--prowler prowler_ocsf.json' 'aws_gaps:--prowler prowler_aws_gaps.json'; do \
+  && for pair in 'legacy_and_bench:--prowler prowler_legacy.json --kube-bench kube_bench.json' 'ocsf_only:--prowler prowler_ocsf.json' 'aws_gaps:--prowler prowler_aws_gaps.json' 'aws_more:--prowler prowler_aws_more.json'; do \
        name=\${pair%%:*}; args=\${pair#*:}; /work/bin/k8s-remediate-nis2 remediate \$args --out /work/out/\$name; \
      done"
 

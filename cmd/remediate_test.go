@@ -68,6 +68,7 @@ func TestGolden(t *testing.T) {
 		{"ocsf_only", []string{"--prowler", "testdata/prowler_ocsf.json"}},
 		{"two_buckets", []string{"--prowler", "testdata/prowler_two_buckets.json"}},
 		{"aws_gaps", []string{"--prowler", "testdata/prowler_aws_gaps.json"}},
+		{"aws_more", []string{"--prowler", "testdata/prowler_aws_more.json"}},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -166,7 +167,7 @@ func TestUnmappedAndGuidanceRowsListed(t *testing.T) {
 	}
 	files := tree(t, out)
 	for _, name := range []string{"mapping.md", "evidence.md"} {
-		if !strings.Contains(files[name], "iam_root_mfa_enabled") || !strings.Contains(files[name], "no mapping") {
+		if !strings.Contains(files[name], "iam_root_hardware_mfa_enabled") || !strings.Contains(files[name], "no mapping") {
 			t.Errorf("%s lacks the unmapped FAIL row", name)
 		}
 		if !strings.Contains(files[name], "eks_cluster_not_publicly_accessible") || !strings.Contains(files[name], "guidance only") {
@@ -309,5 +310,58 @@ func TestAWSGapsStatuses(t *testing.T) {
 	}
 	if strings.Count(files["mapping.md"], "s3_bucket_secure_transport_policy") != 2 {
 		t.Errorf("the PASS record must not appear in mapping.md:\n%s", files["mapping.md"])
+	}
+}
+
+func TestAWSMoreStatuses(t *testing.T) {
+	out := filepath.Join(t.TempDir(), "remediation")
+	if _, err := execute(t, "remediate", "--prowler", "testdata/prowler_aws_more.json", "--out", out); err != nil {
+		t.Fatal(err)
+	}
+	files := tree(t, out)
+	want := map[string]string{
+		"iam_password_policy_minimum_length_14":             "follow-up required",
+		"iam_password_policy_reuse_24":                      "follow-up required",
+		"iam_root_mfa_enabled":                              "guidance only",
+		"iam_user_mfa_enabled_console_access":               "guidance only",
+		"iam_no_root_access_key":                            "guidance only",
+		"cloudtrail_multi_region_enabled":                   "code generated",
+		"cloudtrail_log_file_validation_enabled":            "guidance only",
+		"cloudtrail_kms_encryption_enabled":                 "guidance only",
+		"eks_control_plane_logging_all_types_enabled":       "guidance only",
+		"eks_cluster_kms_cmk_encryption_in_secrets_enabled": "guidance only",
+		"rds_instance_storage_encrypted":                    "guidance only",
+		"kms_cmk_rotation_enabled":                          "guidance only",
+		"vpc_flow_logs_enabled":                             "code generated",
+		"ec2_securitygroup_default_restrict_traffic":        "guidance only",
+	}
+	got := map[string]string{}
+	for _, line := range strings.Split(files["mapping.md"], "\n") {
+		if col(line, 1) == "prowler" {
+			got[col(line, 2)] = col(line, 6)
+		}
+	}
+	for check, status := range want {
+		if got[check] != status {
+			t.Errorf("%s: status = %q, want %q", check, got[check], status)
+		}
+	}
+	for _, f := range []string{
+		"terraform/iam_password_policy__000000000000.tf",
+		"terraform/cloudtrail_multi_region.tf",
+		"terraform/variables_cloudtrail.tf",
+		"terraform/vpc_flow_logs__vpc-0a1b2c3d4e5f60718.tf",
+		"terraform/variables_flow_log.tf",
+	} {
+		if _, ok := files[f]; !ok {
+			t.Errorf("%s missing: %v", f, sortedKeys(files))
+		}
+	}
+	policy := files["terraform/iam_password_policy__000000000000.tf"]
+	if strings.Count(policy, "resource \"aws_iam_account_password_policy\"") != 1 || !strings.Contains(policy, "shorter than 14") || !strings.Contains(policy, "reuse") {
+		t.Errorf("both password checks must share one policy file:\n%s", policy)
+	}
+	if strings.Contains(files["mapping.md"], "vpc-0f0e0d0c0b0a09080") {
+		t.Errorf("the PASS record must not appear in mapping.md")
 	}
 }

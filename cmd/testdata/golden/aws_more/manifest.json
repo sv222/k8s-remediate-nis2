@@ -1,0 +1,36 @@
+{
+  "tool": "k8s-remediate-nis2",
+  "version": "dev",
+  "mapping_version": 1,
+  "mapping_sha256": "a60ed575a78345f2a7335bff32abe7d874a4cac6a10a1549cd5ea0bfc8f7a443",
+  "files": [
+    {
+      "path": "terraform/cloudtrail_multi_region.tf",
+      "sha256": "6ab3a37200307e0821d4044ece9fa87205f46bb037c448e74e71c14599939ed8"
+    },
+    {
+      "path": "terraform/iam_password_policy__000000000000.tf",
+      "sha256": "ead0d5277d32886ff71c470ce7be13f2365d9f080c8a4440fec3deff59b79a98"
+    },
+    {
+      "path": "terraform/variables_cloudtrail.tf",
+      "sha256": "ed4d6a595ecd73d3d37bf1c0f21010a6487e2b90ffddf1715a03c4ef8b4e73ef"
+    },
+    {
+      "path": "terraform/variables_flow_log.tf",
+      "sha256": "556f5766e5a62931fe8655dddf40d7848f58fd81d50c7b346f6f8150b1469168"
+    },
+    {
+      "path": "terraform/versions.tf",
+      "sha256": "7bf541d7b20cd96e15cfe5beaacbdcdcc4f9cf8ab2407437224a1f3db2b54907"
+    },
+    {
+      "path": "terraform/vpc_flow_logs__vpc-0a1b2c3d4e5f60718.tf",
+      "sha256": "2ffe107db83149ba874ae8a30951be9be3faa4d4578402615f3643fa435c6bc0"
+    },
+    {
+      "path": "mapping.md",
+      "sha256": "b4eee184238b3de555e85fdbb2b82ae3d0e8961370fc35c6ab1df0c38ebcb2ac"
+    }
+  ]
+}

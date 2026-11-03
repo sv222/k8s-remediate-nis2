@@ -1,0 +1,1634 @@
+[
+ {
+  "message": "IAM password policy does not require minimum length of 14 characters.",
+  "metadata": {
+   "event_code": "iam_password_policy_minimum_length_14",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 4,
+  "severity": "High",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "IAM password policy does not require minimum length of 14 characters.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "iam",
+    "name": "IAM password policy requires a minimum length of 14 characters",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "iam_password_policy_minimum_length_14"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "IAM password policy does not require minimum length of 14 characters.",
+   "title": "IAM password policy requires a minimum length of 14 characters",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-iam_password_policy_minimum_length_14-000000000000-us-east-1-000000000000"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "iam"
+    },
+    "labels": [],
+    "name": "000000000000",
+    "type": "AwsAccount",
+    "uid": "arn:aws:iam:us-east-1:000000000000:password-policy"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "IAM password policy reuse prevention is less than 24 or not set.",
+  "metadata": {
+   "event_code": "iam_password_policy_reuse_24",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 3,
+  "severity": "Medium",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "IAM password policy reuse prevention is less than 24 or not set.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "iam",
+    "name": "IAM password policy prevents reuse of the last 24 passwords",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "iam_password_policy_reuse_24"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "IAM password policy reuse prevention is less than 24 or not set.",
+   "title": "IAM password policy prevents reuse of the last 24 passwords",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-iam_password_policy_reuse_24-000000000000-us-east-1-000000000000"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "iam"
+    },
+    "labels": [],
+    "name": "000000000000",
+    "type": "AwsAccount",
+    "uid": "arn:aws:iam:us-east-1:000000000000:password-policy"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "MFA is not enabled for root account.",
+  "metadata": {
+   "event_code": "iam_root_mfa_enabled",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 5,
+  "severity": "Critical",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "MFA is not enabled for root account.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "iam",
+    "name": "Root account has MFA enabled",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "iam_root_mfa_enabled"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "MFA is not enabled for root account.",
+   "title": "Root account has MFA enabled",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-iam_root_mfa_enabled-000000000000-us-east-1-<root_account>"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "iam"
+    },
+    "labels": [],
+    "name": "<root_account>",
+    "type": "AwsIamUser",
+    "uid": "arn:aws:iam::000000000000:root"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "User nr-console-user has Console Password enabled but MFA disabled.",
+  "metadata": {
+   "event_code": "iam_user_mfa_enabled_console_access",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 4,
+  "severity": "High",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "User nr-console-user has Console Password enabled but MFA disabled.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "iam",
+    "name": "IAM user with console access has MFA enabled",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "iam_user_mfa_enabled_console_access"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "User nr-console-user has Console Password enabled but MFA disabled.",
+   "title": "IAM user with console access has MFA enabled",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-iam_user_mfa_enabled_console_access-000000000000-us-east-1-nr-console-user"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "iam"
+    },
+    "labels": [],
+    "name": "nr-console-user",
+    "type": "AwsIamUser",
+    "uid": "arn:aws:iam::000000000000:user/nr-console-user"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "Root account has one active access key.",
+  "metadata": {
+   "event_code": "iam_no_root_access_key",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 5,
+  "severity": "Critical",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "Root account has one active access key.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "iam",
+    "name": "Root account has no access keys",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "iam_no_root_access_key"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "Root account has one active access key.",
+   "title": "Root account has no access keys",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-iam_no_root_access_key-000000000000-us-east-1-<root_account>"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "iam"
+    },
+    "labels": [],
+    "name": "<root_account>",
+    "type": "AwsIamUser",
+    "uid": "arn:aws:iam::000000000000:root"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "No CloudTrail trails enabled with logging were found.",
+  "metadata": {
+   "event_code": "cloudtrail_multi_region_enabled",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 4,
+  "severity": "High",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "No CloudTrail trails enabled with logging were found.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "cloudtrail",
+    "name": "CloudTrail logging is enabled in every region",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "cloudtrail_multi_region_enabled"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "No CloudTrail trails enabled with logging were found.",
+   "title": "CloudTrail logging is enabled in every region",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-cloudtrail_multi_region_enabled-000000000000-us-east-1-000000000000"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "cloudtrail"
+    },
+    "labels": [],
+    "name": "000000000000",
+    "type": "AwsCloudTrailTrail",
+    "uid": "arn:aws:cloudtrail:us-east-1:000000000000:trail"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "No CloudTrail trails enabled with logging were found.",
+  "metadata": {
+   "event_code": "cloudtrail_multi_region_enabled",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 4,
+  "severity": "High",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "No CloudTrail trails enabled with logging were found.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "cloudtrail",
+    "name": "CloudTrail logging is enabled in every region",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "cloudtrail_multi_region_enabled"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "No CloudTrail trails enabled with logging were found.",
+   "title": "CloudTrail logging is enabled in every region",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-cloudtrail_multi_region_enabled-000000000000-eu-west-1-000000000000"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "eu-west-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "cloudtrail"
+    },
+    "labels": [],
+    "name": "000000000000",
+    "type": "AwsCloudTrailTrail",
+    "uid": "arn:aws:cloudtrail:eu-west-1:000000000000:trail"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "eu-west-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "Single region trail nr-trail log file validation disabled.",
+  "metadata": {
+   "event_code": "cloudtrail_log_file_validation_enabled",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 3,
+  "severity": "Medium",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "Single region trail nr-trail log file validation disabled.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "cloudtrail",
+    "name": "CloudTrail trail has log file validation enabled",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "cloudtrail_log_file_validation_enabled"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "Single region trail nr-trail log file validation disabled.",
+   "title": "CloudTrail trail has log file validation enabled",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-cloudtrail_log_file_validation_enabled-000000000000-us-east-1-nr-trail"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "cloudtrail"
+    },
+    "labels": [],
+    "name": "nr-trail",
+    "type": "AwsCloudTrailTrail",
+    "uid": "arn:aws:cloudtrail:us-east-1:000000000000:trail/nr-trail"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "Single region trail nr-trail has encryption disabled.",
+  "metadata": {
+   "event_code": "cloudtrail_kms_encryption_enabled",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 3,
+  "severity": "Medium",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "Single region trail nr-trail has encryption disabled.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "cloudtrail",
+    "name": "CloudTrail trail logs are encrypted at rest with a KMS key",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "cloudtrail_kms_encryption_enabled"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "Single region trail nr-trail has encryption disabled.",
+   "title": "CloudTrail trail logs are encrypted at rest with a KMS key",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-cloudtrail_kms_encryption_enabled-000000000000-us-east-1-nr-trail"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "cloudtrail"
+    },
+    "labels": [],
+    "name": "nr-trail",
+    "type": "AwsCloudTrailTrail",
+    "uid": "arn:aws:cloudtrail:us-east-1:000000000000:trail/nr-trail"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "Control plane logging is not enabled for EKS cluster nr-eks.",
+  "metadata": {
+   "event_code": "eks_control_plane_logging_all_types_enabled",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 3,
+  "severity": "Medium",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "Control plane logging is not enabled for EKS cluster nr-eks.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "eks",
+    "name": "EKS cluster has control plane logging enabled for all log types",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "eks_control_plane_logging_all_types_enabled"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "Control plane logging is not enabled for EKS cluster nr-eks.",
+   "title": "EKS cluster has control plane logging enabled for all log types",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-eks_control_plane_logging_all_types_enabled-000000000000-us-east-1-nr-eks"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "eks"
+    },
+    "labels": [],
+    "name": "nr-eks",
+    "type": "AwsEksCluster",
+    "uid": "arn:aws:eks:us-east-1:000000000000:cluster/nr-eks"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "EKS cluster nr-eks has encryption disabled.",
+  "metadata": {
+   "event_code": "eks_cluster_kms_cmk_encryption_in_secrets_enabled",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 3,
+  "severity": "Medium",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "EKS cluster nr-eks has encryption disabled.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "eks",
+    "name": "EKS cluster has Kubernetes Secrets encryption enabled with a KMS key",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "eks_cluster_kms_cmk_encryption_in_secrets_enabled"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "EKS cluster nr-eks has encryption disabled.",
+   "title": "EKS cluster has Kubernetes Secrets encryption enabled with a KMS key",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-eks_cluster_kms_cmk_encryption_in_secrets_enabled-000000000000-us-east-1-nr-eks"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "eks"
+    },
+    "labels": [],
+    "name": "nr-eks",
+    "type": "AwsEksCluster",
+    "uid": "arn:aws:eks:us-east-1:000000000000:cluster/nr-eks"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "RDS Instance nr-db is not encrypted.",
+  "metadata": {
+   "event_code": "rds_instance_storage_encrypted",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 4,
+  "severity": "High",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "RDS Instance nr-db is not encrypted.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "rds",
+    "name": "RDS DB instance storage is encrypted at rest",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "rds_instance_storage_encrypted"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "RDS Instance nr-db is not encrypted.",
+   "title": "RDS DB instance storage is encrypted at rest",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-rds_instance_storage_encrypted-000000000000-us-east-1-nr-db"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "rds"
+    },
+    "labels": [],
+    "name": "nr-db",
+    "type": "AwsRdsDbInstance",
+    "uid": "arn:aws:rds:us-east-1:000000000000:db:nr-db"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "KMS CMK 0b1c2d3e-4f50-6172-8394-a5b6c7d8e9f0 has automatic rotation disabled.",
+  "metadata": {
+   "event_code": "kms_cmk_rotation_enabled",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 3,
+  "severity": "Medium",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "KMS CMK 0b1c2d3e-4f50-6172-8394-a5b6c7d8e9f0 has automatic rotation disabled.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "kms",
+    "name": "KMS customer managed symmetric key has automatic rotation enabled",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "kms_cmk_rotation_enabled"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "KMS CMK 0b1c2d3e-4f50-6172-8394-a5b6c7d8e9f0 has automatic rotation disabled.",
+   "title": "KMS customer managed symmetric key has automatic rotation enabled",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-kms_cmk_rotation_enabled-000000000000-us-east-1-0b1c2d3e-4f50-6172-8394-a5b6c7d8e9f0"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "kms"
+    },
+    "labels": [],
+    "name": "0b1c2d3e-4f50-6172-8394-a5b6c7d8e9f0",
+    "type": "AwsKmsKey",
+    "uid": "arn:aws:kms:us-east-1:000000000000:key/0b1c2d3e-4f50-6172-8394-a5b6c7d8e9f0"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "VPC vpc-0a1b2c3d4e5f60718 Flow logs are disabled.",
+  "metadata": {
+   "event_code": "vpc_flow_logs_enabled",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 3,
+  "severity": "Medium",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "VPC vpc-0a1b2c3d4e5f60718 Flow logs are disabled.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "vpc",
+    "name": "VPC has flow logs enabled",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "vpc_flow_logs_enabled"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "VPC vpc-0a1b2c3d4e5f60718 Flow logs are disabled.",
+   "title": "VPC has flow logs enabled",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-vpc_flow_logs_enabled-000000000000-us-east-1-vpc-0a1b2c3d4e5f60718"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "vpc"
+    },
+    "labels": [],
+    "name": "vpc-0a1b2c3d4e5f60718",
+    "type": "AwsEc2Vpc",
+    "uid": "arn:aws:ec2:us-east-1:000000000000:vpc/vpc-0a1b2c3d4e5f60718"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "VPC vpc-0f0e0d0c0b0a09080 Flow logs are enabled.",
+  "metadata": {
+   "event_code": "vpc_flow_logs_enabled",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 3,
+  "severity": "Medium",
+  "status": "New",
+  "status_code": "PASS",
+  "status_detail": "VPC vpc-0f0e0d0c0b0a09080 Flow logs are enabled.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "vpc",
+    "name": "VPC has flow logs enabled",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "vpc_flow_logs_enabled"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "VPC vpc-0f0e0d0c0b0a09080 Flow logs are enabled.",
+   "title": "VPC has flow logs enabled",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-vpc_flow_logs_enabled-000000000000-us-east-1-vpc-0f0e0d0c0b0a09080"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "vpc"
+    },
+    "labels": [],
+    "name": "vpc-0f0e0d0c0b0a09080",
+    "type": "AwsEc2Vpc",
+    "uid": "arn:aws:ec2:us-east-1:000000000000:vpc/vpc-0f0e0d0c0b0a09080"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "Default Security Group (sg-0123456789abcdef0) rules allow traffic.",
+  "metadata": {
+   "event_code": "ec2_securitygroup_default_restrict_traffic",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 4,
+  "severity": "High",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "Default Security Group (sg-0123456789abcdef0) rules allow traffic.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "ec2",
+    "name": "Default security group restricts all inbound and outbound traffic",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "ec2_securitygroup_default_restrict_traffic"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "Default Security Group (sg-0123456789abcdef0) rules allow traffic.",
+   "title": "Default security group restricts all inbound and outbound traffic",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-ec2_securitygroup_default_restrict_traffic-000000000000-us-east-1-sg-0123456789abcdef0"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "ec2"
+    },
+    "labels": [],
+    "name": "sg-0123456789abcdef0",
+    "type": "AwsEc2SecurityGroup",
+    "uid": "arn:aws:ec2:us-east-1:000000000000:security-group/sg-0123456789abcdef0"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ }
+]
