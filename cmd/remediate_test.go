@@ -106,6 +106,25 @@ func TestGolden(t *testing.T) {
 	}
 }
 
+func TestASFFAndOCSFGiveTheSameFixes(t *testing.T) {
+	dir := t.TempDir()
+	if _, err := execute(t, "remediate", "--prowler", "testdata/prowler_ocsf.json", "--out", filepath.Join(dir, "ocsf")); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := execute(t, "remediate", "--prowler", "testdata/prowler_asff.json", "--input-format", "asff", "--out", filepath.Join(dir, "asff")); err != nil {
+		t.Fatal(err)
+	}
+	a, b := tree(t, filepath.Join(dir, "ocsf")), tree(t, filepath.Join(dir, "asff"))
+	if strings.Join(sortedKeys(a), ",") != strings.Join(sortedKeys(b), ",") {
+		t.Fatalf("file set differs\nocsf: %v\nasff: %v", sortedKeys(a), sortedKeys(b))
+	}
+	for rel, content := range a {
+		if b[rel] != content {
+			t.Errorf("%s differs between OCSF and ASFF input", rel)
+		}
+	}
+}
+
 func TestTwoFailingBucketsKeepSeparateFiles(t *testing.T) {
 	out := filepath.Join(t.TempDir(), "remediation")
 	if _, err := execute(t, "remediate", "--prowler", "testdata/prowler_two_buckets.json", "--out", out); err != nil {
@@ -247,6 +266,8 @@ func TestErrorsAreReturned(t *testing.T) {
 		"unsupported json": {"remediate", "--prowler", bad, "--out", dir},
 		"bad kube-bench":   {"remediate", "--kube-bench", bad, "--out", dir},
 		"unknown flag":     {"remediate", "--nope"},
+		"bad format":       {"remediate", "--prowler", "testdata/prowler_ocsf.json", "--input-format", "csv", "--out", dir},
+		"format mismatch":  {"remediate", "--prowler", "testdata/prowler_ocsf.json", "--input-format", "asff", "--out", dir},
 	}
 	for name, args := range cases {
 		if _, err := execute(t, args...); err == nil {

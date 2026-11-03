@@ -5,12 +5,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/sv222/k8s-remediate-nis2/internal/finding"
 )
 
 const ocsfStatusSuppressed = 3
+
+var Formats = []string{"auto", "ocsf", "json", "asff"}
 
 type legacyRecord struct {
 	FindingUniqueID string `json:"FindingUniqueId"`
@@ -61,13 +64,45 @@ type ocsfRecord struct {
 	} `json:"cloud"`
 }
 
+type asffRecord struct {
+	ID            string `json:"Id"`
+	GeneratorID   string `json:"GeneratorId"`
+	AwsAccountID  string `json:"AwsAccountId"`
+	Title         string `json:"Title"`
+	Description   string `json:"Description"`
+	Region        string `json:"Region"`
+	ProductFields struct {
+		ProwlerResourceName string `json:"ProwlerResourceName"`
+	} `json:"ProductFields"`
+	Severity struct {
+		Label string `json:"Label"`
+	} `json:"Severity"`
+	Resources []struct {
+		ID     string `json:"Id"`
+		Region string `json:"Region"`
+	} `json:"Resources"`
+	Compliance struct {
+		Status string `json:"Status"`
+	} `json:"Compliance"`
+	Workflow struct {
+		Status string `json:"Status"`
+	} `json:"Workflow"`
+}
+
 func Parse(data []byte, sourceFile string) ([]finding.Finding, error) {
+	return ParseFormat(data, sourceFile, "auto")
+}
+
+func ParseFormat(data []byte, sourceFile, format string) ([]finding.Finding, error) {
+	if !slices.Contains(Formats, format) {
+		return nil, fmt.Errorf("unknown Prowler input format %q: use one of %s", format, strings.Join(Formats, ", "))
+	}
 	trimmed := bytes.TrimSpace(data)
 	if len(trimmed) == 0 {
 		return nil, fmt.Errorf("%s: empty file", sourceFile)
 	}
 	if trimmed[0] != '[' {
-		return nil, fmt.Errorf("%s: unsupported Prowler layout: expected a JSON array of findings as written by `prowler -M json-ocsf` or legacy `prowler -M json`", sourceFile)
+		return nil, fmt.Errorf("%s: unsupported Prowler layout: expected a JSON array of findings as written by `prowler -M json-ocsf`, `prowler -M json-asff` or legacy `prowler -M json`", sourceFile)
 	}
 	var elems []json.RawMessage
 	if err := json.Unmarshal(trimmed, &elems); err != nil {
@@ -78,7 +113,7 @@ func Parse(data []byte, sourceFile string) ([]finding.Finding, error) {
 	}
 	out := make([]finding.Finding, 0, len(elems))
 	for i, e := range elems {
-		f, err := parseRecord(e)
+		f, err := parseRecord(e, format)
 		if err != nil {
 			return nil, fmt.Errorf("%s: record %d: %w", sourceFile, i, err)
 		}
@@ -88,7 +123,7 @@ func Parse(data []byte, sourceFile string) ([]finding.Finding, error) {
 	return out, nil
 }
 
-func parseRecord(raw json.RawMessage) (finding.Finding, error) {
+func parseRecord(raw json.RawMessage, format string) (finding.Finding, error) {
 	var keys map[string]json.RawMessage
 	if err := json.Unmarshal(raw, &keys); err != nil || keys == nil {
 		return finding.Finding{}, errors.New("not a JSON object")
@@ -101,15 +136,27 @@ func parseRecord(raw json.RawMessage) (finding.Finding, error) {
 		}
 		return false
 	}
+	detected := ""
 	switch {
 	case has("finding_info", "status_code"):
-		return parseOCSF(raw)
+		detected = "ocsf"
 	case has("FindingUniqueId", "CheckID"):
-		return parseLegacy(raw)
-	case has("SchemaVersion", "ProductArn"):
-		return finding.Finding{}, errors.New("AWS Security Finding Format (json-asff) is not supported: re-run prowler with `-M json-ocsf`")
+		detected = "json"
+	case has("SchemaVersion", "ProductArn", "GeneratorId"):
+		detected = "asff"
+	default:
+		return finding.Finding{}, errors.New("unsupported Prowler record layout: expected legacy keys (CheckID, Status), OCSF keys (finding_info, status_code) or ASFF keys (SchemaVersion, GeneratorId)")
 	}
-	return finding.Finding{}, errors.New("unsupported Prowler record layout: expected legacy keys (CheckID, Status) or OCSF keys (finding_info, status_code)")
+	if format != "auto" && format != detected {
+		return finding.Finding{}, fmt.Errorf("record is %s, but --input-format is %s", detected, format)
+	}
+	switch detected {
+	case "ocsf":
+		return parseOCSF(raw)
+	case "json":
+		return parseLegacy(raw)
+	}
+	return parseASFF(raw)
 }
 
 func parseLegacy(raw json.RawMessage) (finding.Finding, error) {
@@ -183,6 +230,67 @@ func parseOCSF(raw json.RawMessage) (finding.Finding, error) {
 		Service:     service,
 		Description: desc,
 	}, nil
+}
+
+func parseASFF(raw json.RawMessage) (finding.Finding, error) {
+	var r asffRecord
+	if err := json.Unmarshal(raw, &r); err != nil {
+		return finding.Finding{}, err
+	}
+	check, ok := strings.CutPrefix(r.GeneratorID, "prowler-")
+	if !ok || check == "" || r.Compliance.Status == "" {
+		return finding.Finding{}, errors.New("ASFF record without a Prowler GeneratorId (prowler-<check>) or Compliance.Status")
+	}
+	uid := r.ProductFields.ProwlerResourceName
+	region := r.Region
+	if len(r.Resources) > 0 {
+		if uid == "" {
+			uid = r.Resources[0].ID
+		}
+		if r.Resources[0].Region != "" {
+			region = r.Resources[0].Region
+		}
+	}
+	account := strings.TrimSpace(r.AwsAccountID)
+	status := normStatus(r.Compliance.Status)
+	switch status {
+	case "PASSED":
+		status = "PASS"
+	case "FAILED":
+		status = "FAIL"
+	case "NOT_AVAILABLE":
+		status = "MANUAL"
+	}
+	service, _, _ := strings.Cut(check, "_")
+	return finding.Finding{
+		Scanner:     "prowler",
+		CheckID:     check,
+		FindingUID:  r.ID,
+		Title:       r.Title,
+		Status:      status,
+		Suppressed:  status == "WARNING" || isSuppressed(r.Workflow.Status, 0),
+		AccountID:   account,
+		ResourceID:  arnName(uid, account),
+		Region:      region,
+		Severity:    strings.ToLower(r.Severity.Label),
+		Service:     service,
+		Description: r.Description,
+	}, nil
+}
+
+func arnName(uid, account string) string {
+	parts := strings.SplitN(uid, ":", 6)
+	if len(parts) < 6 || parts[0] != "arn" {
+		return uid
+	}
+	res := parts[5]
+	if i := strings.LastIndexAny(res, "/:"); i >= 0 {
+		return res[i+1:]
+	}
+	if parts[2] == "s3" || account == "" {
+		return res
+	}
+	return account
 }
 
 func isSuppressed(status string, statusID int) bool {

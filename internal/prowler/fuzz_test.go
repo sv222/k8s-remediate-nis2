@@ -27,6 +27,7 @@ func FuzzParse(f *testing.F) {
 	f.Add([]byte(`[]`))
 	f.Add([]byte(`[{"CheckID":"x","Status":"FAIL","Muted":true,"AccountId":"1"}]`))
 	f.Add([]byte(`[{"metadata":{"event_code":"c"},"status_code":"FAIL","status":"Suppressed","status_id":3,"finding_info":{},"cloud":{"account":{"uid":"1"}}}]`))
+	f.Add([]byte(`[{"SchemaVersion":"2018-10-08","GeneratorId":"prowler-s3_bucket_public_access","AwsAccountId":"1","Compliance":{"Status":"WARNING"},"Resources":[{"Id":"arn:aws:s3:::b"}]}]`))
 	f.Add([]byte(`[{"finding_info":{},"status_code":"fail"},{"CheckID":"a"},null,1,"x"]`))
 	f.Fuzz(func(t *testing.T, data []byte) {
 		got, err := Parse(data, "f.json")
