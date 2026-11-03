@@ -26,6 +26,7 @@ type options struct {
 	inputFormat string
 	kubeBench   string
 	outDir      string
+	format      string
 	evidence    bool
 	force       bool
 }
@@ -37,13 +38,14 @@ func newRemediateCmd() *cobra.Command {
 		Short: "Generate remediation code from Prowler/kube-bench findings",
 		Args:  cobra.NoArgs,
 		RunE: func(c *cobra.Command, args []string) error {
-			return run(c.OutOrStdout(), o)
+			return run(c.OutOrStdout(), c.ErrOrStderr(), o)
 		},
 	}
 	c.Flags().StringVar(&o.prowler, "prowler", "", "Prowler JSON report (json-ocsf, json-asff or legacy json)")
 	c.Flags().StringVar(&o.inputFormat, "input-format", "auto", "Prowler report format: "+strings.Join(prowler.Formats, ", "))
 	c.Flags().StringVar(&o.kubeBench, "kube-bench", "", "kube-bench JSON report")
 	c.Flags().StringVar(&o.outDir, "out", "./remediation", "output directory (must be empty unless --force is set)")
+	c.Flags().StringVar(&o.format, "format", "text", "stdout format: text (a summary line) or sarif (SARIF 2.1.0 for code scanning; the summary goes to stderr)")
 	c.Flags().BoolVar(&o.evidence, "export-evidence", false, "also write evidence.md for auditors")
 	c.Flags().BoolVar(&o.force, "force", false, "allow a non-empty output directory: remove the files listed in its manifest.json, then write")
 	return c
@@ -126,12 +128,15 @@ func groupKey(c candidate) string {
 	return c.e.Group + "|" + render.NormalizeResourceID(c.f.ResourceID)
 }
 
-func run(w io.Writer, o options) error {
+func run(w, errw io.Writer, o options) error {
 	if o.prowler == "" && o.kubeBench == "" {
 		return errors.New("at least one of --prowler or --kube-bench is required")
 	}
 	if !slices.Contains(prowler.Formats, o.inputFormat) {
 		return fmt.Errorf("unknown --input-format %q: use one of %s", o.inputFormat, strings.Join(prowler.Formats, ", "))
+	}
+	if o.format != "text" && o.format != "sarif" {
+		return fmt.Errorf("unknown --format %q: use text or sarif", o.format)
 	}
 	all, inputs, err := loadFindings(o)
 	if err != nil {
@@ -200,8 +205,11 @@ func run(w io.Writer, o options) error {
 	for _, c := range cands {
 		f, e := c.f, c.e
 		row := out.SummaryRow{
-			Scanner: f.Scanner, CheckID: f.CheckID, ResourceID: f.ResourceID,
+			Scanner: f.Scanner, CheckID: f.CheckID, Title: f.Title, Source: f.SourceFile, ResourceID: f.ResourceID,
 			Severity: f.Severity, Region: f.Region, Account: f.AccountID,
+		}
+		if row.Title == "" {
+			row.Title = f.Description
 		}
 		idErr := render.ValidateResourceID(f.ResourceID)
 		if !c.mapped {
@@ -213,6 +221,7 @@ func run(w io.Writer, o options) error {
 			continue
 		}
 		row.Articles = e.Articles
+		row.Title = e.Title
 		if e.Group != "" {
 			if w := best[groupKey(c)]; w.e.Rank > e.Rank {
 				row.Status = out.StatusSkipped
@@ -248,8 +257,20 @@ func run(w io.Writer, o options) error {
 	if err := out.Write(o.outDir, o.force, files, rep, o.evidence); err != nil {
 		return err
 	}
-	fmt.Fprintf(w, "failed findings: %d, files written: %d (nothing is applied), output: %s\n", len(rep.Rows), len(files), o.outDir)
-	return nil
+	summary := fmt.Sprintf("failed findings: %d, files written: %d (nothing is applied), output: %s\n", len(rep.Rows), len(files), o.outDir)
+	if o.format == "text" {
+		_, err := io.WriteString(w, summary)
+		return err
+	}
+	data, err := out.SARIF(rep, o.outDir)
+	if err != nil {
+		return err
+	}
+	if _, err := io.WriteString(errw, summary); err != nil {
+		return err
+	}
+	_, err = w.Write(data)
+	return err
 }
 
 func statusAndNote(e mapping.Entry, generated, manualWarn bool) (string, string) {

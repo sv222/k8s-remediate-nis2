@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"encoding/json"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -122,6 +123,45 @@ func TestASFFAndOCSFGiveTheSameFixes(t *testing.T) {
 		if b[rel] != content {
 			t.Errorf("%s differs between OCSF and ASFF input", rel)
 		}
+	}
+}
+
+func TestSARIFGoesToStdoutAndSummaryToStderr(t *testing.T) {
+	out := filepath.Join(t.TempDir(), "remediation")
+	root := NewRootCmd()
+	var stdout, stderr bytes.Buffer
+	root.SetOut(&stdout)
+	root.SetErr(&stderr)
+	root.SetArgs([]string{"remediate", "--prowler", "testdata/prowler_ocsf.json", "--kube-bench", "testdata/kube_bench.json", "--out", out, "--format", "sarif"})
+	if err := root.Execute(); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.HasPrefix(stderr.String(), "failed findings: 26,") {
+		t.Errorf("stderr = %q", stderr.String())
+	}
+	var log struct {
+		Version string `json:"version"`
+		Runs    []struct {
+			Results []struct {
+				RuleID string `json:"ruleId"`
+			} `json:"results"`
+		} `json:"runs"`
+	}
+	if err := json.Unmarshal(stdout.Bytes(), &log); err != nil {
+		t.Fatalf("stdout is not JSON: %v\n%s", err, stdout.String())
+	}
+	if log.Version != "2.1.0" || len(log.Runs) != 1 || len(log.Runs[0].Results) != 26 {
+		t.Fatalf("unexpected SARIF: %+v", log)
+	}
+	rules := map[string]bool{}
+	for _, r := range log.Runs[0].Results {
+		rules[r.RuleID] = true
+	}
+	if !rules["prowler/s3_bucket_public_access"] || !rules["kube-bench/5.2.2"] {
+		t.Errorf("rules = %v", rules)
+	}
+	if _, err := os.Stat(filepath.Join(out, "mapping.md")); err != nil {
+		t.Error("files must still be written with --format sarif")
 	}
 }
 
@@ -267,6 +307,7 @@ func TestErrorsAreReturned(t *testing.T) {
 		"bad kube-bench":   {"remediate", "--kube-bench", bad, "--out", dir},
 		"unknown flag":     {"remediate", "--nope"},
 		"bad format":       {"remediate", "--prowler", "testdata/prowler_ocsf.json", "--input-format", "csv", "--out", dir},
+		"bad output":       {"remediate", "--prowler", "testdata/prowler_ocsf.json", "--format", "html", "--out", dir},
 		"format mismatch":  {"remediate", "--prowler", "testdata/prowler_ocsf.json", "--input-format", "asff", "--out", dir},
 	}
 	for name, args := range cases {
