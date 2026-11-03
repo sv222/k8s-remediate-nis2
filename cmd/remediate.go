@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"slices"
 	"sort"
 	"strings"
 
@@ -21,11 +22,12 @@ import (
 )
 
 type options struct {
-	prowler   string
-	kubeBench string
-	outDir    string
-	evidence  bool
-	force     bool
+	prowler     string
+	inputFormat string
+	kubeBench   string
+	outDir      string
+	evidence    bool
+	force       bool
 }
 
 func newRemediateCmd() *cobra.Command {
@@ -38,7 +40,8 @@ func newRemediateCmd() *cobra.Command {
 			return run(c.OutOrStdout(), o)
 		},
 	}
-	c.Flags().StringVar(&o.prowler, "prowler", "", "Prowler JSON report (json-ocsf or legacy json)")
+	c.Flags().StringVar(&o.prowler, "prowler", "", "Prowler JSON report (json-ocsf, json-asff or legacy json)")
+	c.Flags().StringVar(&o.inputFormat, "input-format", "auto", "Prowler report format: "+strings.Join(prowler.Formats, ", "))
 	c.Flags().StringVar(&o.kubeBench, "kube-bench", "", "kube-bench JSON report")
 	c.Flags().StringVar(&o.outDir, "out", "./remediation", "output directory (must be empty unless --force is set)")
 	c.Flags().BoolVar(&o.evidence, "export-evidence", false, "also write evidence.md for auditors")
@@ -64,7 +67,10 @@ func loadFindings(o options) ([]finding.Finding, []out.Input, error) {
 		return nil
 	}
 	if o.prowler != "" {
-		if err := load(o.prowler, prowler.Parse); err != nil {
+		parse := func(data []byte, path string) ([]finding.Finding, error) {
+			return prowler.ParseFormat(data, path, o.inputFormat)
+		}
+		if err := load(o.prowler, parse); err != nil {
 			return nil, nil, err
 		}
 	}
@@ -123,6 +129,9 @@ func groupKey(c candidate) string {
 func run(w io.Writer, o options) error {
 	if o.prowler == "" && o.kubeBench == "" {
 		return errors.New("at least one of --prowler or --kube-bench is required")
+	}
+	if !slices.Contains(prowler.Formats, o.inputFormat) {
+		return fmt.Errorf("unknown --input-format %q: use one of %s", o.inputFormat, strings.Join(prowler.Formats, ", "))
 	}
 	all, inputs, err := loadFindings(o)
 	if err != nil {
