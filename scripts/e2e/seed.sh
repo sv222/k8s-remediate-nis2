@@ -20,6 +20,12 @@ aws s3api create-bucket --bucket nr-plain >/dev/null
 aws s3api create-bucket --bucket nr-existing-policy >/dev/null
 aws s3api put-bucket-policy --bucket nr-existing-policy --policy '{"Version":"2012-10-17","Statement":[{"Sid":"KeepMe","Effect":"Allow","Principal":{"AWS":"arn:aws:iam::000000000000:root"},"Action":"s3:GetObject","Resource":"arn:aws:s3:::nr-existing-policy/*"}]}' >/dev/null
 aws s3api create-bucket --bucket nr-log-target >/dev/null
+aws s3api create-bucket --bucket nr-trail-logs >/dev/null
+aws s3api create-bucket --bucket nr-flow-logs >/dev/null
+
+aws iam update-account-password-policy --minimum-password-length 8 >/dev/null
+
+aws cloudtrail create-trail --name nr-trail --s3-bucket-name nr-trail-logs >/dev/null
 
 aws kms create-key --description nr-e2e --query KeyMetadata.Arn --output text > /work/kms_key_arn.txt
 
@@ -45,5 +51,8 @@ aws ec2 create-volume --size 1 --availability-zone us-east-1a >/dev/null
 
 role=$(aws iam create-role --role-name nr-eks-role --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"eks.amazonaws.com"},"Action":"sts:AssumeRole"}]}' --query Role.Arn --output text)
 aws s3api get-bucket-policy --bucket nr-existing-policy --query Policy --output text > /work/policy_nr-existing-policy.json
+
+aws rds create-db-instance --db-instance-identifier nr-db --db-instance-class db.t3.micro --engine postgres \
+  --master-username nradmin --master-user-password 'Nr-e2e-Db-Pass-1' --allocated-storage 20 --no-storage-encrypted >/dev/null
 
 aws eks create-cluster --name nr-eks --role-arn "$role" --resources-vpc-config "subnetIds=$sub,$sub2,endpointPublicAccess=true,endpointPrivateAccess=false" >/dev/null
