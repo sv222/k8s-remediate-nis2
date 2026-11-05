@@ -1,0 +1,53 @@
+name: Validate golden files
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  TERRAFORM_VERSION: 1.16.5
+  TERRAFORM_SHA256: 2bc2fcfff033265c9e02ca0351f01794eb122f62a9b2a49a3294b9e49eaab5e4
+  KYVERNO_VERSION: 1.19.1
+  KYVERNO_SHA256: b38228f367fc0fdc2b08f4c83ea50ac5f16c60ff8d62d76a66157c33c47b70ae
+
+jobs:
+  validate-golden:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install Terraform and Kyverno CLI
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/terraform.zip" "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
+          echo "$TERRAFORM_SHA256  $RUNNER_TEMP/terraform.zip" | sha256sum -c -
+          curl -fsSL -o "$RUNNER_TEMP/kyverno.tar.gz" "https://github.com/kyverno/kyverno/releases/download/v${KYVERNO_VERSION}/kyverno-cli_v${KYVERNO_VERSION}_linux_x86_64.tar.gz"
+          echo "$KYVERNO_SHA256  $RUNNER_TEMP/kyverno.tar.gz" | sha256sum -c -
+          mkdir -p "$RUNNER_TEMP/bin"
+          unzip -q "$RUNNER_TEMP/terraform.zip" terraform -d "$RUNNER_TEMP/bin"
+          tar -xzf "$RUNNER_TEMP/kyverno.tar.gz" -C "$RUNNER_TEMP/bin" kyverno
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - name: terraform validate on the generated Terraform golden files
+        env:
+          TF_IN_AUTOMATION: "1"
+          TF_INPUT: "0"
+        run: |
+          export TF_PLUGIN_CACHE_DIR="$RUNNER_TEMP/tf-plugins"
+          mkdir -p "$TF_PLUGIN_CACHE_DIR"
+          n=0
+          for d in cmd/testdata/golden/*/terraform; do
+            w=$(mktemp -d)
+            cp "$d"/*.tf scripts/e2e/provider.tf scripts/e2e/pin_override.tf "$w"
+            echo "::group::$d"
+            (cd "$w" && terraform init -backend=false -no-color && terraform validate -no-color)
+            echo "::endgroup::"
+            n=$((n + 1))
+          done
+          echo "validated $n golden sets"
+      - name: kyverno test on the generated Kyverno policies
+        working-directory: scripts/kyverno/test
+        run: kyverno test .
