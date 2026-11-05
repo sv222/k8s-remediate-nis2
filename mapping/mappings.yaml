@@ -205,6 +205,70 @@ entries:
     title: Default security group allows traffic
     articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.13", "NIS2 CIR 2024/2690 Annex 6.7", "ISO27001:2022 A.8.20", "ISO27001:2022 A.8.22"]
     guidance: "No code is generated on purpose. Removing the rules of a default security group cuts off every instance or interface that still uses it. Find them: aws ec2 describe-network-interfaces --filters Name=group-id,Values=SG. Move them to their own security groups. Then list the rules (aws ec2 describe-security-group-rules --filters Name=group-id,Values=SG) and remove each one with aws ec2 revoke-security-group-ingress or aws ec2 revoke-security-group-egress --group-id SG --security-group-rule-ids RULE. The default group itself cannot be deleted."
+  - scanner: prowler
+    check_id: guardduty_is_enabled
+    title: GuardDuty detector is not enabled in the region
+    articles: ["NIS2 Art.21(2)(b)", "DORA Art.10", "DORA RTS 2024/1774 Art.12", "NIS2 CIR 2024/2690 Annex 3.2", "ISO27001:2022 A.8.15", "ISO27001:2022 A.8.16"]
+    templates: ["terraform/guardduty_detector.tf"]
+    regional: true
+    caution: "A region has one detector only. If one exists but is suspended, import it instead of creating a new one. GuardDuty is charged by event volume."
+    follow_up: "Applies to this region only. Enable GuardDuty in every region you use, or from a delegated administrator account for all member accounts."
+  - scanner: prowler
+    check_id: config_recorder_all_regions_enabled
+    title: AWS Config recorder is not enabled in the region
+    articles: ["NIS2 Art.21(2)(b)", "DORA Art.10", "DORA RTS 2024/1774 Art.12", "NIS2 CIR 2024/2690 Annex 3.2", "ISO27001:2022 A.8.15", "ISO27001:2022 A.8.9"]
+    templates: ["terraform/config_recorder.tf"]
+    shared_templates: ["terraform/variables_config.tf"]
+    regional: true
+    caution: "A region has one recorder and one delivery channel. If they exist, import or change them instead. The role in config_role_arn and the bucket in config_bucket must exist, and the bucket must let config.amazonaws.com write. AWS Config is charged per configuration item."
+    follow_up: "Applies to this region only. Global resource types are not recorded, so record them in one region."
+  - scanner: prowler
+    check_id: rds_instance_no_public_access
+    title: RDS instance is publicly accessible
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.13", "NIS2 CIR 2024/2690 Annex 6.7", "ISO27001:2022 A.8.20"]
+    guidance: "No code is generated because the instance is not in your Terraform state, and clients that connect over the internet lose access at once. Find who connects first (VPC flow logs, aws rds describe-db-instances --db-instance-identifier DB). Then run: aws rds modify-db-instance --db-instance-identifier DB --no-publicly-accessible --apply-immediately. If the instance is in your Terraform code, set publicly_accessible = false on aws_db_instance instead, or the next apply turns it on again. Also remove 0.0.0.0/0 and ::/0 from the security group on the database port."
+  - scanner: prowler
+    check_id: rds_instance_backup_enabled
+    title: RDS instance has automated backups turned off
+    articles: ["NIS2 Art.21(2)(c)", "DORA Art.12", "ISO27001:2022 A.8.13"]
+    guidance: "No code is generated because the instance is not in your Terraform state. Turn on backups: aws rds modify-db-instance --db-instance-identifier DB --backup-retention-period DAYS --apply-immediately. Pick DAYS (1 to 35) from your recovery point objective. If the instance is in your Terraform code, set backup_retention_period on aws_db_instance instead, or the next apply turns backups off again. Turning backups on can cause a short I/O pause on a single-AZ instance, and it is charged by storage. Test a restore after the first backup exists."
+  - scanner: prowler
+    check_id: rds_snapshots_public_access
+    title: RDS snapshot is shared with all AWS accounts
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.1", "ISO27001:2022 A.8.3"]
+    guidance: "No code is generated because snapshots are not managed by Terraform. Make the snapshot private: aws rds modify-db-snapshot-attribute --db-snapshot-identifier SNAP --attribute-name restore --values-to-remove all (for a cluster snapshot use modify-db-cluster-snapshot-attribute with --db-cluster-snapshot-identifier). Anyone may have copied the data already: check who used it in CloudTrail and rotate the credentials stored in the database."
+  - scanner: prowler
+    check_id: ec2_ebs_snapshot_account_block_public_access
+    title: EBS snapshot block public access is not enabled
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.1", "ISO27001:2022 A.8.3"]
+    templates: ["terraform/ebs_snapshot_block_public_access.tf"]
+    regional: true
+    follow_up: "Applies to this region only. Set it in every region you use."
+  - scanner: prowler
+    check_id: ec2_ebs_public_snapshot
+    title: EBS snapshot is public
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.1", "ISO27001:2022 A.8.3"]
+    guidance: "No code is generated because snapshots are not managed by Terraform. Make the snapshot private: aws ec2 modify-snapshot-attribute --snapshot-id SNAP --attribute createVolumePermission --operation-type remove --group-names all. Share it with named accounts only (--user-ids). Anyone may have copied the data already: check CloudTrail and rotate any secret on the volume. To stop it from happening again, turn on EBS snapshot block public access (ec2_ebs_snapshot_account_block_public_access)."
+  - scanner: prowler
+    check_id: ec2_ebs_snapshots_encrypted
+    title: EBS snapshot is not encrypted
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "DORA RTS 2024/1774 Art.6", "NIS2 CIR 2024/2690 Annex 9.1", "ISO27001:2022 A.8.24"]
+    guidance: "No code is generated: an existing snapshot cannot be encrypted in place. Copy it with encryption: aws ec2 copy-snapshot --source-region REGION --source-snapshot-id SNAP --encrypted --kms-key-id KEY. Use the new snapshot from now on and delete the old one when nothing needs it. A snapshot shared with other accounts needs a customer-managed key those accounts may use. Turn on EBS default encryption (ec2_ebs_default_encryption) so new snapshots are encrypted."
+  - scanner: prowler
+    check_id: awslambda_function_url_public
+    title: Lambda function URL is open to everyone (auth type NONE)
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.1", "ISO27001:2022 A.5.15"]
+    guidance: "No code is generated because the function is not in your Terraform state, and callers without AWS credentials lose access at once. Find who calls the URL first. Then run: aws lambda update-function-url-config --function-name FUNCTION --auth-type AWS_IAM. Grant lambda:InvokeFunctionUrl only to the principals that need it. If the URL is in your Terraform code, set authorization_type = \"AWS_IAM\" on aws_lambda_function_url instead. If the function must be public, put a gateway with its own authentication in front, or delete the URL: aws lambda delete-function-url-config --function-name FUNCTION."
+  - scanner: prowler
+    check_id: awslambda_function_not_publicly_accessible
+    title: Lambda function policy allows public access
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.1", "ISO27001:2022 A.5.15"]
+    guidance: "No code is generated because the policy statement is not in your Terraform state, and callers lose access at once. List the statements: aws lambda get-policy --function-name FUNCTION. Remove the one with Principal \"*\": aws lambda remove-permission --function-name FUNCTION --statement-id SID. Add a statement for the real caller, with its fixed ARN or service principal and a source ARN or source account condition: aws lambda add-permission --function-name FUNCTION --statement-id NEW_SID --action lambda:InvokeFunction --principal PRINCIPAL --source-arn SOURCE_ARN. If the permission is in your Terraform code, change aws_lambda_permission there instead."
+  - scanner: prowler
+    check_id: awslambda_function_using_supported_runtimes
+    title: Lambda function uses a runtime that is deprecated
+    articles: ["NIS2 Art.21(2)(e)", "DORA Art.9", "DORA RTS 2024/1774 Art.10", "ISO27001:2022 A.8.8"]
+    guidance: "No code is generated: a newer runtime can break the function code and its dependencies, so it needs a test. Pick a supported runtime from the Lambda runtimes page of the AWS documentation. Update a copy first: publish a version, test it behind an alias, then move the alias. Then run: aws lambda update-function-configuration --function-name FUNCTION --runtime RUNTIME. If the function is in your Terraform code, set runtime on aws_lambda_function instead, or the next apply sets the old one again. Rebuild layers and native dependencies for the new runtime."
   - scanner: kube-bench
     benchmark_ids:
       ack-1.0: "5.2.1"
