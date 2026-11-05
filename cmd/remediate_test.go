@@ -70,6 +70,7 @@ func TestGolden(t *testing.T) {
 		{"two_buckets", []string{"--prowler", "testdata/prowler_two_buckets.json"}},
 		{"aws_gaps", []string{"--prowler", "testdata/prowler_aws_gaps.json"}},
 		{"aws_more", []string{"--prowler", "testdata/prowler_aws_more.json"}},
+		{"aws_services", []string{"--prowler", "testdata/prowler_aws_services.json"}},
 		{"kube_bench_eks", []string{"--kube-bench", "testdata/kube_bench_eks.json"}},
 		{"kube_bench_aks", []string{"--kube-bench", "testdata/kube_bench_aks.json"}},
 		{"kube_bench_gke", []string{"--kube-bench", "testdata/kube_bench_gke.json"}},
@@ -428,5 +429,52 @@ func TestAWSMoreStatuses(t *testing.T) {
 	}
 	if strings.Contains(files["mapping.md"], "vpc-0f0e0d0c0b0a09080") {
 		t.Errorf("the PASS record must not appear in mapping.md")
+	}
+}
+
+func TestAWSServicesStatuses(t *testing.T) {
+	out := filepath.Join(t.TempDir(), "remediation")
+	if _, err := execute(t, "remediate", "--prowler", "testdata/prowler_aws_services.json", "--out", out); err != nil {
+		t.Fatal(err)
+	}
+	files := tree(t, out)
+	want := map[string]string{
+		"guardduty_is_enabled":                         "follow-up required",
+		"config_recorder_all_regions_enabled":          "follow-up required",
+		"rds_instance_no_public_access":                "guidance only",
+		"rds_instance_backup_enabled":                  "guidance only",
+		"rds_snapshots_public_access":                  "guidance only",
+		"ec2_ebs_snapshot_account_block_public_access": "follow-up required",
+		"ec2_ebs_public_snapshot":                      "guidance only",
+		"ec2_ebs_snapshots_encrypted":                  "guidance only",
+		"awslambda_function_url_public":                "guidance only",
+		"awslambda_function_not_publicly_accessible":   "guidance only",
+		"awslambda_function_using_supported_runtimes":  "guidance only",
+	}
+	got := map[string]string{}
+	for _, line := range strings.Split(files["mapping.md"], "\n") {
+		if col(line, 1) == "prowler" {
+			got[col(line, 2)] = col(line, 6)
+		}
+	}
+	for check, status := range want {
+		if got[check] != status {
+			t.Errorf("%s: status = %q, want %q", check, got[check], status)
+		}
+	}
+	for _, f := range []string{
+		"terraform/guardduty_detector__000000000000_us-east-1.tf",
+		"terraform/guardduty_detector__000000000000_eu-west-1.tf",
+		"terraform/config_recorder__000000000000_us-east-1.tf",
+		"terraform/variables_config.tf",
+		"terraform/ebs_snapshot_block_public_access__000000000000_us-east-1.tf",
+		"terraform/ebs_snapshot_block_public_access__000000000000_eu-west-1.tf",
+	} {
+		if _, ok := files[f]; !ok {
+			t.Errorf("%s missing: %v", f, sortedKeys(files))
+		}
+	}
+	if strings.Contains(files["mapping.md"], "eu-central-1") || strings.Contains(files["mapping.md"], "3ac1f2d4e5b6a7980c1d2e3f4a5b6c7d") {
+		t.Errorf("the PASS records must not appear in mapping.md")
 	}
 }
