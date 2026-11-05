@@ -1,0 +1,1532 @@
+[
+ {
+  "message": "GuardDuty is not enabled.",
+  "metadata": {
+   "event_code": "guardduty_is_enabled",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 4,
+  "severity": "High",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "GuardDuty is not enabled.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "guardduty",
+    "name": "GuardDuty detector is enabled and not suspended",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "guardduty_is_enabled"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "GuardDuty is not enabled.",
+   "title": "GuardDuty detector is enabled and not suspended",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-guardduty_is_enabled-000000000000-us-east-1-000000000000"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "guardduty"
+    },
+    "labels": [],
+    "name": "000000000000",
+    "type": "AwsGuardDutyDetector",
+    "uid": "arn:aws:guardduty:us-east-1:000000000000:detector/000000000000"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "GuardDuty is not enabled.",
+  "metadata": {
+   "event_code": "guardduty_is_enabled",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 4,
+  "severity": "High",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "GuardDuty is not enabled.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "guardduty",
+    "name": "GuardDuty detector is enabled and not suspended",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "guardduty_is_enabled"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "GuardDuty is not enabled.",
+   "title": "GuardDuty detector is enabled and not suspended",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-guardduty_is_enabled-000000000000-eu-west-1-000000000000"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "eu-west-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "guardduty"
+    },
+    "labels": [],
+    "name": "000000000000",
+    "type": "AwsGuardDutyDetector",
+    "uid": "arn:aws:guardduty:eu-west-1:000000000000:detector/000000000000"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "eu-west-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "GuardDuty detector 3ac1f2d4e5b6a7980c1d2e3f4a5b6c7d enabled.",
+  "metadata": {
+   "event_code": "guardduty_is_enabled",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 4,
+  "severity": "High",
+  "status": "New",
+  "status_code": "PASS",
+  "status_detail": "GuardDuty detector 3ac1f2d4e5b6a7980c1d2e3f4a5b6c7d enabled.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "guardduty",
+    "name": "GuardDuty detector is enabled and not suspended",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "guardduty_is_enabled"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "GuardDuty detector 3ac1f2d4e5b6a7980c1d2e3f4a5b6c7d enabled.",
+   "title": "GuardDuty detector is enabled and not suspended",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-guardduty_is_enabled-000000000000-eu-central-1-3ac1f2d4e5b6a7980c1d2e3f4a5b6c7d"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "eu-central-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "guardduty"
+    },
+    "labels": [],
+    "name": "3ac1f2d4e5b6a7980c1d2e3f4a5b6c7d",
+    "type": "AwsGuardDutyDetector",
+    "uid": "arn:aws:guardduty:eu-central-1:000000000000:detector/3ac1f2d4e5b6a7980c1d2e3f4a5b6c7d"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "eu-central-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "No AWS Config recorders in region.",
+  "metadata": {
+   "event_code": "config_recorder_all_regions_enabled",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 3,
+  "severity": "Medium",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "No AWS Config recorders in region.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "config",
+    "name": "AWS Config recorder is enabled and not in failure state or disabled",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "config_recorder_all_regions_enabled"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "No AWS Config recorders in region.",
+   "title": "AWS Config recorder is enabled and not in failure state or disabled",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-config_recorder_all_regions_enabled-000000000000-us-east-1-000000000000"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "config"
+    },
+    "labels": [],
+    "name": "000000000000",
+    "type": "AwsConfigConfigurationRecorder",
+    "uid": "arn:aws:config:us-east-1:000000000000:recorder"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "AWS Config recorder default is enabled.",
+  "metadata": {
+   "event_code": "config_recorder_all_regions_enabled",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 3,
+  "severity": "Medium",
+  "status": "New",
+  "status_code": "PASS",
+  "status_detail": "AWS Config recorder default is enabled.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "config",
+    "name": "AWS Config recorder is enabled and not in failure state or disabled",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "config_recorder_all_regions_enabled"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "AWS Config recorder default is enabled.",
+   "title": "AWS Config recorder is enabled and not in failure state or disabled",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-config_recorder_all_regions_enabled-000000000000-eu-west-1-default"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "eu-west-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "config"
+    },
+    "labels": [],
+    "name": "default",
+    "type": "AwsConfigConfigurationRecorder",
+    "uid": "arn:aws:config:eu-west-1:000000000000:recorder"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "eu-west-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "RDS Instance nr-db is set as publicly accessible and security group sg-0123456789abcdef0 has 3306 port open to the Internet.",
+  "metadata": {
+   "event_code": "rds_instance_no_public_access",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 5,
+  "severity": "Critical",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "RDS Instance nr-db is set as publicly accessible and security group sg-0123456789abcdef0 has 3306 port open to the Internet.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "rds",
+    "name": "RDS instance is not publicly exposed to the Internet",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "rds_instance_no_public_access"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "RDS Instance nr-db is set as publicly accessible and security group sg-0123456789abcdef0 has 3306 port open to the Internet.",
+   "title": "RDS instance is not publicly exposed to the Internet",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-rds_instance_no_public_access-000000000000-us-east-1-nr-db"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "rds"
+    },
+    "labels": [],
+    "name": "nr-db",
+    "type": "AwsRdsDbInstance",
+    "uid": "arn:aws:rds:us-east-1:000000000000:db:nr-db"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "RDS Instance nr-db has not backup enabled.",
+  "metadata": {
+   "event_code": "rds_instance_backup_enabled",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 3,
+  "severity": "Medium",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "RDS Instance nr-db has not backup enabled.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "rds",
+    "name": "RDS instance has backup retention period greater than 0 days",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "rds_instance_backup_enabled"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "RDS Instance nr-db has not backup enabled.",
+   "title": "RDS instance has backup retention period greater than 0 days",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-rds_instance_backup_enabled-000000000000-us-east-1-nr-db"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "rds"
+    },
+    "labels": [],
+    "name": "nr-db",
+    "type": "AwsRdsDbInstance",
+    "uid": "arn:aws:rds:us-east-1:000000000000:db:nr-db"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "RDS Instance Snapshot nr-snap is public.",
+  "metadata": {
+   "event_code": "rds_snapshots_public_access",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 5,
+  "severity": "Critical",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "RDS Instance Snapshot nr-snap is public.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "rds",
+    "name": "RDS snapshot is not publicly shared",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "rds_snapshots_public_access"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "RDS Instance Snapshot nr-snap is public.",
+   "title": "RDS snapshot is not publicly shared",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-rds_snapshots_public_access-000000000000-us-east-1-nr-snap"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "rds"
+    },
+    "labels": [],
+    "name": "nr-snap",
+    "type": "AwsRdsDbSnapshot",
+    "uid": "arn:aws:rds:us-east-1:000000000000:snapshot:nr-snap"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "EBS Snapshots are not blocked from public access in region us-east-1.",
+  "metadata": {
+   "event_code": "ec2_ebs_snapshot_account_block_public_access",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 4,
+  "severity": "High",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "EBS Snapshots are not blocked from public access in region us-east-1.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "ec2",
+    "name": "All EBS snapshots have public access blocked",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "ec2_ebs_snapshot_account_block_public_access"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "EBS Snapshots are not blocked from public access in region us-east-1.",
+   "title": "All EBS snapshots have public access blocked",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-ec2_ebs_snapshot_account_block_public_access-000000000000-us-east-1-000000000000"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "ec2"
+    },
+    "labels": [],
+    "name": "000000000000",
+    "type": "AwsAccount",
+    "uid": "arn:aws:iam::000000000000:root"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "EBS Snapshots are not blocked from public access in region eu-west-1.",
+  "metadata": {
+   "event_code": "ec2_ebs_snapshot_account_block_public_access",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 4,
+  "severity": "High",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "EBS Snapshots are not blocked from public access in region eu-west-1.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "ec2",
+    "name": "All EBS snapshots have public access blocked",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "ec2_ebs_snapshot_account_block_public_access"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "EBS Snapshots are not blocked from public access in region eu-west-1.",
+   "title": "All EBS snapshots have public access blocked",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-ec2_ebs_snapshot_account_block_public_access-000000000000-eu-west-1-000000000000"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "eu-west-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "ec2"
+    },
+    "labels": [],
+    "name": "000000000000",
+    "type": "AwsAccount",
+    "uid": "arn:aws:iam::000000000000:root"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "eu-west-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "EBS Snapshot snap-0a1b2c3d4e5f60718 is public.",
+  "metadata": {
+   "event_code": "ec2_ebs_public_snapshot",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 5,
+  "severity": "Critical",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "EBS Snapshot snap-0a1b2c3d4e5f60718 is public.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "ec2",
+    "name": "EBS snapshot is not public",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "ec2_ebs_public_snapshot"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "EBS Snapshot snap-0a1b2c3d4e5f60718 is public.",
+   "title": "EBS snapshot is not public",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-ec2_ebs_public_snapshot-000000000000-us-east-1-snap-0a1b2c3d4e5f60718"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "ec2"
+    },
+    "labels": [],
+    "name": "snap-0a1b2c3d4e5f60718",
+    "type": "AwsEc2Snapshot",
+    "uid": "arn:aws:ec2:us-east-1:000000000000:snapshot/snap-0a1b2c3d4e5f60718"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "EBS Snapshot snap-0f0e0d0c0b0a09080 is unencrypted.",
+  "metadata": {
+   "event_code": "ec2_ebs_snapshots_encrypted",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 4,
+  "severity": "High",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "EBS Snapshot snap-0f0e0d0c0b0a09080 is unencrypted.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "ec2",
+    "name": "EBS snapshot is encrypted",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "ec2_ebs_snapshots_encrypted"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "EBS Snapshot snap-0f0e0d0c0b0a09080 is unencrypted.",
+   "title": "EBS snapshot is encrypted",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-ec2_ebs_snapshots_encrypted-000000000000-us-east-1-snap-0f0e0d0c0b0a09080"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "ec2"
+    },
+    "labels": [],
+    "name": "snap-0f0e0d0c0b0a09080",
+    "type": "AwsEc2Snapshot",
+    "uid": "arn:aws:ec2:us-east-1:000000000000:snapshot/snap-0f0e0d0c0b0a09080"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "Lambda function nr-fn has a publicly accessible function URL.",
+  "metadata": {
+   "event_code": "awslambda_function_url_public",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 4,
+  "severity": "High",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "Lambda function nr-fn has a publicly accessible function URL.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "awslambda",
+    "name": "Lambda function URL is not publicly accessible",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "awslambda_function_url_public"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "Lambda function nr-fn has a publicly accessible function URL.",
+   "title": "Lambda function URL is not publicly accessible",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-awslambda_function_url_public-000000000000-us-east-1-nr-fn"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "awslambda"
+    },
+    "labels": [],
+    "name": "nr-fn",
+    "type": "AwsLambdaFunction",
+    "uid": "arn:aws:lambda:us-east-1:000000000000:function:nr-fn"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "Lambda function nr-fn has a policy which allows access to any principal.",
+  "metadata": {
+   "event_code": "awslambda_function_not_publicly_accessible",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 5,
+  "severity": "Critical",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "Lambda function nr-fn has a policy which allows access to any principal.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "awslambda",
+    "name": "Lambda function resource-based policy does not allow public access",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "awslambda_function_not_publicly_accessible"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "Lambda function nr-fn has a policy which allows access to any principal.",
+   "title": "Lambda function resource-based policy does not allow public access",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-awslambda_function_not_publicly_accessible-000000000000-us-east-1-nr-fn"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "awslambda"
+    },
+    "labels": [],
+    "name": "nr-fn",
+    "type": "AwsLambdaFunction",
+    "uid": "arn:aws:lambda:us-east-1:000000000000:function:nr-fn"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ },
+ {
+  "message": "Lambda function nr-fn is using python3.8 which is obsolete.",
+  "metadata": {
+   "event_code": "awslambda_function_using_supported_runtimes",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 3,
+  "severity": "Medium",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "Lambda function nr-fn is using python3.8 which is obsolete.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "awslambda",
+    "name": "Lambda function uses a supported runtime",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "awslambda_function_using_supported_runtimes"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "Lambda function nr-fn is using python3.8 which is obsolete.",
+   "title": "Lambda function uses a supported runtime",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-awslambda_function_using_supported_runtimes-000000000000-us-east-1-nr-fn"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "awslambda"
+    },
+    "labels": [],
+    "name": "nr-fn",
+    "type": "AwsLambdaFunction",
+    "uid": "arn:aws:lambda:us-east-1:000000000000:function:nr-fn"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ }
+]
