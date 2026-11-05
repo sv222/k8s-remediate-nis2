@@ -434,12 +434,13 @@ func TestRegionalTemplateGetsOneFilePerRegion(t *testing.T) {
 
 func TestRiskyTemplatesCarryLoudWarnings(t *testing.T) {
 	cases := map[string][]string{
-		"s3_bucket_secure_transport_policy":     {"WARNING", "plain HTTP", "REPLACES the whole bucket policy", "s3_existing_bucket_policies"},
-		"s3_bucket_acl_prohibited":              {"WARNING", "disables all ACLs"},
-		"s3_bucket_level_public_access_block":   {"WARNING", "on purpose", "Origin Access Control"},
-		"s3_bucket_kms_encryption":              {"WARNING", "log", "kms:Decrypt", "regional", "kms_excluded_buckets"},
-		"iam_password_policy_minimum_length_14": {"WARNING", "REPLACES the whole password policy", "max_password_age"},
-		"cloudtrail_multi_region_enabled":       {"WARNING", "second copy", "cloudtrail.amazonaws.com"},
+		"s3_bucket_secure_transport_policy":            {"WARNING", "plain HTTP", "REPLACES the whole bucket policy", "s3_existing_bucket_policies"},
+		"s3_bucket_acl_prohibited":                     {"WARNING", "disables all ACLs"},
+		"s3_bucket_level_public_access_block":          {"WARNING", "on purpose", "Origin Access Control"},
+		"s3_bucket_kms_encryption":                     {"WARNING", "log", "kms:Decrypt", "regional", "kms_excluded_buckets"},
+		"iam_password_policy_minimum_length_14":        {"WARNING", "REPLACES the whole password policy", "max_password_age"},
+		"cloudtrail_multi_region_enabled":              {"WARNING", "second copy", "cloudtrail.amazonaws.com"},
+		"ec2_ebs_snapshot_account_block_public_access": {"WARNING", "blocks all public sharing", "us-east-1"},
 	}
 	for check, wants := range cases {
 		files, err := Render(entryFor(t, check), finding.Finding{ResourceID: "example-bucket", Region: "us-east-1"})
@@ -596,6 +597,59 @@ func TestFlowLogNeedsRegionAndUsesTheVPC(t *testing.T) {
 	for _, w := range []string{`region               = "eu-west-1"`, `vpc_id               = "vpc-0a1b2c3d4e5f60718"`, `traffic_type         = "ALL"`, "var.flow_log_bucket_arn"} {
 		if !strings.Contains(c, w) {
 			t.Errorf("missing %q:\n%s", w, c)
+		}
+	}
+}
+
+func TestServiceGapsAreGuidanceOnly(t *testing.T) {
+	for _, check := range []string{
+		"rds_instance_no_public_access",
+		"rds_instance_backup_enabled",
+		"rds_snapshots_public_access",
+		"ec2_ebs_public_snapshot",
+		"ec2_ebs_snapshots_encrypted",
+		"awslambda_function_url_public",
+		"awslambda_function_not_publicly_accessible",
+		"awslambda_function_using_supported_runtimes",
+	} {
+		e := entryFor(t, check)
+		if len(e.Templates) != 0 || len(e.SharedTemplates) != 0 || e.Guidance == "" {
+			t.Errorf("%s: must be guidance only: %+v", check, e)
+		}
+	}
+}
+
+func TestRegionalServiceTemplatesGetOneFilePerRegion(t *testing.T) {
+	for check, want := range map[string]string{
+		"guardduty_is_enabled":                         `resource "aws_guardduty_detector"`,
+		"config_recorder_all_regions_enabled":          `resource "aws_config_configuration_recorder_status"`,
+		"ec2_ebs_snapshot_account_block_public_access": `state  = "block-all-sharing"`,
+	} {
+		e := entryFor(t, check)
+		if _, err := Render(e, finding.Finding{ResourceID: "000000000000"}); !errors.Is(err, ErrInvalidResourceID) {
+			t.Errorf("%s: missing region: err = %v, want ErrInvalidResourceID", check, err)
+		}
+		set := NewSet()
+		for _, region := range []string{"us-east-1", "eu-west-1"} {
+			files, err := Render(e, finding.Finding{ResourceID: "000000000000", Region: region})
+			if err != nil {
+				t.Fatal(err)
+			}
+			set.Add(files)
+			if c := files[0].Content; !strings.Contains(c, `region = "`+region+`"`) && !strings.Contains(c, `region   = "`+region+`"`) && !strings.Contains(c, `region     = "`+region+`"`) {
+				t.Errorf("%s: no region %s:\n%s", check, region, c)
+			} else if !strings.Contains(c, want) {
+				t.Errorf("%s: missing %q:\n%s", check, want, c)
+			}
+		}
+		var n int
+		for _, f := range setFiles(t, set) {
+			if strings.HasPrefix(f.RelPath, "terraform/") && !strings.HasPrefix(f.RelPath, "terraform/variables_") && f.RelPath != "terraform/versions.tf" {
+				n++
+			}
+		}
+		if n != 2 {
+			t.Errorf("%s: files = %d, want 2", check, n)
 		}
 	}
 }
