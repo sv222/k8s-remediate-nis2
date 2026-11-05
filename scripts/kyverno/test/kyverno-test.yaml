@@ -1,0 +1,111 @@
+# kyverno test on the Kyverno policies the tool generates (golden files). Run from this directory: kyverno test .
+apiVersion: cli.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: generated-policies
+policies:
+  - ../../../cmd/testdata/golden/kube_bench_aks/kyverno/block_privileged.yaml
+  - ../../../cmd/testdata/golden/kube_bench_aks/kyverno/block_hostnet.yaml
+  - ../../../cmd/testdata/golden/kube_bench_aks/kyverno/block_hostpid.yaml
+  - ../../../cmd/testdata/golden/kube_bench_aks/kyverno/block_hostipc.yaml
+  - ../../../cmd/testdata/golden/kube_bench_aks/kyverno/block_privilege_escalation.yaml
+  - ../../../cmd/testdata/golden/legacy_and_bench/kyverno/require_nonroot.yaml
+resources:
+  - ../pods.yaml
+results:
+  - policy: nis2-block-privileged
+    isValidatingPolicy: true
+    resources: [priv-bad]
+    result: fail
+  - policy: nis2-block-privileged
+    isValidatingPolicy: true
+    resources: [priv-bad-init]
+    result: fail
+  - policy: nis2-block-privileged
+    isValidatingPolicy: true
+    resources: [priv-bad-ephemeral]
+    result: fail
+  - policy: nis2-block-privileged
+    isValidatingPolicy: true
+    resources: [priv-good-plain]
+    result: pass
+  - policy: nis2-block-privileged
+    isValidatingPolicy: true
+    resources: [priv-good-explicit]
+    result: pass
+  - policy: nis2-block-privileged
+    isValidatingPolicy: true
+    resources: [priv-skipped-kube-system]
+    result: skip
+  - policy: nis2-block-hostnetwork
+    isValidatingPolicy: true
+    resources: [hostnet-bad]
+    result: fail
+  - policy: nis2-block-hostnetwork
+    isValidatingPolicy: true
+    resources: [hostnet-good]
+    result: pass
+  - policy: nis2-block-hostnetwork
+    isValidatingPolicy: true
+    resources: [hostnet-good-explicit]
+    result: pass
+  - policy: nis2-block-hostnetwork
+    isValidatingPolicy: true
+    resources: [hostnet-skipped-kube-system]
+    result: skip
+  - policy: nis2-block-hostpid
+    isValidatingPolicy: true
+    resources: [hostpid-bad]
+    result: fail
+  - policy: nis2-block-hostpid
+    isValidatingPolicy: true
+    resources: [hostpid-skipped-kube-system]
+    result: skip
+  - policy: nis2-block-hostipc
+    isValidatingPolicy: true
+    resources: [hostipc-bad]
+    result: fail
+  - policy: nis2-block-hostipc
+    isValidatingPolicy: true
+    resources: [hostipc-skipped-kube-system]
+    result: skip
+  - policy: nis2-block-privilege-escalation
+    isValidatingPolicy: true
+    resources: [privesc-bad]
+    result: fail
+  - policy: nis2-block-privilege-escalation
+    isValidatingPolicy: true
+    resources: [privesc-bad-init]
+    result: fail
+  - policy: nis2-block-privilege-escalation
+    isValidatingPolicy: true
+    resources: [privesc-bad-ephemeral]
+    result: fail
+  - policy: nis2-block-privilege-escalation
+    isValidatingPolicy: true
+    resources: [privesc-good-explicit]
+    result: pass
+  - policy: nis2-require-nonroot
+    isValidatingPolicy: true
+    resources: [root-bad-unset]
+    result: fail
+  - policy: nis2-require-nonroot
+    isValidatingPolicy: true
+    resources: [root-bad-container-false]
+    result: fail
+  - policy: nis2-require-nonroot
+    isValidatingPolicy: true
+    resources: [root-bad-init]
+    result: fail
+  - policy: nis2-require-nonroot
+    isValidatingPolicy: true
+    resources: [root-bad-one-of-two]
+    result: fail
+  - policy: nis2-require-nonroot
+    isValidatingPolicy: true
+    resources: [root-good-pod-level]
+    result: pass
+  - policy: nis2-require-nonroot
+    isValidatingPolicy: true
+    resources: [root-good-container-level]
+    result: pass
