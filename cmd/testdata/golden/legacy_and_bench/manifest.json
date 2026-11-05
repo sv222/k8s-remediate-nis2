@@ -2,7 +2,7 @@
   "tool": "k8s-remediate-nis2",
   "version": "dev",
   "mapping_version": 1,
-  "mapping_sha256": "835420e3824a0e4e7021e407d570697fa6f43d9844b5fa7ca149724a831b74c0",
+  "mapping_sha256": "34a6fc1b61657530c23c2e78edfc09d00b3307d4a51f4eb923d6c863957eaaba",
   "files": [
     {
       "path": "kyverno/block_hostnet.yaml",

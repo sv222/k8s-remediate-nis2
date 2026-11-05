@@ -1,0 +1,40 @@
+{
+  "tool": "k8s-remediate-nis2",
+  "version": "dev",
+  "mapping_version": 1,
+  "mapping_sha256": "34a6fc1b61657530c23c2e78edfc09d00b3307d4a51f4eb923d6c863957eaaba",
+  "files": [
+    {
+      "path": "terraform/config_recorder__000000000000_us-east-1.tf",
+      "sha256": "c0dd96dfa263935ed97d1db075683f792acb1d037568259921ccc028a8bc00c3"
+    },
+    {
+      "path": "terraform/ebs_snapshot_block_public_access__000000000000_eu-west-1.tf",
+      "sha256": "50d3d287806e6e63dd639777b25abc75e4c4de626a97317e9074642fcb05000a"
+    },
+    {
+      "path": "terraform/ebs_snapshot_block_public_access__000000000000_us-east-1.tf",
+      "sha256": "c0956d8fe8465ce065d2eaa44584ef75b563e01330a0ff2851f96a7d647d78c7"
+    },
+    {
+      "path": "terraform/guardduty_detector__000000000000_eu-west-1.tf",
+      "sha256": "1286cdd1723c7bc30f7d5f2fc2967413e08105c6c21a6c83db5d1136fa1430eb"
+    },
+    {
+      "path": "terraform/guardduty_detector__000000000000_us-east-1.tf",
+      "sha256": "e5c1e3ea6aeab30ab104a5174e140bf5bde39aacc20e90ceea542d69e900ad03"
+    },
+    {
+      "path": "terraform/variables_config.tf",
+      "sha256": "c4d95087a439c11f1477bb17f17215ce20d554f0abdf5b9dbfc81a6528fdcdfa"
+    },
+    {
+      "path": "terraform/versions.tf",
+      "sha256": "7bf541d7b20cd96e15cfe5beaacbdcdcc4f9cf8ab2407437224a1f3db2b54907"
+    },
+    {
+      "path": "mapping.md",
+      "sha256": "6c108b8ec1631f7df068d1dad6f918a7a4619c0ea218c65951b63238332c8b45"
+    }
+  ]
+}
