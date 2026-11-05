@@ -228,6 +228,15 @@ summaries, not legal text. DORA references are in `mapping.md`.
 | prowler | `eks_cluster_kms_cmk_encryption_in_secrets_enabled` | Steps to encrypt Kubernetes secrets with a KMS key. This cannot be undone | (h) | A.8.24 | guidance |
 | prowler | `rds_instance_storage_encrypted` | Steps to move to an encrypted copy of the instance | (h) | A.8.24 | guidance |
 | prowler | `kms_cmk_rotation_enabled` | Steps to turn on automatic key rotation | (h) | A.8.24 | guidance |
+| prowler | `guardduty_is_enabled` | GuardDuty detector, one file per region | (b) | A.8.15, A.8.16 | template |
+| prowler | `config_recorder_all_regions_enabled` | AWS Config recorder, delivery channel and status to `var.config_bucket`, one file per region | (b) | A.8.15, A.8.9 | template |
+| prowler | `ec2_ebs_snapshot_account_block_public_access` | EBS snapshot block public access (`block-all-sharing`), one file per region | (i), (g) | A.8.3 | template |
+| prowler | `ec2_ebs_public_snapshot`, `rds_snapshots_public_access` | Steps to make the snapshot private | (i), (g) | A.8.3 | guidance |
+| prowler | `ec2_ebs_snapshots_encrypted` | Steps to copy the snapshot with encryption | (h) | A.8.24 | guidance |
+| prowler | `rds_instance_no_public_access` | Steps to turn off public access and close the database port | (i), (g) | A.8.20 | guidance |
+| prowler | `rds_instance_backup_enabled` | Steps to turn on automated backups | (c) | A.8.13 | guidance |
+| prowler | `awslambda_function_url_public`, `awslambda_function_not_publicly_accessible` | Steps to require IAM auth on the function URL and to remove public policy statements | (i), (g) | A.5.15 | guidance |
+| prowler | `awslambda_function_using_supported_runtimes` | Steps to move the function to a supported runtime | (e) | A.8.8 | guidance |
 | kube-bench | privileged containers (5.2.2; 5.2.1 and 4.2.1 in other benchmarks) | Kyverno `nis2-block-privileged` | (i), (g) | A.8.9 | template |
 | kube-bench | host network (5.2.5; 5.2.4 and 4.2.4) | Kyverno `nis2-block-hostnetwork` | (i), (g) | A.8.22 | template |
 | kube-bench | root containers (5.2.7; 5.2.6 and 4.2.6) | Kyverno `nis2-require-nonroot` | (i), (g) | A.8.9 | template |
