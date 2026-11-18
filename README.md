@@ -205,6 +205,7 @@ summaries, not legal text. DORA references are in `mapping.md`.
 
 | Scanner | Check | What the fix does | NIS2 | ISO 27001:2022 | Type |
 |---|---|---|---|---|---|
+| prowler | `s3_account_level_public_access_blocks` | Account-wide S3 Block Public Access, one file per account. Buckets that are public on purpose need their own block to opt out | (i), (g) | A.8.3 | template |
 | prowler | `s3_bucket_level_public_access_block`, `s3_bucket_public_access`, `s3_bucket_public_list_acl`, `s3_bucket_public_write_acl`, `s3_bucket_policy_public_write_access` | Turns on all four S3 Block Public Access settings | (i), (g) | A.8.3 | template |
 | prowler | `s3_bucket_default_encryption` (deprecated in current Prowler) | Default SSE-S3 (AES256) encryption | (h) | A.8.24 | template |
 | prowler | `s3_bucket_kms_encryption` | Default SSE-KMS encryption with a key per region (`var.kms_key_arns`). Replaces the SSE-S3 file for the same bucket | (h) | A.8.24 | template |
@@ -217,7 +218,7 @@ summaries, not legal text. DORA references are in `mapping.md`.
 | prowler | `eks_cluster_not_publicly_accessible`, `eks_cluster_private_nodes_enabled` | Steps to limit the public endpoint and enable the private one | (i), (g) | A.8.20 | guidance |
 | prowler | `ec2_networkacl_allow_ingress_any_port`, `..._tcp_port_22`, `..._tcp_port_3389` | Steps to narrow the open entry | (i), (g) | A.8.20, A.8.22 | guidance |
 | prowler | `ec2_securitygroup_default_restrict_traffic` | Steps to move users off the default security group and remove its rules | (i), (g) | A.8.20, A.8.22 | guidance |
-| prowler | `iam_password_policy_minimum_length_14`, `iam_password_policy_reuse_24` | Account password policy: 14 characters, all character types, no reuse of the last 24. One file per account | (i), (g) | A.5.17 | template |
+| prowler | `iam_password_policy_minimum_length_14`, `iam_password_policy_lowercase`, `iam_password_policy_uppercase`, `iam_password_policy_number`, `iam_password_policy_symbol`, `iam_password_policy_reuse_24` | Account password policy: 14 characters, all character types, no reuse of the last 24. One file per account | (i), (g) | A.5.17 | template |
 | prowler | `iam_root_mfa_enabled`, `iam_user_mfa_enabled_console_access` | Steps to add MFA, or to remove an unused console password | (j), (i) | A.8.5 | guidance |
 | prowler | `iam_no_root_access_key` | Steps to find what uses the root keys, then delete them | (i), (g) | A.8.2 | guidance |
 | prowler | `cloudtrail_multi_region_enabled` | One multi-region trail with log file validation to `var.cloudtrail_bucket` | (b) | A.8.15, A.8.16 | template |
@@ -333,6 +334,9 @@ RDS instance has no real database engine.
   AWS provider 6.67.0) on the generated code of the test reports and of a random-ID corpus.
 - **CI:** build, vet, test with the race detector, gofmt, `go mod tidy`, staticcheck,
   govulncheck, the Kyverno policy test and the Terraform check.
+- **Code scanning:** a workflow runs the tool on the OCSF demo report with `--format sarif`,
+  checks that the file parses as SARIF 2.1.0 with the expected results, and uploads it to
+  GitHub code scanning.
 
 Not verified:
 
@@ -348,13 +352,12 @@ Not verified:
 
 ## Limitations and roadmap
 
-- The mapping set covers 35 Prowler checks and 15 kube-bench controls. Many other failed
+- The mapping set covers 51 Prowler checks and 15 kube-bench controls. Many other failed
   checks still show `no mapping`.
 - The tool does not scan and does not remove existing rules.
 - Terraform files are snippets per resource. You merge them into your own code and state.
 - Roadmap: review of the mappings by compliance experts, more Prowler checks (for example
-  GuardDuty, Config and more encryption at rest), kube-bench runs on real EKS, AKS and GKE
-  clusters, and a tested upload of the SARIF output to GitHub code scanning.
+  more encryption at rest), kube-bench runs on real EKS, AKS and GKE clusters.
 
 ## Contributing
 
