@@ -1,0 +1,20 @@
+{
+  "tool": "k8s-remediate-nis2",
+  "version": "dev",
+  "mapping_version": 1,
+  "mapping_sha256": "3636f67b6d59f8c410817427282c5687feb1ee964e08fbfeeaf508d1829b2a9b",
+  "files": [
+    {
+      "path": "terraform/iam_password_policy__000000000000.tf",
+      "sha256": "226fad99cf310077cb70148d7787f8304557b0f959d4c9107cb6df881d2d6248"
+    },
+    {
+      "path": "terraform/versions.tf",
+      "sha256": "7bf541d7b20cd96e15cfe5beaacbdcdcc4f9cf8ab2407437224a1f3db2b54907"
+    },
+    {
+      "path": "mapping.md",
+      "sha256": "acf8d043e5ee7f7a23b7ee687ae45d4484b34efbdbf93450a63cfbfd02c2c37d"
+    }
+  ]
+}

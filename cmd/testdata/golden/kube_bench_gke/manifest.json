@@ -2,7 +2,7 @@
   "tool": "k8s-remediate-nis2",
   "version": "dev",
   "mapping_version": 1,
-  "mapping_sha256": "34a6fc1b61657530c23c2e78edfc09d00b3307d4a51f4eb923d6c863957eaaba",
+  "mapping_sha256": "3636f67b6d59f8c410817427282c5687feb1ee964e08fbfeeaf508d1829b2a9b",
   "files": [
     {
       "path": "mapping.md",
