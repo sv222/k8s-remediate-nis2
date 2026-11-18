@@ -6,7 +6,7 @@
   "files": [
     {
       "path": "terraform/s3_account_public_access_block__000000000000.tf",
-      "sha256": "80f9761ecfdc02e6a652ea2250041701b872e629973bd892fde6a2a45f80b24b"
+      "sha256": "97c497519e6b63da3213f692d6a874f348c49c758fa2288ae5ad3e3058bd0e1a"
     },
     {
       "path": "terraform/versions.tf",
