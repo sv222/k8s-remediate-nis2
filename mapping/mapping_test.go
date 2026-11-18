@@ -37,6 +37,13 @@ func TestIAMPasswordPolicyCharacterClassLookups(t *testing.T) {
 	}
 }
 
+func TestS3AccountPublicAccessLookup(t *testing.T) {
+	e, ok, err := For(finding.Finding{Scanner: "prowler", CheckID: "s3_account_level_public_access_blocks"})
+	if err != nil || !ok || len(e.Templates) != 1 || e.Templates[0] != "terraform/s3_account_public_access_block.tf" {
+		t.Errorf("lookup failed: %+v ok=%v err=%v", e, ok, err)
+	}
+}
+
 func TestLookupMissesObsoleteAndUnknown(t *testing.T) {
 	for _, id := range []string{"awsv526", "ec2_security_group_ingress_open_to_internet", "unknown"} {
 		_, ok, err := For(finding.Finding{Scanner: "prowler", CheckID: id})
