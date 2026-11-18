@@ -23,6 +23,20 @@ func TestLoadAndLookup(t *testing.T) {
 	}
 }
 
+func TestIAMPasswordPolicyCharacterClassLookups(t *testing.T) {
+	for _, id := range []string{
+		"iam_password_policy_lowercase",
+		"iam_password_policy_number",
+		"iam_password_policy_symbol",
+		"iam_password_policy_uppercase",
+	} {
+		e, ok, err := For(finding.Finding{Scanner: "prowler", CheckID: id})
+		if err != nil || !ok || len(e.Templates) != 1 || e.Templates[0] != "terraform/iam_password_policy.tf" {
+			t.Errorf("%s: lookup failed: %+v ok=%v err=%v", id, e, ok, err)
+		}
+	}
+}
+
 func TestLookupMissesObsoleteAndUnknown(t *testing.T) {
 	for _, id := range []string{"awsv526", "ec2_security_group_ingress_open_to_internet", "unknown"} {
 		_, ok, err := For(finding.Finding{Scanner: "prowler", CheckID: id})

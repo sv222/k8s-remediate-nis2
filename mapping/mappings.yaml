@@ -142,6 +142,34 @@ entries:
     caution: "Replaces the whole account password policy. Copy settings you keep, such as max_password_age, into the file first."
     follow_up: "Existing passwords are not checked against the new rules. They comply after the next password change."
   - scanner: prowler
+    check_id: iam_password_policy_lowercase
+    title: IAM password policy does not require lowercase characters
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.6", "ISO27001:2022 A.5.17"]
+    templates: ["terraform/iam_password_policy.tf"]
+    caution: "Replaces the whole account password policy. Copy settings you keep, such as max_password_age, into the file first."
+    follow_up: "Existing passwords are not checked against the new rules. They comply after the next password change."
+  - scanner: prowler
+    check_id: iam_password_policy_number
+    title: IAM password policy does not require numbers
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.6", "ISO27001:2022 A.5.17"]
+    templates: ["terraform/iam_password_policy.tf"]
+    caution: "Replaces the whole account password policy. Copy settings you keep, such as max_password_age, into the file first."
+    follow_up: "Existing passwords are not checked against the new rules. They comply after the next password change."
+  - scanner: prowler
+    check_id: iam_password_policy_symbol
+    title: IAM password policy does not require symbols
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.6", "ISO27001:2022 A.5.17"]
+    templates: ["terraform/iam_password_policy.tf"]
+    caution: "Replaces the whole account password policy. Copy settings you keep, such as max_password_age, into the file first."
+    follow_up: "Existing passwords are not checked against the new rules. They comply after the next password change."
+  - scanner: prowler
+    check_id: iam_password_policy_uppercase
+    title: IAM password policy does not require uppercase characters
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.6", "ISO27001:2022 A.5.17"]
+    templates: ["terraform/iam_password_policy.tf"]
+    caution: "Replaces the whole account password policy. Copy settings you keep, such as max_password_age, into the file first."
+    follow_up: "Existing passwords are not checked against the new rules. They comply after the next password change."
+  - scanner: prowler
     check_id: iam_root_mfa_enabled
     title: Root user has no MFA
     articles: ["NIS2 Art.21(2)(j)", "NIS2 Art.21(2)(i)", "DORA Art.9", "DORA RTS 2024/1774 Art.21", "NIS2 CIR 2024/2690 Annex 11.7", "ISO27001:2022 A.8.5"]
