@@ -72,6 +72,7 @@ func TestGolden(t *testing.T) {
 		{"aws_more", []string{"--prowler", "testdata/prowler_aws_more.json"}},
 		{"aws_services", []string{"--prowler", "testdata/prowler_aws_services.json"}},
 		{"iam_policy", []string{"--prowler", "testdata/prowler_iam_policy.json"}},
+		{"s3_account", []string{"--prowler", "testdata/prowler_s3_account.json"}},
 		{"kube_bench_eks", []string{"--kube-bench", "testdata/kube_bench_eks.json"}},
 		{"kube_bench_aks", []string{"--kube-bench", "testdata/kube_bench_aks.json"}},
 		{"kube_bench_gke", []string{"--kube-bench", "testdata/kube_bench_gke.json"}},

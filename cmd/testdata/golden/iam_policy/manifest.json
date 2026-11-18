@@ -2,7 +2,7 @@
   "tool": "k8s-remediate-nis2",
   "version": "dev",
   "mapping_version": 1,
-  "mapping_sha256": "3636f67b6d59f8c410817427282c5687feb1ee964e08fbfeeaf508d1829b2a9b",
+  "mapping_sha256": "78c374bab51129fb8d66ed1dee8f0a17add16660c4d8091f47d04a6cef9b8b20",
   "files": [
     {
       "path": "terraform/iam_password_policy__000000000000.tf",

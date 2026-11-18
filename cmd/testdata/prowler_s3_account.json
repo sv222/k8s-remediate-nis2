@@ -1,0 +1,104 @@
+[
+ {
+  "message": "The account level public access block for S3 is not enabled.",
+  "metadata": {
+   "event_code": "s3_account_level_public_access_blocks",
+   "product": {
+    "name": "Prowler",
+    "uid": "prowler",
+    "vendor_name": "Prowler",
+    "version": "5.45.0"
+   },
+   "profiles": [
+    "cloud",
+    "datetime"
+   ],
+   "tenant_uid": "",
+   "version": "1.5.0"
+  },
+  "severity_id": 4,
+  "severity": "High",
+  "status": "New",
+  "status_code": "FAIL",
+  "status_detail": "The account level public access block for S3 is not enabled.",
+  "status_id": 1,
+  "unmapped": {
+   "related_url": "",
+   "categories": [],
+   "depends_on": [],
+   "related_to": [],
+   "additional_urls": [],
+   "notes": "",
+   "compliance": {},
+   "scan_id": "01a1374e-a9b8-7648-adb0-1a87f330862a",
+   "provider_uid": "000000000000",
+   "provider": "aws"
+  },
+  "activity_name": "Create",
+  "activity_id": 1,
+  "finding_info": {
+   "analytic": {
+    "category": "s3",
+    "name": "S3 account level public access block is enabled",
+    "type": "Rule",
+    "type_id": 1,
+    "uid": "s3_account_level_public_access_blocks"
+   },
+   "created_time": 1791929264,
+   "created_time_dt": "2026-10-13T22:07:44.568051",
+   "desc": "The account level public access block for S3 is not enabled.",
+   "title": "S3 account level public access block is enabled",
+   "types": [
+    "Software and Configuration Checks/AWS Security Best Practices"
+   ],
+   "uid": "prowler-aws-s3_account_level_public_access_blocks-000000000000-us-east-1-000000000000"
+  },
+  "resources": [
+   {
+    "cloud_partition": "aws",
+    "region": "us-east-1",
+    "data": {
+     "details": "",
+     "metadata": {}
+    },
+    "group": {
+     "name": "s3"
+    },
+    "labels": [],
+    "name": "000000000000",
+    "type": "AwsAccount",
+    "uid": "arn:aws:s3:::000000000000"
+   }
+  ],
+  "category_name": "Findings",
+  "category_uid": 2,
+  "class_name": "Detection Finding",
+  "class_uid": 2004,
+  "cloud": {
+   "account": {
+    "name": "",
+    "type": "AWS Account",
+    "type_id": 10,
+    "uid": "000000000000",
+    "labels": []
+   },
+   "org": {
+    "name": "",
+    "ou_uid": "",
+    "ou_name": "",
+    "uid": ""
+   },
+   "provider": "aws",
+   "region": "us-east-1"
+  },
+  "remediation": {
+   "desc": "",
+   "references": []
+  },
+  "risk_details": "",
+  "time": 1791929264,
+  "time_dt": "2026-10-13T22:07:44.568051",
+  "type_uid": 200401,
+  "type_name": "Detection Finding: Create"
+ }
+]
