@@ -12,6 +12,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Terraform templates for `guardduty_is_enabled` (GuardDuty detector), `config_recorder_all_regions_enabled` (AWS Config recorder, delivery channel and status, `var.config_role_arn` and `var.config_bucket`) and `ec2_ebs_snapshot_account_block_public_access` (EBS snapshot block public access). One file per region.
 - Guidance-only entries for `rds_instance_no_public_access`, `rds_instance_backup_enabled`, `rds_snapshots_public_access`, `ec2_ebs_public_snapshot`, `ec2_ebs_snapshots_encrypted`, `awslambda_function_url_public`, `awslambda_function_not_publicly_accessible` and `awslambda_function_using_supported_runtimes`. These change resources that are not in your Terraform state, and a wrong change can cut off callers, so no code is generated.
 - Test report `cmd/testdata/prowler_aws_services.json` with golden files.
+- Mapping entries for `iam_password_policy_lowercase`, `iam_password_policy_uppercase`, `iam_password_policy_number` and `iam_password_policy_symbol`. They render the same `aws_iam_account_password_policy` file as the minimum length and reuse checks, so one run fixes all six findings of an account together.
+- Terraform template for `s3_account_level_public_access_blocks` (account-wide `aws_s3_account_public_access_block`, one file per account). Buckets that are public on purpose need their own bucket block to opt out; the generated file says so.
+- Test reports `cmd/testdata/prowler_iam_policy.json` and `cmd/testdata/prowler_s3_account.json` with golden files.
+- A code scanning workflow that runs the tool on the OCSF demo report with `--format sarif`, checks that the file parses as SARIF 2.1.0 with the expected results, and uploads it to GitHub code scanning.
 
 ## [0.5.0] - 2026-11-03
 
