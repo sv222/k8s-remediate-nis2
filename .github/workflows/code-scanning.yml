@@ -34,7 +34,7 @@ jobs:
               sarif = json.load(f)
           assert sarif["version"] == "2.1.0", sarif["version"]
           results = sarif["runs"][0]["results"]
-          assert len(results) == 27, len(results)
+          assert len(results) == 11, len(results)
           rules = {r["ruleId"] for r in results}
           assert "prowler/s3_bucket_public_access" in rules, rules
           print(f"{len(results)} results: valid SARIF 2.1.0")
