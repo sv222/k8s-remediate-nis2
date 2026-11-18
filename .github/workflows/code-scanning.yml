@@ -1,0 +1,46 @@
+name: Code scanning
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  sarif:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+      - name: Build
+        run: go build -trimpath -o k8s-remediate-nis2 ./cmd/k8s-remediate-nis2
+      - name: Run the tool and write SARIF
+        run: ./k8s-remediate-nis2 remediate --prowler cmd/testdata/prowler_ocsf.json --format sarif --out temp/code-scanning > results.sarif
+      - name: Check that the SARIF file is valid
+        run: |
+          python3 - <<'PY'
+          import json
+
+          with open("results.sarif") as f:
+              sarif = json.load(f)
+          assert sarif["version"] == "2.1.0", sarif["version"]
+          results = sarif["runs"][0]["results"]
+          assert len(results) == 27, len(results)
+          rules = {r["ruleId"] for r in results}
+          assert "prowler/s3_bucket_public_access" in rules, rules
+          print(f"{len(results)} results: valid SARIF 2.1.0")
+          PY
+      - name: Upload to GitHub code scanning
+        uses: github/codeql-action/upload-sarif@9418214df1f2c4b8128c770156c409013b07d6b9 # v3
+        with:
+          sarif_file: results.sarif
+          category: k8s-remediate-nis2
