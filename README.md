@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="docs/logo.png" alt="k8s-remediate-nis2 logo" width="200">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/logo-dark.png">
+    <img src="docs/logo.png" alt="k8s-remediate-nis2 logo" width="200">
+  </picture>
 </p>
 
 # k8s-remediate-nis2
