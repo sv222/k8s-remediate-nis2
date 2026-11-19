@@ -37,12 +37,13 @@ k8s-remediate-nis2 remediate \
 ```
 
 ```text
-failed findings: 27, files written: 14 (nothing is applied), output: out
+failed findings: 28, files written: 15 (nothing is applied), output: out
 ```
 
 ```text
 out/
-  kyverno/     block_hostnet.yaml  block_hostpid.yaml  block_privileged.yaml  require_nonroot.yaml
+  kyverno/     block_hostnet.yaml  block_hostpath.yaml  block_hostpid.yaml
+               block_privileged.yaml  require_nonroot.yaml
   terraform/   s3_public_access_block__acme-public-logs.tf
                s3_encryption_kms__acme-backup-dump.tf
                sg_restrict_ssh__sg-a899c3f6063affe1f.tf
@@ -87,8 +88,8 @@ each input file (of the bytes that were parsed) and of each generated file, the 
 version, the AWS account and the open items per row.
 
 ```text
-Records read: 143 | Failed findings (FAIL): 23 | Manual WARN treated as gap: 4 | Passed: 66 | Manual or not assessed: 50 | Other status: 0 | Suppressed (muted): 0 | Duplicate records ignored: 0
-Status of the 27 rows below: code generated: 6 | follow-up required: 7 | guidance only: 2 | no mapping: 12 | skipped: 0
+Records read: 143 | Failed findings (FAIL): 23 | Manual WARN treated as gap: 5 | Passed: 66 | Manual or not assessed: 49 | Other status: 0 | Suppressed (muted): 0 | Duplicate records ignored: 0
+Status of the 28 rows below: code generated: 6 | follow-up required: 8 | guidance only: 2 | no mapping: 12 | skipped: 0
 ```
 
 ## Notice and disclaimer
@@ -247,7 +248,8 @@ summaries, not legal text. DORA references are in `mapping.md`.
 | prowler | `awslambda_function_using_supported_runtimes` | Steps to move the function to a supported runtime | (e) | A.8.8 | guidance |
 | kube-bench | privileged containers (5.2.2; 5.2.1 and 4.2.1 in other benchmarks) | Kyverno `nis2-block-privileged` | (i), (g) | A.8.9 | template |
 | kube-bench | host network (5.2.5; 5.2.4 and 4.2.4) | Kyverno `nis2-block-hostnetwork` | (i), (g) | A.8.22 | template |
-| kube-bench | root containers (5.2.7; 5.2.6 and 4.2.6) | Kyverno `nis2-require-nonroot` | (i), (g) | A.8.9 | template |
+| kube-bench | root containers (5.2.7; 5.2.6 and 4.2.6) | Kyverno `nis2-require-run-as-non-root` | (i), (g) | A.8.9 | template |
+| kube-bench | hostPath volumes (5.2.12; 5.2.11 in cis-1.12) | Kyverno `nis2-block-hostpath` | (i), (g) | A.8.9 | template |
 | kube-bench | host PID (5.2.3; 5.2.2 and 4.2.2) | Kyverno `nis2-block-hostpid` | (i), (g) | A.8.9 | template |
 | kube-bench | host IPC (5.2.4; 5.2.3 and 4.2.3) | Kyverno `nis2-block-hostipc` | (i), (g) | A.8.9 | template |
 | kube-bench | `allowPrivilegeEscalation` (5.2.6; 5.2.5 and 4.2.5) | Kyverno `nis2-block-privilege-escalation`. It rejects `true`, not an unset field | (i), (g) | A.8.9 | template |
@@ -326,9 +328,9 @@ RDS instance has no real database engine.
   the same output. `internal/prowler/testdata/asff.json` is real Prowler 5.45 ASFF output.
 - **SARIF:** the output of the demo reports validates against the SARIF 2.1.0 JSON schema. An
   upload to GitHub code scanning was not tested.
-- **Kyverno:** `make policy-test` runs the six policies through the Kyverno 1.19.1 CLI
+- **Kyverno:** `make policy-test` runs the seven policies through the Kyverno 1.19.1 CLI
   against good and bad pods. A real Kyverno 1.19.1 admission tested the first three policies,
-  not the host PID, host IPC and privilege escalation policies.
+  not the host PID, host IPC, hostPath and privilege escalation policies.
 - **Unit and property tests:** `make test` compares output with golden files in
   `cmd/testdata/golden`. Property tests check that no generated `.tf` contains an
   internet-wide CIDR for random resource IDs, that file names stay inside the output
@@ -359,7 +361,7 @@ Not verified:
 
 ## Limitations and roadmap
 
-- The mapping set covers 51 Prowler checks and 15 kube-bench controls. Many other failed
+- The mapping set covers 51 Prowler checks and 16 kube-bench controls. Many other failed
   checks still show `no mapping`.
 - The tool does not scan and does not remove existing rules.
 - Terraform files are snippets per resource. You merge them into your own code and state.
