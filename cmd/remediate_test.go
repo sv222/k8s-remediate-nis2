@@ -142,7 +142,7 @@ func TestSARIFGoesToStdoutAndSummaryToStderr(t *testing.T) {
 	if err := root.Execute(); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.HasPrefix(stderr.String(), "failed findings: 27,") {
+	if !strings.HasPrefix(stderr.String(), "failed findings: 28,") {
 		t.Errorf("stderr = %q", stderr.String())
 	}
 	var log struct {
@@ -156,14 +156,14 @@ func TestSARIFGoesToStdoutAndSummaryToStderr(t *testing.T) {
 	if err := json.Unmarshal(stdout.Bytes(), &log); err != nil {
 		t.Fatalf("stdout is not JSON: %v\n%s", err, stdout.String())
 	}
-	if log.Version != "2.1.0" || len(log.Runs) != 1 || len(log.Runs[0].Results) != 27 {
+	if log.Version != "2.1.0" || len(log.Runs) != 1 || len(log.Runs[0].Results) != 28 {
 		t.Fatalf("unexpected SARIF: %+v", log)
 	}
 	rules := map[string]bool{}
 	for _, r := range log.Runs[0].Results {
 		rules[r.RuleID] = true
 	}
-	if !rules["prowler/s3_bucket_public_access"] || !rules["kube-bench/5.2.2"] {
+	if !rules["prowler/s3_bucket_public_access"] || !rules["kube-bench/5.2.2"] || !rules["kube-bench/5.2.11"] {
 		t.Errorf("rules = %v", rules)
 	}
 	if _, err := os.Stat(filepath.Join(out, "mapping.md")); err != nil {
@@ -254,7 +254,7 @@ func TestKyvernoPoliciesAreClusterWideAndDeduped(t *testing.T) {
 		}
 	}
 	sort.Strings(policies)
-	want := "kyverno/block_hostnet.yaml,kyverno/block_hostpid.yaml,kyverno/block_privileged.yaml,kyverno/require_nonroot.yaml"
+	want := "kyverno/block_hostnet.yaml,kyverno/block_hostpath.yaml,kyverno/block_hostpid.yaml,kyverno/block_privileged.yaml,kyverno/require_nonroot.yaml"
 	if strings.Join(policies, ",") != want {
 		t.Errorf("policies = %v", policies)
 	}
@@ -271,7 +271,7 @@ func TestKyvernoPoliciesAreClusterWideAndDeduped(t *testing.T) {
 	if !hasEtcd {
 		t.Error("failed etcd check is not listed")
 	}
-	for _, id := range []string{"5.2.2", "5.2.3", "5.2.5", "5.2.7"} {
+	for _, id := range []string{"5.2.2", "5.2.3", "5.2.5", "5.2.7", "5.2.11"} {
 		if !strings.Contains(mappingMD, "| `"+id+"` |") || !strings.Contains(mappingMD, "manual (WARN)") {
 			t.Errorf("manual WARN control %s is not remediated or not marked", id)
 		}
@@ -280,6 +280,17 @@ func TestKyvernoPoliciesAreClusterWideAndDeduped(t *testing.T) {
 		if strings.Contains(mappingMD, "| `"+id+"` |") {
 			t.Errorf("passed or unmapped manual WARN control %s must not be listed", id)
 		}
+	}
+}
+
+func TestRunAsNonRootPolicyName(t *testing.T) {
+	out := filepath.Join(t.TempDir(), "remediation")
+	if _, err := execute(t, "remediate", "--kube-bench", "testdata/kube_bench.json", "--out", out); err != nil {
+		t.Fatal(err)
+	}
+	policy := tree(t, out)["kyverno/require_nonroot.yaml"]
+	if !strings.Contains(policy, "name: nis2-require-run-as-non-root") {
+		t.Errorf("policy name is not nis2-require-run-as-non-root:\n%s", policy)
 	}
 }
 

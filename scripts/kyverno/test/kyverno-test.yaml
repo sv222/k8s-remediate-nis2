@@ -9,6 +9,7 @@ policies:
   - ../../../cmd/testdata/golden/kube_bench_aks/kyverno/block_hostpid.yaml
   - ../../../cmd/testdata/golden/kube_bench_aks/kyverno/block_hostipc.yaml
   - ../../../cmd/testdata/golden/kube_bench_aks/kyverno/block_privilege_escalation.yaml
+  - ../../../cmd/testdata/golden/legacy_and_bench/kyverno/block_hostpath.yaml
   - ../../../cmd/testdata/golden/legacy_and_bench/kyverno/require_nonroot.yaml
 resources:
   - ../pods.yaml
@@ -85,27 +86,43 @@ results:
     isValidatingPolicy: true
     resources: [privesc-good-explicit]
     result: pass
-  - policy: nis2-require-nonroot
+  - policy: nis2-block-hostpath
+    isValidatingPolicy: true
+    resources: [hostpath-bad]
+    result: fail
+  - policy: nis2-block-hostpath
+    isValidatingPolicy: true
+    resources: [hostpath-good-emptydir]
+    result: pass
+  - policy: nis2-block-hostpath
+    isValidatingPolicy: true
+    resources: [hostpath-good-novolumes]
+    result: pass
+  - policy: nis2-block-hostpath
+    isValidatingPolicy: true
+    resources: [hostpath-skipped-kube-system]
+    result: skip
+  - policy: nis2-require-run-as-non-root
     isValidatingPolicy: true
     resources: [root-bad-unset]
     result: fail
-  - policy: nis2-require-nonroot
+  - policy: nis2-require-run-as-non-root
     isValidatingPolicy: true
     resources: [root-bad-container-false]
     result: fail
-  - policy: nis2-require-nonroot
+  - policy: nis2-require-run-as-non-root
     isValidatingPolicy: true
     resources: [root-bad-init]
     result: fail
-  - policy: nis2-require-nonroot
+  - policy: nis2-require-run-as-non-root
     isValidatingPolicy: true
     resources: [root-bad-one-of-two]
     result: fail
-  - policy: nis2-require-nonroot
+  - policy: nis2-require-run-as-non-root
     isValidatingPolicy: true
     resources: [root-good-pod-level]
     result: pass
-  - policy: nis2-require-nonroot
+  - policy: nis2-require-run-as-non-root
     isValidatingPolicy: true
     resources: [root-good-container-level]
     result: pass

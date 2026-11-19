@@ -13,9 +13,10 @@ check() {
   fi
   echo "ok $1 (pass $2, fail $3, skip $4)"
 }
-check block_privileged.yaml 17 3 4
-check block_hostnet.yaml 19 1 4
-check require_nonroot.yaml 2 18 4
-check block_hostpid.yaml 19 1 4
-check block_hostipc.yaml 19 1 4
-check block_privilege_escalation.yaml 17 3 4
+check block_privileged.yaml 20 3 5
+check block_hostnet.yaml 22 1 5
+check require_nonroot.yaml 2 21 5
+check block_hostpid.yaml 22 1 5
+check block_hostipc.yaml 22 1 5
+check block_privilege_escalation.yaml 20 3 5
+check block_hostpath.yaml 22 1 5

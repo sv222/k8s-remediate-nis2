@@ -2,11 +2,15 @@
   "tool": "k8s-remediate-nis2",
   "version": "dev",
   "mapping_version": 1,
-  "mapping_sha256": "78c374bab51129fb8d66ed1dee8f0a17add16660c4d8091f47d04a6cef9b8b20",
+  "mapping_sha256": "5cf82054ecbab3d911f87123bb35a91d79331020225ea8ef5274085fef5ff34c",
   "files": [
     {
       "path": "kyverno/block_hostnet.yaml",
       "sha256": "39dc55014f52e248240c38264ffec4c8aa2f79ef2879bf285e214a3e7da08007"
+    },
+    {
+      "path": "kyverno/block_hostpath.yaml",
+      "sha256": "2021e436bf44f71239aa1b70ebbcaa024b0ef20c7db15c41e43c17b525b7e9e8"
     },
     {
       "path": "kyverno/block_hostpid.yaml",
@@ -18,7 +22,7 @@
     },
     {
       "path": "kyverno/require_nonroot.yaml",
-      "sha256": "792ad6d75a9da4eea9095f444fec7afbe8773c78c5bddc86f82f920ee6337af8"
+      "sha256": "5eb4e6eb667ec267eed9424d76bcda85324e775e269d4574f4b2db2f51dfe1b6"
     },
     {
       "path": "terraform/ebs_default_encryption__000000000000_us-east-1.tf",
@@ -46,7 +50,7 @@
     },
     {
       "path": "mapping.md",
-      "sha256": "7ec7388711e86664b86620ce237bf65070ac4caf6b11165ff5070355e941683e"
+      "sha256": "e12bfafa26100ba904b3246498abab80c8d7e2795a4781d525d015a072aaa0c1"
     }
   ]
 }

@@ -2,7 +2,7 @@
   "tool": "k8s-remediate-nis2",
   "version": "dev",
   "mapping_version": 1,
-  "mapping_sha256": "78c374bab51129fb8d66ed1dee8f0a17add16660c4d8091f47d04a6cef9b8b20",
+  "mapping_sha256": "5cf82054ecbab3d911f87123bb35a91d79331020225ea8ef5274085fef5ff34c",
   "files": [
     {
       "path": "terraform/cloudtrail_multi_region.tf",
