@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/logo.png" alt="k8s-remediate-nis2 logo" width="200">
+</p>
+
 # k8s-remediate-nis2
 
 **Turn a failed Prowler or kube-bench report into reviewable Kyverno and Terraform fixes, mapped to NIS2 Article 21.**
