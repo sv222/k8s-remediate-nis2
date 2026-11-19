@@ -594,6 +594,34 @@ entries:
     follow_up: "The policy starts in Audit mode and blocks nothing. It is not applied to any cluster and existing pods are not changed. It rejects allowPrivilegeEscalation: true, as the kube-bench audit does, but not an unset field. Review the policy reports, then set validationActions to Deny."
   - scanner: kube-bench
     benchmark_ids:
+      cis-1.7: "5.2.12"
+      cis-1.8: "5.2.12"
+      cis-1.9: "5.2.12"
+      cis-1.10: "5.2.12"
+      cis-1.11: "5.2.12"
+      cis-1.12: "5.2.11"
+      cis-1.23: "5.2.12"
+      cis-1.24: "5.2.12"
+      cis-1.24-microk8s: "5.2.12"
+      k3s-cis-1.7: "5.2.12"
+      k3s-cis-1.8: "5.2.12"
+      k3s-cis-1.9: "5.2.12"
+      k3s-cis-1.23: "5.2.12"
+      k3s-cis-1.24: "5.2.12"
+      rke2-cis-1.7: "5.2.12"
+      rke2-cis-1.8: "5.2.12"
+      rke2-cis-1.9: "5.2.12"
+      rke2-cis-1.23: "5.2.12"
+      rke2-cis-1.24: "5.2.12"
+      rke-cis-1.7: "5.2.12"
+      rke-cis-1.23: "5.2.12"
+      rke-cis-1.24: "5.2.12"
+    title: Containers may mount hostPath volumes
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.9"]
+    shared_templates: ["kyverno/block_hostpath.yaml"]
+    follow_up: "The policy starts in Audit mode and blocks nothing. It is not applied to any cluster and existing pods are not changed. Review the policy reports, then set validationActions to Deny to block hostPath volumes."
+  - scanner: kube-bench
+    benchmark_ids:
       gke-1.6.0: "4.2.1"
       gke-1.8.0: "4.2.1"
       gke-1.9.0: "4.2.1"

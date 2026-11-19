@@ -53,6 +53,22 @@ func TestLookupMissesObsoleteAndUnknown(t *testing.T) {
 	}
 }
 
+func TestHostPathLookup(t *testing.T) {
+	for _, c := range []struct{ bench, id string }{
+		{"cis-1.7", "5.2.12"},
+		{"cis-1.12", "5.2.11"},
+		{"cis-1.24", "5.2.12"},
+		{"k3s-cis-1.9", "5.2.12"},
+		{"rke2-cis-1.23", "5.2.12"},
+		{"rke-cis-1.24", "5.2.12"},
+	} {
+		e, ok, err := For(finding.Finding{Scanner: "kube-bench", CheckID: c.id, Benchmark: c.bench})
+		if err != nil || !ok || len(e.SharedTemplates) != 1 || e.SharedTemplates[0] != "kyverno/block_hostpath.yaml" {
+			t.Errorf("%s %s: lookup failed: %+v ok=%v err=%v", c.bench, c.id, e, ok, err)
+		}
+	}
+}
+
 func TestKubeBenchLookupIsVersionAware(t *testing.T) {
 	cases := []struct {
 		bench, id, title string
@@ -185,6 +201,7 @@ var roles = map[string]string{
 	"Containers may share the host IPC namespace":         "hostipc",
 	"Containers may share the host network namespace":     "hostnet",
 	"Containers may allow privilege escalation":           "privesc",
+	"Containers may mount hostPath volumes":               "hostpath",
 	"Root containers may be admitted":                     "root",
 	"Pod Security Standard Baseline is not enforced":      "pss-baseline",
 	"Kubelet accepts anonymous requests":                  "kubelet-anonymous",
