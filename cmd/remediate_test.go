@@ -171,6 +171,81 @@ func TestSARIFGoesToStdoutAndSummaryToStderr(t *testing.T) {
 	}
 }
 
+func TestMarkdownGoesToStdoutAndSummaryToStderr(t *testing.T) {
+	out := filepath.Join(t.TempDir(), "remediation")
+	root := NewRootCmd()
+	var stdout, stderr bytes.Buffer
+	root.SetOut(&stdout)
+	root.SetErr(&stderr)
+	root.SetArgs([]string{"remediate", "--prowler", "testdata/prowler_ocsf.json", "--kube-bench", "testdata/kube_bench.json", "--out", out, "--format", "markdown"})
+	if err := root.Execute(); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.HasPrefix(stderr.String(), "failed findings: 28,") {
+		t.Errorf("stderr = %q", stderr.String())
+	}
+	s := stdout.String()
+	for _, want := range []string{
+		"# Remediation summary\n",
+		"## `prowler/s3_bucket_public_access` — ",
+		"## `kube-bench/5.2.2` — ",
+		"`terraform/s3_public_access_block__acme-customer-exports.tf` — `acme-customer-exports`",
+		"`kyverno/block_privileged.yaml` — ",
+	} {
+		if !strings.Contains(s, want) {
+			t.Errorf("markdown stdout lacks %q:\n%s", want, s)
+		}
+	}
+	for _, bad := range []string{"```", "![x]", "\"runs\""} {
+		if strings.Contains(s, bad) {
+			t.Errorf("markdown stdout keeps %q:\n%s", bad, s)
+		}
+	}
+	if _, err := os.Stat(filepath.Join(out, "mapping.md")); err != nil {
+		t.Error("files must still be written with --format markdown")
+	}
+}
+
+func TestMarkdownGolden(t *testing.T) {
+	cases := []struct {
+		name string
+		args []string
+	}{
+		{"legacy_and_bench", []string{"--prowler", "testdata/prowler_ocsf.json", "--kube-bench", "testdata/kube_bench.json"}},
+		{"two_buckets", []string{"--prowler", "testdata/prowler_two_buckets.json"}},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			out := filepath.Join(t.TempDir(), "remediation")
+			root := NewRootCmd()
+			var stdout, stderr bytes.Buffer
+			root.SetOut(&stdout)
+			root.SetErr(&stderr)
+			root.SetArgs(append([]string{"remediate", "--out", out, "--format", "markdown"}, c.args...))
+			if err := root.Execute(); err != nil {
+				t.Fatal(err)
+			}
+			golden := filepath.Join("testdata", "golden_markdown", c.name+".md")
+			if os.Getenv("UPDATE_GOLDEN") != "" {
+				if err := os.MkdirAll(filepath.Dir(golden), 0o755); err != nil {
+					t.Fatal(err)
+				}
+				if err := os.WriteFile(golden, stdout.Bytes(), 0o644); err != nil {
+					t.Fatal(err)
+				}
+				return
+			}
+			want, err := os.ReadFile(golden)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if stdout.String() != string(want) {
+				t.Errorf("markdown stdout differs\n--- got ---\n%s\n--- want ---\n%s", stdout.String(), want)
+			}
+		})
+	}
+}
+
 func TestTwoFailingBucketsKeepSeparateFiles(t *testing.T) {
 	out := filepath.Join(t.TempDir(), "remediation")
 	if _, err := execute(t, "remediate", "--prowler", "testdata/prowler_two_buckets.json", "--out", out); err != nil {
