@@ -7,6 +7,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-20
+
 ### Added
 
 - Terraform templates for `guardduty_is_enabled` (GuardDuty detector), `config_recorder_all_regions_enabled` (AWS Config recorder, delivery channel and status, `var.config_role_arn` and `var.config_bucket`) and `ec2_ebs_snapshot_account_block_public_access` (EBS snapshot block public access). One file per region.
