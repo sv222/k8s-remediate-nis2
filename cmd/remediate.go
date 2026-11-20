@@ -45,7 +45,7 @@ func newRemediateCmd() *cobra.Command {
 	c.Flags().StringVar(&o.inputFormat, "input-format", "auto", "Prowler report format: "+strings.Join(prowler.Formats, ", "))
 	c.Flags().StringVar(&o.kubeBench, "kube-bench", "", "kube-bench JSON report")
 	c.Flags().StringVar(&o.outDir, "out", "./remediation", "output directory (must be empty unless --force is set)")
-	c.Flags().StringVar(&o.format, "format", "text", "stdout format: text (a summary line) or sarif (SARIF 2.1.0 for code scanning; the summary goes to stderr)")
+	c.Flags().StringVar(&o.format, "format", "text", "stdout format: text (a summary line), sarif (SARIF 2.1.0 for code scanning) or markdown (a change summary); for sarif and markdown the summary line goes to stderr")
 	c.Flags().BoolVar(&o.evidence, "export-evidence", false, "also write evidence.md for auditors")
 	c.Flags().BoolVar(&o.force, "force", false, "allow a non-empty output directory: remove the files listed in its manifest.json, then write")
 	return c
@@ -135,8 +135,8 @@ func run(w, errw io.Writer, o options) error {
 	if !slices.Contains(prowler.Formats, o.inputFormat) {
 		return fmt.Errorf("unknown --input-format %q: use one of %s", o.inputFormat, strings.Join(prowler.Formats, ", "))
 	}
-	if o.format != "text" && o.format != "sarif" {
-		return fmt.Errorf("unknown --format %q: use text or sarif", o.format)
+	if o.format != "text" && o.format != "sarif" && o.format != "markdown" {
+		return fmt.Errorf("unknown --format %q: use text, sarif or markdown", o.format)
 	}
 	all, inputs, err := loadFindings(o)
 	if err != nil {
@@ -260,6 +260,13 @@ func run(w, errw io.Writer, o options) error {
 	summary := fmt.Sprintf("failed findings: %d, files written: %d (nothing is applied), output: %s\n", len(rep.Rows), len(files), o.outDir)
 	if o.format == "text" {
 		_, err := io.WriteString(w, summary)
+		return err
+	}
+	if o.format == "markdown" {
+		if _, err := io.WriteString(errw, summary); err != nil {
+			return err
+		}
+		_, err := w.Write(out.Markdown(rep))
 		return err
 	}
 	data, err := out.SARIF(rep, o.outDir)
