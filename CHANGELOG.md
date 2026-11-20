@@ -17,6 +17,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Test reports `cmd/testdata/prowler_iam_policy.json` and `cmd/testdata/prowler_s3_account.json` with golden files.
 - A code scanning workflow that runs the tool on the OCSF demo report with `--format sarif`, checks that the file parses as SARIF 2.1.0 with the expected results, and uploads it to GitHub code scanning.
 - Kyverno policy `nis2-block-hostpath` for the kube-bench HostPath volumes control (5.2.12; 5.2.11 in `cis-1.12`), mapped for every kube-bench benchmark that has this control: the CIS benchmarks from 1.7 on and their k3s, RKE and RKE2 variants. It starts in Audit mode like the other policies.
+- `--format markdown` writes a reviewable change summary to stdout: findings grouped by check id and title, every remediation target file with a one-line resource description and its status. The summary line goes to stderr, the files are still written to `--out`, and two runs of the same input give byte-identical output.
 
 ### Changed
 

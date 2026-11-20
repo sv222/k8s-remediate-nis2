@@ -134,7 +134,7 @@ terraform plan                              # 5. plan, then apply what you under
 Step 3 is yours: read `remediation/mapping.md` and every generated file.
 
 Flags: `--prowler FILE`, `--input-format auto|ocsf|json|asff` (default `auto`), `--kube-bench FILE`,
-`--out DIR` (default `./remediation`), `--format text|sarif` (default `text`), `--export-evidence`,
+`--out DIR` (default `./remediation`), `--format text|sarif|markdown` (default `text`), `--export-evidence`,
 `--force`. Use at least one scanner flag. The output directory
 must be empty. `--force` allows a non-empty directory and removes only the files listed
 in its `manifest.json` from the previous run, so old `.tf` files cannot be applied by
@@ -151,6 +151,19 @@ k8s-remediate-nis2 remediate --prowler prowler.ocsf.json --out remediation --for
 
 Upload `nis2.sarif` with `github/codeql-action/upload-sarif`. Severity `critical` and `high` become
 `error`, `medium` becomes `warning`, the rest `note`. kube-bench findings are `medium`.
+
+`--format markdown` prints a reviewable change summary to stdout and the same summary line to
+stderr. Findings are grouped by check id and title; every remediation target file is listed
+with a one-line description of its resource, with the row status. The output depends only on
+the reports and the mapping, so two runs of the same input are byte-identical. It is meant for
+review notes and pull requests:
+
+```sh
+k8s-remediate-nis2 remediate --prowler prowler.ocsf.json --out remediation --format markdown > summary.md
+```
+
+Check ids, resource ids and file names are shown as code spans with a strict character set,
+and other text is escaped, so a crafted finding cannot add links or images to the summary.
 
 A Prowler report must hold one AWS account. A report with several accounts is refused:
 run the tool once per account. Muted (suppressed) Prowler findings are not remediated.
