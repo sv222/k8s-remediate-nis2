@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"maps"
 	"slices"
 	"strings"
 
@@ -14,6 +15,17 @@ import (
 const ocsfStatusSuppressed = 3
 
 var Formats = []string{"auto", "ocsf", "json", "asff"}
+
+// SupportedProviders lists the Prowler providers whose findings the tool
+// reads. Other providers are skipped and reported, so a mixed report of one
+// supported provider still works.
+var SupportedProviders = []string{"aws", "kubernetes"}
+
+// UnsupportedProvider counts the records of one unsupported provider in a report.
+type UnsupportedProvider struct {
+	Provider string
+	Records  int
+}
 
 type legacyRecord struct {
 	FindingUniqueID string `json:"FindingUniqueId"`
@@ -32,10 +44,12 @@ type legacyRecord struct {
 }
 
 type ocsfResource struct {
-	UID    string `json:"uid"`
-	Name   string `json:"name"`
-	Region string `json:"region"`
-	Group  struct {
+	UID       string `json:"uid"`
+	Name      string `json:"name"`
+	Type      string `json:"type"`
+	Namespace string `json:"namespace"`
+	Region    string `json:"region"`
+	Group     struct {
 		Name string `json:"name"`
 	} `json:"group"`
 }
@@ -57,11 +71,16 @@ type ocsfRecord struct {
 	} `json:"finding_info"`
 	Resources []ocsfResource `json:"resources"`
 	Cloud     struct {
-		Region  string `json:"region"`
-		Account struct {
+		Provider string `json:"provider"`
+		Region   string `json:"region"`
+		Account  struct {
 			UID string `json:"uid"`
 		} `json:"account"`
 	} `json:"cloud"`
+	Unmapped struct {
+		Provider    string `json:"provider"`
+		ProviderUID string `json:"provider_uid"`
+	} `json:"unmapped"`
 }
 
 type asffRecord struct {
@@ -90,37 +109,69 @@ type asffRecord struct {
 }
 
 func Parse(data []byte, sourceFile string) ([]finding.Finding, error) {
-	return ParseFormat(data, sourceFile, "auto")
+	fs, _, err := ParseFormatStats(data, sourceFile, "auto")
+	return fs, err
 }
 
 func ParseFormat(data []byte, sourceFile, format string) ([]finding.Finding, error) {
+	fs, _, err := ParseFormatStats(data, sourceFile, format)
+	return fs, err
+}
+
+func ParseFormatStats(data []byte, sourceFile, format string) ([]finding.Finding, []UnsupportedProvider, error) {
 	if !slices.Contains(Formats, format) {
-		return nil, fmt.Errorf("unknown Prowler input format %q: use one of %s", format, strings.Join(Formats, ", "))
+		return nil, nil, fmt.Errorf("unknown Prowler input format %q: use one of %s", format, strings.Join(Formats, ", "))
 	}
 	trimmed := bytes.TrimSpace(data)
 	if len(trimmed) == 0 {
-		return nil, fmt.Errorf("%s: empty file", sourceFile)
+		return nil, nil, fmt.Errorf("%s: empty file", sourceFile)
 	}
 	if trimmed[0] != '[' {
-		return nil, fmt.Errorf("%s: unsupported Prowler layout: expected a JSON array of findings as written by `prowler -M json-ocsf`, `prowler -M json-asff` or legacy `prowler -M json`", sourceFile)
+		return nil, nil, fmt.Errorf("%s: unsupported Prowler layout: expected a JSON array of findings as written by `prowler -M json-ocsf`, `prowler -M json-asff` or legacy `prowler -M json`", sourceFile)
 	}
 	var elems []json.RawMessage
 	if err := json.Unmarshal(trimmed, &elems); err != nil {
-		return nil, fmt.Errorf("%s: invalid JSON: %w", sourceFile, err)
+		return nil, nil, fmt.Errorf("%s: invalid JSON: %w", sourceFile, err)
 	}
 	if len(elems) == 0 {
-		return nil, errors.New("no findings in prowler file: " + sourceFile)
+		return nil, nil, errors.New("no findings in prowler file: " + sourceFile)
 	}
 	out := make([]finding.Finding, 0, len(elems))
+	skipped := map[string]int{}
 	for i, e := range elems {
 		f, err := parseRecord(e, format)
 		if err != nil {
-			return nil, fmt.Errorf("%s: record %d: %w", sourceFile, i, err)
+			return nil, nil, fmt.Errorf("%s: record %d: %w", sourceFile, i, err)
 		}
 		f.SourceFile = sourceFile
+		if !slices.Contains(SupportedProviders, f.Provider) {
+			skipped[f.Provider]++
+			continue
+		}
 		out = append(out, f)
 	}
-	return out, nil
+	stats := unsupportedStats(skipped)
+	if len(out) == 0 && len(stats) > 0 {
+		names := make([]string, 0, len(stats))
+		records := 0
+		for _, u := range stats {
+			names = append(names, u.Provider)
+			records += u.Records
+		}
+		return nil, stats, fmt.Errorf("%s: all %d records are of unsupported provider(s) %s: no findings to remediate", sourceFile, records, strings.Join(names, ", "))
+	}
+	return out, stats, nil
+}
+
+func unsupportedStats(skipped map[string]int) []UnsupportedProvider {
+	if len(skipped) == 0 {
+		return nil
+	}
+	stats := make([]UnsupportedProvider, 0, len(skipped))
+	for _, p := range slices.Sorted(maps.Keys(skipped)) {
+		stats = append(stats, UnsupportedProvider{Provider: p, Records: skipped[p]})
+	}
+	return stats
 }
 
 func parseRecord(raw json.RawMessage, format string) (finding.Finding, error) {
@@ -185,6 +236,7 @@ func parseLegacy(raw json.RawMessage) (finding.Finding, error) {
 		AccountID:   strings.TrimSpace(r.AccountID),
 		ResourceID:  res,
 		Region:      r.Region,
+		Provider:    "aws",
 		Severity:    strings.ToLower(r.Severity),
 		Service:     r.ServiceName,
 		Description: desc,
@@ -199,6 +251,7 @@ func parseOCSF(raw json.RawMessage) (finding.Finding, error) {
 	if r.Metadata.EventCode == "" || r.StatusCode == "" {
 		return finding.Finding{}, errors.New("OCSF record without metadata.event_code or status_code")
 	}
+	provider := ocsfProvider(&r)
 	var res, region, service string
 	if len(r.Resources) > 0 {
 		first := r.Resources[0]
@@ -208,6 +261,9 @@ func parseOCSF(raw json.RawMessage) (finding.Finding, error) {
 		}
 		region = first.Region
 		service = first.Group.Name
+		if provider == "kubernetes" {
+			res = kubernetesResourceID(first, strings.TrimSpace(r.Unmapped.ProviderUID))
+		}
 	}
 	if region == "" {
 		region = r.Cloud.Region
@@ -226,10 +282,44 @@ func parseOCSF(raw json.RawMessage) (finding.Finding, error) {
 		AccountID:   strings.TrimSpace(r.Cloud.Account.UID),
 		ResourceID:  res,
 		Region:      region,
+		Provider:    provider,
 		Severity:    strings.ToLower(r.Severity),
 		Service:     service,
 		Description: desc,
 	}, nil
+}
+
+// ocsfProvider reads the provider field Prowler writes into the OCSF record.
+// Kubernetes records carry it in unmapped.provider, AWS records also in
+// cloud.provider. Reports without the field are older AWS reports.
+func ocsfProvider(r *ocsfRecord) string {
+	p := strings.ToLower(strings.TrimSpace(r.Unmapped.Provider))
+	if p == "" {
+		p = strings.ToLower(strings.TrimSpace(r.Cloud.Provider))
+	}
+	if p == "" {
+		return "aws"
+	}
+	return p
+}
+
+// kubernetesResourceID builds namespace/kind/name for namespaced objects.
+// Cluster-scoped objects (namespace cluster-wide or empty) are reported under
+// the cluster name, or cluster when the report has none.
+func kubernetesResourceID(res ocsfResource, cluster string) string {
+	name := res.Name
+	if name == "" {
+		name = res.UID
+	}
+	kind := strings.TrimSpace(res.Type)
+	ns := strings.TrimSpace(res.Namespace)
+	if ns == "" || ns == "cluster-wide" || kind == "" || name == "" {
+		if cluster != "" {
+			return cluster
+		}
+		return "cluster"
+	}
+	return ns + "/" + kind + "/" + name
 }
 
 func parseASFF(raw json.RawMessage) (finding.Finding, error) {
@@ -272,6 +362,7 @@ func parseASFF(raw json.RawMessage) (finding.Finding, error) {
 		AccountID:   account,
 		ResourceID:  arnName(uid, account),
 		Region:      region,
+		Provider:    "aws",
 		Severity:    strings.ToLower(r.Severity.Label),
 		Service:     service,
 		Description: r.Description,

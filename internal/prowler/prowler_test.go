@@ -2,6 +2,7 @@ package prowler
 
 import (
 	"os"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -171,6 +172,118 @@ func TestARNName(t *testing.T) {
 		if got := arnName(in, "000000000000"); got != want {
 			t.Errorf("arnName(%q) = %q, want %q", in, got, want)
 		}
+	}
+}
+
+func TestParseOCSFKubernetes(t *testing.T) {
+	fs, err := Parse(read(t, "ocsf_kubernetes.json"), "ocsf_kubernetes.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(fs) != 4 {
+		t.Fatalf("findings = %d, want 4", len(fs))
+	}
+	f := fs[0]
+	if f.Provider != "kubernetes" {
+		t.Errorf("provider = %q, want kubernetes", f.Provider)
+	}
+	if f.ResourceID != "nis2demo/Pod/bad-privileged" {
+		t.Errorf("pod resource id = %q", f.ResourceID)
+	}
+	if f.Service != "core" || f.Status != "FAIL" || f.Severity != "high" {
+		t.Errorf("pod finding = %+v", f)
+	}
+	if f.AccountID != "" || f.Region != "" {
+		t.Errorf("kubernetes finding has a cloud account or region: %+v", f)
+	}
+	if fs[1].ResourceID != "kube-system/Pod/kindnet-nvsmq" {
+		t.Errorf("system pod resource id = %q", fs[1].ResourceID)
+	}
+	if fs[2].ResourceID != "kind-demo" {
+		t.Errorf("cluster-scoped resource id = %q, want the cluster name", fs[2].ResourceID)
+	}
+	if fs[2].Status != "MANUAL" {
+		t.Errorf("cluster role finding = %+v", fs[2])
+	}
+	if fs[3].ResourceID != "kube-system/ConfigMap/kubelet-config" {
+		t.Errorf("configmap resource id = %q", fs[3].ResourceID)
+	}
+}
+
+func TestParseOCSFKubernetesClusterFallback(t *testing.T) {
+	data := []byte(`[{"metadata":{"event_code":"rbac_cluster_admin_usage"},"status_code":"FAIL","finding_info":{"uid":"u"},"resources":[{"name":"cluster-admin","type":"ClusterRoleBinding","namespace":"cluster-wide"}],"unmapped":{"provider":"kubernetes"}}]`)
+	fs, err := Parse(data, "x.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fs[0].ResourceID != "cluster" {
+		t.Errorf("resource id without a cluster name = %q, want cluster", fs[0].ResourceID)
+	}
+}
+
+func TestParseOCSFWithoutProviderFieldIsAWS(t *testing.T) {
+	data := []byte(`[{"cloud":{"provider":"aws"},"metadata":{"event_code":"s3_bucket_public_access"},"status_code":"FAIL","finding_info":{"uid":"a"},"resources":[{"name":"b"}]}]`)
+	noField := []byte(`[{"metadata":{"event_code":"s3_bucket_public_access"},"status_code":"FAIL","finding_info":{"uid":"a"},"resources":[{"name":"b"}]}]`)
+	for name, d := range map[string][]byte{"cloud.provider": data, "no field": noField} {
+		fs, err := Parse(d, "x.json")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if fs[0].Provider != "aws" {
+			t.Errorf("%s: provider = %q, want aws", name, fs[0].Provider)
+		}
+	}
+}
+
+func TestLegacyAndASFFAreAWS(t *testing.T) {
+	for _, name := range []string{"legacy.json", "asff.json"} {
+		fs, err := Parse(read(t, name), name)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if fs[0].Provider != "aws" {
+			t.Errorf("%s: provider = %q, want aws", name, fs[0].Provider)
+		}
+	}
+}
+
+func TestParseSkipsUnsupportedProviders(t *testing.T) {
+	data := []byte(`[` +
+		`{"metadata":{"event_code":"s3_bucket_public_access"},"status_code":"FAIL","finding_info":{"uid":"a"},"resources":[{"name":"b"}],"unmapped":{"provider":"aws"}},` +
+		`{"metadata":{"event_code":"core_minimize_privileged_containers"},"status_code":"FAIL","finding_info":{"uid":"b"},"resources":[{"name":"p","type":"Pod","namespace":"ns1"}],"unmapped":{"provider":"kubernetes","provider_uid":"c1"}},` +
+		`{"metadata":{"event_code":"storage_account_public_access"},"status_code":"FAIL","finding_info":{"uid":"c"},"resources":[{"name":"acct"}],"unmapped":{"provider":"azure"}},` +
+		`{"metadata":{"event_code":"gcp_bucket_public"},"status_code":"FAIL","finding_info":{"uid":"d"},"unmapped":{"provider":"gcp"}}]`)
+	fs, stats, err := ParseFormatStats(data, "x.json", "auto")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(fs) != 2 {
+		t.Fatalf("findings = %d, want 2", len(fs))
+	}
+	if fs[0].Provider != "aws" || fs[1].Provider != "kubernetes" || fs[1].ResourceID != "ns1/Pod/p" {
+		t.Fatalf("supported findings = %+v", fs)
+	}
+	want := []UnsupportedProvider{{Provider: "azure", Records: 1}, {Provider: "gcp", Records: 1}}
+	if !reflect.DeepEqual(stats, want) {
+		t.Errorf("unsupported = %+v, want %+v", stats, want)
+	}
+	_, _, err = ParseFormatStats(data, "x.json", "auto")
+	if err != nil {
+		t.Errorf("ParseFormatStats on a mixed file must not fail: %v", err)
+	}
+}
+
+func TestParseAllUnsupportedProvidersIsError(t *testing.T) {
+	data := []byte(`[{"metadata":{"event_code":"x"},"status_code":"FAIL","unmapped":{"provider":"m365"}}]`)
+	fs, stats, err := ParseFormatStats(data, "x.json", "auto")
+	if err == nil || fs != nil {
+		t.Fatalf("err = %v, findings = %v, want an error and no findings", err, fs)
+	}
+	if len(stats) != 1 || stats[0].Provider != "m365" || stats[0].Records != 1 {
+		t.Errorf("unsupported = %+v, want one m365 record", stats)
+	}
+	if !strings.Contains(err.Error(), "m365") {
+		t.Errorf("error does not name the provider: %v", err)
 	}
 }
 

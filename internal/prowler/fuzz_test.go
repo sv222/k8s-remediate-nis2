@@ -9,7 +9,7 @@ import (
 )
 
 func FuzzParse(f *testing.F) {
-	for _, n := range []string{"legacy.json", "ocsf.json", "asff.json", "legacy_missing_status.json", "object_wrapper.json"} {
+	for _, n := range []string{"legacy.json", "ocsf.json", "asff.json", "legacy_missing_status.json", "object_wrapper.json", "ocsf_kubernetes.json"} {
 		data, err := os.ReadFile("testdata/" + n)
 		if err != nil {
 			f.Fatal(err)
@@ -29,6 +29,9 @@ func FuzzParse(f *testing.F) {
 	f.Add([]byte(`[{"metadata":{"event_code":"c"},"status_code":"FAIL","status":"Suppressed","status_id":3,"finding_info":{},"cloud":{"account":{"uid":"1"}}}]`))
 	f.Add([]byte(`[{"SchemaVersion":"2018-10-08","GeneratorId":"prowler-s3_bucket_public_access","AwsAccountId":"1","Compliance":{"Status":"WARNING"},"Resources":[{"Id":"arn:aws:s3:::b"}]}]`))
 	f.Add([]byte(`[{"finding_info":{},"status_code":"fail"},{"CheckID":"a"},null,1,"x"]`))
+	f.Add([]byte(`[{"metadata":{"event_code":"core_minimize_privileged_containers"},"status_code":"FAIL","finding_info":{"uid":"u"},"resources":[{"name":"p","type":"Pod","namespace":"ns1"}],"unmapped":{"provider":"kubernetes","provider_uid":"kind-demo"}}]`))
+	f.Add([]byte(`[{"metadata":{"event_code":"rbac_cluster_admin_usage"},"status_code":"MANUAL","finding_info":{"uid":"u"},"resources":[{"name":"r","type":"ClusterRoleBinding","namespace":"cluster-wide"}],"unmapped":{"provider":"kubernetes"}}]`))
+	f.Add([]byte(`[{"metadata":{"event_code":"azure_storage_public"},"status_code":"FAIL","finding_info":{"uid":"u"},"unmapped":{"provider":"azure"}}]`))
 	f.Fuzz(func(t *testing.T, data []byte) {
 		got, err := Parse(data, "f.json")
 		if err != nil {

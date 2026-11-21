@@ -51,9 +51,10 @@ func newRemediateCmd() *cobra.Command {
 	return c
 }
 
-func loadFindings(o options) ([]finding.Finding, []out.Input, error) {
+func loadFindings(o options) ([]finding.Finding, []out.Input, []prowler.UnsupportedProvider, error) {
 	var findings []finding.Finding
 	var inputs []out.Input
+	var unsupported []prowler.UnsupportedProvider
 	load := func(path string, parse func([]byte, string) ([]finding.Finding, error)) error {
 		data, err := os.ReadFile(path)
 		if err != nil {
@@ -69,19 +70,25 @@ func loadFindings(o options) ([]finding.Finding, []out.Input, error) {
 		return nil
 	}
 	if o.prowler != "" {
-		parse := func(data []byte, path string) ([]finding.Finding, error) {
-			return prowler.ParseFormat(data, path, o.inputFormat)
+		data, err := os.ReadFile(o.prowler)
+		if err != nil {
+			return nil, nil, nil, err
 		}
-		if err := load(o.prowler, parse); err != nil {
-			return nil, nil, err
+		fs, stats, err := prowler.ParseFormatStats(data, o.prowler, o.inputFormat)
+		if err != nil {
+			return nil, nil, nil, err
 		}
+		sum := sha256.Sum256(data)
+		inputs = append(inputs, out.Input{Path: o.prowler, SHA256: hex.EncodeToString(sum[:])})
+		findings = append(findings, fs...)
+		unsupported = stats
 	}
 	if o.kubeBench != "" {
 		if err := load(o.kubeBench, kubebench.Parse); err != nil {
-			return nil, nil, err
+			return nil, nil, nil, err
 		}
 	}
-	return findings, inputs, nil
+	return findings, inputs, unsupported, nil
 }
 
 func dedupe(findings []finding.Finding) ([]finding.Finding, int) {
@@ -138,9 +145,14 @@ func run(w, errw io.Writer, o options) error {
 	if o.format != "text" && o.format != "sarif" && o.format != "markdown" {
 		return fmt.Errorf("unknown --format %q: use text, sarif or markdown", o.format)
 	}
-	all, inputs, err := loadFindings(o)
+	all, inputs, unsupported, err := loadFindings(o)
 	if err != nil {
 		return err
+	}
+	for _, u := range unsupported {
+		if _, werr := fmt.Fprintf(errw, "provider %s is not supported yet\n", u.Provider); werr != nil {
+			return werr
+		}
 	}
 	records := len(all)
 	findings, dups := dedupe(all)

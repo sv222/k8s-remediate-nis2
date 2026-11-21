@@ -11,6 +11,7 @@ type Finding struct {
 	ResourceID  string `json:"resource_id"`
 	Region      string `json:"region"`
 	AccountID   string `json:"account_id,omitempty"`
+	Provider    string `json:"provider,omitempty"`
 	Suppressed  bool   `json:"suppressed,omitempty"`
 	Severity    string `json:"severity"`
 	Service     string `json:"service"`
