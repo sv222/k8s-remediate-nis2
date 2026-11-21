@@ -3,7 +3,7 @@ MODULE := github.com/sv222/k8s-remediate-nis2
 LDFLAGS := -s -w -X $(MODULE)/internal/version.Version=$(VERSION)
 FUZZTIME ?= 20s
 
-.PHONY: build test vet fmt e2e policy-test tf-check fuzz
+.PHONY: build test vet fmt e2e e2e-kubernetes policy-test tf-check fuzz
 
 build:
 	go build -trimpath -ldflags "$(LDFLAGS)" -o bin/k8s-remediate-nis2 ./cmd/k8s-remediate-nis2
@@ -19,6 +19,9 @@ fmt:
 
 e2e:
 	bash scripts/e2e.sh
+
+e2e-kubernetes:
+	bash scripts/e2e-kubernetes.sh
 
 policy-test:
 	bash scripts/kyverno/check.sh
