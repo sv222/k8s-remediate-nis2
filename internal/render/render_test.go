@@ -264,11 +264,11 @@ func TestKubernetesHeaderAbsentForAWSAndKubeBench(t *testing.T) {
 
 func TestDisplayResourceID(t *testing.T) {
 	cases := map[string]string{
-		"nis2demo/Pod/bad-privileged":                 "nis2demo/bad-privileged",
-		"kube-system/ConfigMap/kubelet-config":         "kube-system/kubelet-config",
-		"kind-demo":                                    "kind-demo",
-		"cluster":                                      "cluster",
-		"":                                             "",
+		"nis2demo/Pod/bad-privileged":          "nis2demo/bad-privileged",
+		"kube-system/ConfigMap/kubelet-config": "kube-system/kubelet-config",
+		"kind-demo":                            "kind-demo",
+		"cluster":                              "cluster",
+		"":                                     "",
 	}
 	for in, want := range cases {
 		if got := displayResourceID(in); got != want {
