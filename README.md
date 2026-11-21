@@ -13,9 +13,9 @@
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 `k8s-remediate-nis2` is a small Go command line tool. It reads the JSON report of
-Prowler (AWS) or kube-bench (Kubernetes). For each failed check it writes a Kyverno
-policy or a Terraform file, a `mapping.md` table and an optional `evidence.md` report.
-It does not scan anything itself.
+Prowler (AWS and Kubernetes) or kube-bench (Kubernetes). For each failed check it
+writes a Kyverno policy or a Terraform file, a `mapping.md` table and an optional
+`evidence.md` report. It does not scan anything itself.
 
 ## The problem
 
@@ -124,7 +124,8 @@ cd k8s-remediate-nis2 && make build && ./bin/k8s-remediate-nis2 --version
 
 ```sh
 prowler aws -M json-ocsf                    # 1. scan AWS
-kube-bench run --json > bench.json          # 1. scan Kubernetes
+prowler kubernetes -M json-ocsf             # 1. scan Kubernetes
+kube-bench run --json > bench.json          # 1. or scan Kubernetes with kube-bench
 k8s-remediate-nis2 remediate --prowler prowler.ocsf.json --kube-bench bench.json \
   --out remediation/ --export-evidence      # 2. generate fixes
 kubectl apply -f remediation/kyverno/       # 4. apply policies (Audit mode)
@@ -169,6 +170,10 @@ A Prowler report must hold one AWS account. A report with several accounts is re
 run the tool once per account. Muted (suppressed) Prowler findings are not remediated.
 They are counted and listed in `evidence.md`.
 
+Records of Prowler providers other than AWS and Kubernetes (azure, gcp, m365, github)
+are skipped with one line on stderr, `provider X is not supported yet`, so a mixed
+report still works. A report with only unsupported providers is an error.
+
 ### Safety rules
 
 - Kyverno policies start in `Audit` mode. Read the policy reports first, then change
@@ -209,6 +214,12 @@ They are counted and listed in `evidence.md`.
   ARN (`arn:aws:s3:::bucket` becomes `bucket`, `.../vpc/vpc-1` becomes `vpc-1`, account-wide
   ARNs become the account ID). ASFF `WARNING` (muted in Prowler) and `Workflow.Status`
   `SUPPRESSED` count as suppressed. Findings of other Security Hub products are refused.
+- Prowler Kubernetes (`prowler kubernetes -M json-ocsf`). The provider of each OCSF record
+  comes from the provider field Prowler writes, so AWS and Kubernetes records mix in one
+  report. Kubernetes findings get the resource id `namespace/kind/name` (cluster scoped
+  findings use the cluster name). Muted Kubernetes findings are not remediated. Check ids
+  come from the Prowler source at the version pinned in `scripts/e2e-kubernetes.sh`
+  (`PROWLER_VERSION`, 5.51.0 today); other Prowler versions may use other ids.
 - kube-bench JSON. IDs are mapped for the CIS, EKS, AKS, GKE, ACK, k3s, RKE, RKE2,
   OpenShift, MicroK8s and TKGI benchmarks listed in `mapping/mappings.yaml`. The kubelet,
   RBAC and Pod Security Standard entries are mapped for the managed benchmarks (`eks-*`,
@@ -259,6 +270,18 @@ summaries, not legal text. DORA references are in `mapping.md`.
 | prowler | `rds_instance_backup_enabled` | Steps to turn on automated backups | (c) | A.8.13 | guidance |
 | prowler | `awslambda_function_url_public`, `awslambda_function_not_publicly_accessible` | Steps to require IAM auth on the function URL and to remove public policy statements | (i), (g) | A.5.15 | guidance |
 | prowler | `awslambda_function_using_supported_runtimes` | Steps to move the function to a supported runtime | (e) | A.8.8 | guidance |
+| prowler (kubernetes) | `core_minimize_privileged_containers` | Kyverno `nis2-block-privileged`, one policy for every failing pod of the check | (i), (g) | A.8.9 | template |
+| prowler (kubernetes) | `core_minimize_hostPID_containers` | Kyverno `nis2-block-hostpid` | (i), (g) | A.8.9 | template |
+| prowler (kubernetes) | `core_minimize_hostIPC_containers` | Kyverno `nis2-block-hostipc` | (i), (g) | A.8.9 | template |
+| prowler (kubernetes) | `core_minimize_hostNetwork_containers` | Kyverno `nis2-block-hostnetwork` | (i), (g) | A.8.22 | template |
+| prowler (kubernetes) | `core_minimize_hostpath_volume_mounts` | Kyverno `nis2-block-hostpath` | (i), (g) | A.8.9 | template |
+| prowler (kubernetes) | `core_minimize_root_containers_admission` | Kyverno `nis2-require-run-as-non-root` | (i), (g) | A.8.9 | template |
+| prowler (kubernetes) | `core_minimize_allowPrivilegeEscalation_containers` | Kyverno `nis2-block-privilege-escalation`. It rejects `true`, not an unset field | (i), (g) | A.8.9 | template |
+| prowler (kubernetes) | `kubelet_disable_anonymous_auth`, `kubelet_authorization_mode`, `kubelet_client_ca_file_set`, `kubelet_disable_read_only_port` | Same steps as the kube-bench kubelet entries below | (i), (g) | A.8.5, A.5.15, A.8.9 | guidance |
+| prowler (kubernetes) | `rbac_cluster_admin_usage`, `rbac_minimize_wildcard_use_roles` | Same steps as the kube-bench RBAC entries below | (i) | A.8.2, A.5.15, A.5.18 | guidance |
+| prowler (kubernetes) | API server, etcd, controller manager and scheduler settings (24 checks, for example `apiserver_anonymous_requests`, `apiserver_encryption_provider_config_set`, `etcd_client_cert_auth`) | Steps to set the flag on the static pod manifest, the kubeadm configuration or the provider setting | (b), (h), (i), (g) | A.8.5, A.8.9, A.8.15, A.8.24 | guidance |
+| prowler (kubernetes) | `core_readonly_root_filesystem_enabled`, `core_seccomp_profile_docker_default`, `core_minimize_containers_added_capabilities`, `core_minimize_admission_hostport_containers` | kubectl steps to set the pod security context fields | (i), (g) | A.8.9, A.8.22 | guidance |
+| prowler (kubernetes) | `rbac_minimize_secret_access`, `rbac_minimize_pod_creation_access`, `rbac_minimize_service_account_token_creation` | Steps to narrow the roles and bindings | (i) | A.8.2, A.5.15 | guidance |
 | kube-bench | privileged containers (5.2.2; 5.2.1 and 4.2.1 in other benchmarks) | Kyverno `nis2-block-privileged` | (i), (g) | A.8.9 | template |
 | kube-bench | host network (5.2.5; 5.2.4 and 4.2.4) | Kyverno `nis2-block-hostnetwork` | (i), (g) | A.8.22 | template |
 | kube-bench | root containers (5.2.7; 5.2.6 and 4.2.6) | Kyverno `nis2-require-run-as-non-root` | (i), (g) | A.8.9 | template |
@@ -339,6 +362,19 @@ RDS instance has no real database engine.
 - **Prowler ASFF:** `cmd/testdata/prowler_asff.json` is `prowler_ocsf.json` converted with the
   field rules of Prowler 5.45 (`prowler/lib/outputs/asff/asff.py`). A test checks that both give
   the same output. `internal/prowler/testdata/asff.json` is real Prowler 5.45 ASFF output.
+- **Prowler Kubernetes:** `cmd/testdata/prowler_kubernetes.json` comes from a real
+  `prowler kubernetes -M json-ocsf` run of Prowler 5.51.0 on a kind cluster with pods that
+  break the pod security rules. It was trimmed and scrubbed of cluster names and addresses.
+  The mapped check ids are checked against the check list of that Prowler version
+  (`mapping/testdata/prowler_5.51.0_kubernetes_checks.txt`). Two runs of the same Kubernetes
+  input give byte-identical output.
+- **Prowler Kubernetes end to end:** `make e2e-kubernetes` (`scripts/e2e-kubernetes.sh`) runs
+  on a machine with docker and kind. It creates a kind cluster, installs Kyverno, deploys pods
+  that break the pod security rules, scans with Prowler, runs the tool, applies the generated
+  policies in Audit mode, waits until the Kyverno policy reports list every bad pod, switches
+  the policies to Deny and checks that a new privileged pod is refused and a pod that follows
+  the rules is admitted. It is not part of CI: the Prowler install and the scan are too slow
+  for a hosted runner.
 - **SARIF:** the output of the demo reports validates against the SARIF 2.1.0 JSON schema. An
   upload to GitHub code scanning was not tested.
 - **Kyverno:** `make policy-test` runs the seven policies through the Kyverno 1.19.1 CLI
@@ -366,6 +402,7 @@ Not verified:
 - Real AWS accounts. A green emulator run does not prove that AWS accepts every change.
 - Kyverno matching of the `pods/ephemeralcontainers` subresource on a live cluster. The
   Kyverno CLI test loads the policies but does not model subresource requests.
+- Prowler Kubernetes versions other than 5.51.0. Check ids come from that version.
 - The release workflow (SBOM, cosign signature). It runs only on a tag.
 - kube-bench output from a real EKS, AKS or GKE cluster. The guidance for these providers was not
   run against them.
@@ -374,18 +411,20 @@ Not verified:
 
 ## Limitations and roadmap
 
-- The mapping set covers 51 Prowler checks and 16 kube-bench controls. Many other failed
-  checks still show `no mapping`.
+- The mapping set covers 51 Prowler AWS checks, 44 Prowler Kubernetes checks and 16
+  kube-bench controls. Many other failed checks still show `no mapping`.
 - The tool does not scan and does not remove existing rules.
 - Terraform files are snippets per resource. You merge them into your own code and state.
 - Roadmap: review of the mappings by compliance experts, more Prowler checks (for example
-  more encryption at rest), kube-bench runs on real EKS, AKS and GKE clusters.
+  more encryption at rest), the Azure and GCP Prowler providers, kube-bench runs on real
+  EKS, AKS and GKE clusters.
 
 ## Contributing
 
 To add a mapping: add a template under `templates/`, add an entry to
-`mapping/mappings.yaml` (`scanner`, `check_id` or `benchmark_ids`, `title`, `articles`,
-and `templates` or `guidance`), add a test input and golden files in `cmd/testdata`,
+`mapping/mappings.yaml` (`scanner`, `provider` for the non-AWS Prowler providers,
+`check_id` or `benchmark_ids`, `title`, `articles`, and `templates` or `guidance`), add
+a test input and golden files in `cmd/testdata`,
 then run `make test` (and `make e2e` for AWS templates).
 
 If you work in compliance, audit or law, please review the article references. Open an

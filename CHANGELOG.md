@@ -7,6 +7,38 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Added
+
+- Prowler Kubernetes input: `k8s-remediate-nis2` now reads the `json-ocsf` output of
+  `prowler kubernetes`. The provider of each OCSF record is detected from the provider
+  field Prowler writes, so AWS and Kubernetes records mix in one report. Records of other
+  providers (azure, gcp, m365, github) are skipped with one line on stderr,
+  `provider X is not supported yet`, so a mixed report still works. Kubernetes findings
+  get the resource id `namespace/kind/name`; cluster scoped findings use the cluster name.
+  Muted findings are not remediated, like on AWS.
+- 44 mapping entries for Prowler Kubernetes checks. The seven pod security checks
+  (`core_minimize_privileged_containers`, `core_minimize_hostPID_containers`,
+  `core_minimize_hostIPC_containers`, `core_minimize_hostNetwork_containers`,
+  `core_minimize_hostpath_volume_mounts`, `core_minimize_root_containers_admission` and
+  `core_minimize_allowPrivilegeEscalation_containers`) generate the existing Kyverno pod
+  security policies, one policy file per check, with the affected pods listed in the file
+  header and the markdown summary. Kubelet, RBAC, API server, etcd, controller manager and
+  scheduler checks are guidance only; the kubelet and RBAC entries reuse the text and
+  articles of the matching kube-bench controls. Check ids come from the Prowler source at
+  version 5.51.0.
+- Mapping entries take an optional `provider` field (default `aws`). The loader rejects
+  unknown providers, providers on kube-bench entries and duplicate (provider, check_id)
+  pairs.
+- `make e2e-kubernetes` (`scripts/e2e-kubernetes.sh`): on a machine with docker and kind
+  it creates a cluster, installs Kyverno, deploys pods that break the pod security rules,
+  scans with Prowler, runs the tool, applies the generated policies in Audit mode, waits
+  until the Kyverno policy reports list every bad pod, switches the policies to Deny and
+  checks that a new privileged pod is refused. Prowler runs in a venv pinned to
+  `PROWLER_VERSION` in the script. It is not part of CI.
+- A test report of a real Prowler 5.51.0 Kubernetes scan on kind
+  (`cmd/testdata/prowler_kubernetes.json`), trimmed and scrubbed, with golden files, and
+  a mixed AWS, Kubernetes and azure report with golden files.
+
 ## [0.6.0] - 2026-11-20
 
 ### Added
