@@ -269,6 +269,9 @@ func TestDisplayResourceID(t *testing.T) {
 		"kind-demo":                            "kind-demo",
 		"cluster":                              "cluster",
 		"":                                     "",
+		"b\"\n}\nresource \"x\" \"y\" {":        "b????resource??x???y???",
+		"a/b\nc/d/e":                            "a/d/e",
+		"a\xffb":                                "a?b",
 	}
 	for in, want := range cases {
 		if got := displayResourceID(in); got != want {

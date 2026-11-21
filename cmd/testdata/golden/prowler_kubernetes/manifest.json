@@ -1,0 +1,40 @@
+{
+  "tool": "k8s-remediate-nis2",
+  "version": "dev",
+  "mapping_version": 1,
+  "mapping_sha256": "642a21ba982fe6763742b37ffcf1362769536de0612d2b633c8ffd0f90f62645",
+  "files": [
+    {
+      "path": "kyverno/block_hostipc.yaml",
+      "sha256": "88c25fb2bdbd91ea924190f45154999acd1c37354fb92043f87dd586a99fca3b"
+    },
+    {
+      "path": "kyverno/block_hostnet.yaml",
+      "sha256": "30bf0fedd8c7eb2c12a1db4e3032796268c820b2060d2eb7c1ed827ae4781a2e"
+    },
+    {
+      "path": "kyverno/block_hostpath.yaml",
+      "sha256": "b63326a365ef0e1a0d91e0f8ae97054b6ad483298c107b7861bbb27070ba66e9"
+    },
+    {
+      "path": "kyverno/block_hostpid.yaml",
+      "sha256": "c017ae76674149f5104a02839c5c2aee239ad1d5b87f68e9234733b4675e2479"
+    },
+    {
+      "path": "kyverno/block_privilege_escalation.yaml",
+      "sha256": "28376bd1ea9b925cdaa5176e3aee1077584357d619b672383387c4a4b75ea6c1"
+    },
+    {
+      "path": "kyverno/block_privileged.yaml",
+      "sha256": "f2168ee7d7136f113b10e6d730a3a4dcb32c9084175c990854e669a2fb176b13"
+    },
+    {
+      "path": "kyverno/require_nonroot.yaml",
+      "sha256": "756d2ffe2de65f0f747dab946f5ebaa8c8e5caad56da02e2aa607f0b01ab7a88"
+    },
+    {
+      "path": "mapping.md",
+      "sha256": "31719b9c59a3ab4fb105588e01a08f5eefcb4f406982fa9f1445933575dd9138"
+    }
+  ]
+}

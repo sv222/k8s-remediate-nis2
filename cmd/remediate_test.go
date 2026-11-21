@@ -73,6 +73,7 @@ func TestGolden(t *testing.T) {
 		{"aws_services", []string{"--prowler", "testdata/prowler_aws_services.json"}},
 		{"iam_policy", []string{"--prowler", "testdata/prowler_iam_policy.json"}},
 		{"s3_account", []string{"--prowler", "testdata/prowler_s3_account.json"}},
+		{"prowler_kubernetes", []string{"--prowler", "testdata/prowler_kubernetes.json"}},
 		{"kube_bench_eks", []string{"--kube-bench", "testdata/kube_bench_eks.json"}},
 		{"kube_bench_aks", []string{"--kube-bench", "testdata/kube_bench_aks.json"}},
 		{"kube_bench_gke", []string{"--kube-bench", "testdata/kube_bench_gke.json"}},
@@ -213,6 +214,7 @@ func TestMarkdownGolden(t *testing.T) {
 	}{
 		{"legacy_and_bench", []string{"--prowler", "testdata/prowler_ocsf.json", "--kube-bench", "testdata/kube_bench.json"}},
 		{"two_buckets", []string{"--prowler", "testdata/prowler_two_buckets.json"}},
+		{"prowler_kubernetes", []string{"--prowler", "testdata/prowler_kubernetes.json"}},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -354,6 +356,71 @@ func TestKyvernoPoliciesAreClusterWideAndDeduped(t *testing.T) {
 	for _, id := range []string{"5.2.1", "5.2.4", "5.2.6", "5.2.8"} {
 		if strings.Contains(mappingMD, "| `"+id+"` |") {
 			t.Errorf("passed or unmapped manual WARN control %s must not be listed", id)
+		}
+	}
+}
+
+func TestProwlerKubernetesFixes(t *testing.T) {
+	out := filepath.Join(t.TempDir(), "remediation")
+	if _, err := execute(t, "remediate", "--prowler", "testdata/prowler_kubernetes.json", "--out", out); err != nil {
+		t.Fatal(err)
+	}
+	files := tree(t, out)
+	var policies []string
+	for rel := range files {
+		if strings.HasPrefix(rel, "kyverno/") {
+			policies = append(policies, rel)
+		}
+	}
+	sort.Strings(policies)
+	want := "kyverno/block_hostipc.yaml,kyverno/block_hostnet.yaml,kyverno/block_hostpath.yaml,kyverno/block_hostpid.yaml,kyverno/block_privilege_escalation.yaml,kyverno/block_privileged.yaml,kyverno/require_nonroot.yaml"
+	if strings.Join(policies, ",") != want {
+		t.Errorf("policies = %v", policies)
+	}
+	header := files["kyverno/block_privileged.yaml"]
+	for _, res := range []string{"nis2demo/bad-privileged", "kube-system/kube-proxy-kgdcn"} {
+		if !strings.Contains(header, res) {
+			t.Errorf("policy header lacks %s:\n%s", res, header)
+		}
+	}
+	if strings.Contains(header, "/Pod/") {
+		t.Errorf("policy header keeps the kind:\n%s", header)
+	}
+	mappingMD := files["mapping.md"]
+	guidance := 0
+	noMapping := 0
+	for _, line := range strings.Split(mappingMD, "\n") {
+		if strings.Contains(line, "| guidance only |") {
+			guidance++
+		}
+		if strings.Contains(line, "| no mapping |") {
+			noMapping++
+		}
+	}
+	if guidance < 10 {
+		t.Errorf("mapping.md lists only %d guidance rows", guidance)
+	}
+	if noMapping < 2 {
+		t.Errorf("mapping.md lists only %d no mapping rows", noMapping)
+	}
+}
+
+func TestKubernetesRunsAreByteIdentical(t *testing.T) {
+	first := filepath.Join(t.TempDir(), "one")
+	second := filepath.Join(t.TempDir(), "two")
+	for _, out := range []string{first, second} {
+		if _, err := execute(t, "remediate", "--prowler", "testdata/prowler_kubernetes.json", "--out", out); err != nil {
+			t.Fatal(err)
+		}
+	}
+	got := tree(t, first)
+	want := tree(t, second)
+	if strings.Join(sortedKeys(got), ",") != strings.Join(sortedKeys(want), ",") {
+		t.Fatalf("file sets differ: %v vs %v", sortedKeys(got), sortedKeys(want))
+	}
+	for rel, content := range want {
+		if got[rel] != content {
+			t.Errorf("%s differs between two runs of the same input", rel)
 		}
 	}
 }

@@ -1,0 +1,44 @@
+# NIS2/DORA remediation: require pods to run as non-root (CIS Kubernetes pod security).
+# Needs Kyverno 1.17 or later.
+# The pods/ephemeralcontainers rule also covers kubectl debug.
+# Starts in Audit mode. Review the policy reports, then change validationActions to Deny.
+# Generated for: nis2demo/bad-root
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: nis2-require-run-as-non-root
+  annotations:
+    policies.kyverno.io/title: Require runAsNonRoot
+    policies.kyverno.io/category: Pod Security Standards (Restricted)
+    policies.kyverno.io/severity: medium
+spec:
+  validationActions: [Audit]
+  evaluation:
+    background:
+      enabled: true
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["UPDATE"]
+        resources: ["pods/ephemeralcontainers"]
+  matchConditions:
+    - name: skip-system-namespaces
+      expression: "!(object.metadata.namespace in ['kube-system', 'kube-public', 'kube-node-lease', 'kyverno'])"
+  variables:
+    - name: podNonRoot
+      expression: "object.spec.?securityContext.?runAsNonRoot.orValue(false)"
+    - name: initContainers
+      expression: "object.spec.?initContainers.orValue([])"
+    - name: ephemeralContainers
+      expression: "object.spec.?ephemeralContainers.orValue([])"
+  validations:
+    - expression: >-
+        object.spec.containers.all(c, c.?securityContext.?runAsNonRoot.orValue(variables.podNonRoot) == true) &&
+        variables.initContainers.all(c, c.?securityContext.?runAsNonRoot.orValue(variables.podNonRoot) == true) &&
+        variables.ephemeralContainers.all(c, c.?securityContext.?runAsNonRoot.orValue(variables.podNonRoot) == true)
+      message: "Pods must not run as root: set runAsNonRoot to true at pod level or on every container"

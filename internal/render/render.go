@@ -27,6 +27,7 @@ var (
 	ErrInvalidResourceID = errors.New("invalid resource id")
 
 	resourceIDRe = regexp.MustCompile(`^[A-Za-z0-9._:/@+=,-]+$`)
+	displayRe    = regexp.MustCompile(`[^A-Za-z0-9._:/@+=,-]`)
 	sanitizeRe   = regexp.MustCompile(`[^A-Za-z0-9_-]`)
 	regionRe     = regexp.MustCompile(`^[a-z]{2}(-[a-z0-9]+)+$`)
 )
@@ -163,13 +164,20 @@ func sharedDataFor(e mapping.Entry, f finding.Finding) sharedData {
 }
 
 // displayResourceID turns namespace/kind/name into the namespace/name form
-// used in file headers. Cluster level ids are shown as they are.
+// used in file headers. Every character outside the strict resource id set
+// becomes a question mark, so a crafted id cannot break the comment line or
+// the YAML around it. Cluster level ids are shown as they are.
 func displayResourceID(id string) string {
-	parts := strings.Split(id, "/")
+	parts := strings.SplitN(id, "/", 3)
+	d := id
 	if len(parts) == 3 {
-		return parts[0] + "/" + parts[2]
+		d = parts[0] + "/" + parts[2]
 	}
-	return id
+	d = displayRe.ReplaceAllString(d, "?")
+	if len(d) > maxResourceIDLen {
+		d = d[:maxResourceIDLen]
+	}
+	return d
 }
 
 func execute(rel string, data any) (string, error) {
@@ -185,7 +193,30 @@ func execute(rel string, data any) (string, error) {
 	if err := tpl.Execute(&buf, data); err != nil {
 		return "", fmt.Errorf("template %s: %w", rel, err)
 	}
-	return buf.String(), nil
+	content := buf.String()
+	if sd, ok := data.(sharedData); ok && len(sd.Resources) > 0 {
+		content = injectHeaderLine(content, "# Generated for: "+strings.Join(sd.Resources, ", "))
+	}
+	return content, nil
+}
+
+// injectHeaderLine adds one header comment line after the comment block at the
+// top of the file, before the first line that is not a comment. The templates
+// stay plain YAML, so tools can read them without the renderer.
+func injectHeaderLine(content, line string) string {
+	lines := strings.Split(content, "\n")
+	at := 0
+	for i, l := range lines {
+		if !strings.HasPrefix(l, "#") {
+			at = i
+			break
+		}
+	}
+	out := make([]string, 0, len(lines)+1)
+	out = append(out, lines[:at]...)
+	out = append(out, line)
+	out = append(out, lines[at:]...)
+	return strings.Join(out, "\n")
 }
 
 func orPlaceholder(id string) string {

@@ -303,6 +303,281 @@ entries:
     title: Lambda function uses a runtime that is deprecated
     articles: ["NIS2 Art.21(2)(e)", "DORA Art.9", "DORA RTS 2024/1774 Art.10", "ISO27001:2022 A.8.8"]
     guidance: "No code is generated: a newer runtime can break the function code and its dependencies, so it needs a test. Pick a supported runtime from the Lambda runtimes page of the AWS documentation. Update a copy first: publish a version, test it behind an alias, then move the alias. Then run: aws lambda update-function-configuration --function-name FUNCTION --runtime RUNTIME. If the function is in your Terraform code, set runtime on aws_lambda_function instead, or the next apply sets the old one again. Rebuild layers and native dependencies for the new runtime."
+  - scanner: prowler
+    provider: kubernetes
+    check_id: core_minimize_privileged_containers
+    title: Privileged containers may be admitted
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.11", "NIS2 CIR 2024/2690 Annex 6.3", "ISO27001:2022 A.8.9"]
+    shared_templates: ["kyverno/block_privileged.yaml"]
+    follow_up: "The policy starts in Audit mode and blocks nothing. It is not applied to any cluster and existing pods are not changed. Review the policy reports, then set validationActions to Deny to block privileged containers."
+  - scanner: prowler
+    provider: kubernetes
+    check_id: core_minimize_hostNetwork_containers
+    title: Containers may share the host network namespace
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.13", "NIS2 CIR 2024/2690 Annex 6.8", "ISO27001:2022 A.8.22"]
+    shared_templates: ["kyverno/block_hostnet.yaml"]
+    follow_up: "The policy starts in Audit mode and blocks nothing. It is not applied to any cluster and existing pods are not changed. Review the policy reports, then set validationActions to Deny to block host network pods."
+  - scanner: prowler
+    provider: kubernetes
+    check_id: core_minimize_root_containers_admission
+    title: Root containers may be admitted
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.11", "NIS2 CIR 2024/2690 Annex 6.3", "ISO27001:2022 A.8.9"]
+    shared_templates: ["kyverno/require_nonroot.yaml"]
+    follow_up: "The policy starts in Audit mode and blocks nothing. It is not applied to any cluster and existing pods are not changed. Review the policy reports, then set validationActions to Deny to block root containers."
+  - scanner: prowler
+    provider: kubernetes
+    check_id: core_minimize_hostPID_containers
+    title: Containers may share the host process ID namespace
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.9"]
+    shared_templates: ["kyverno/block_hostpid.yaml"]
+    follow_up: "The policy starts in Audit mode and blocks nothing. It is not applied to any cluster and existing pods are not changed. Review the policy reports, then set validationActions to Deny to block host PID pods."
+  - scanner: prowler
+    provider: kubernetes
+    check_id: core_minimize_hostIPC_containers
+    title: Containers may share the host IPC namespace
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.9"]
+    shared_templates: ["kyverno/block_hostipc.yaml"]
+    follow_up: "The policy starts in Audit mode and blocks nothing. It is not applied to any cluster and existing pods are not changed. Review the policy reports, then set validationActions to Deny to block host IPC pods."
+  - scanner: prowler
+    provider: kubernetes
+    check_id: core_minimize_allowPrivilegeEscalation_containers
+    title: Containers may allow privilege escalation
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.9"]
+    shared_templates: ["kyverno/block_privilege_escalation.yaml"]
+    follow_up: "The policy starts in Audit mode and blocks nothing. It is not applied to any cluster and existing pods are not changed. It rejects allowPrivilegeEscalation: true, as the kube-bench audit does, but not an unset field. Review the policy reports, then set validationActions to Deny."
+  - scanner: prowler
+    provider: kubernetes
+    check_id: core_minimize_hostpath_volume_mounts
+    title: Containers may mount hostPath volumes
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.9"]
+    shared_templates: ["kyverno/block_hostpath.yaml"]
+    follow_up: "The policy starts in Audit mode and blocks nothing. It is not applied to any cluster and existing pods are not changed. Review the policy reports, then set validationActions to Deny to block hostPath volumes."
+  - scanner: prowler
+    provider: kubernetes
+    check_id: kubelet_disable_anonymous_auth
+    title: Kubelet accepts anonymous requests
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.5", "ISO27001:2022 A.8.9"]
+    guidance: "No code is generated: the kubelet config belongs to the node image of a managed node group, not to your Terraform. First check the node, because kube-bench also reports FAIL when it cannot read the kubelet config file. The kubelet config needs authentication.anonymous.enabled: false (flag --anonymous-auth=false). Managed node images set this by default, so a FAIL usually means a custom or old node image. EKS: fix the custom AMI, or set it in the nodeadm NodeConfig (spec.kubelet.config) of the launch template, then roll the node group. AKS and GKE do not expose this setting: upgrade the node pool to a current node image (az aks nodepool upgrade --node-image-only, gcloud container clusters upgrade CLUSTER --node-pool POOL). Then re-scan."
+    caution: "Rolling a node group or upgrading a node pool drains and replaces its nodes."
+  - scanner: prowler
+    provider: kubernetes
+    check_id: kubelet_authorization_mode
+    title: Kubelet authorization mode is AlwaysAllow
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.5.15", "ISO27001:2022 A.8.9"]
+    guidance: "No code is generated: the kubelet config belongs to the node image of a managed node group, not to your Terraform. First check the node, because kube-bench also reports FAIL when it cannot read the kubelet config file. The kubelet config needs authorization.mode: Webhook (flag --authorization-mode=Webhook). Managed node images set this by default, so a FAIL usually means a custom or old node image. EKS: fix the custom AMI, or set it in the nodeadm NodeConfig (spec.kubelet.config) of the launch template, then roll the node group. AKS and GKE do not expose this setting: upgrade the node pool to a current node image (az aks nodepool upgrade --node-image-only, gcloud container clusters upgrade CLUSTER --node-pool POOL). Then re-scan."
+    caution: "Rolling a node group or upgrading a node pool drains and replaces its nodes."
+  - scanner: prowler
+    provider: kubernetes
+    check_id: kubelet_client_ca_file_set
+    title: Kubelet has no client CA file
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.5", "ISO27001:2022 A.8.9"]
+    guidance: "No code is generated: the kubelet config belongs to the node image of a managed node group, not to your Terraform. First check the node, because kube-bench also reports FAIL when it cannot read the kubelet config file. The kubelet config needs authentication.x509.clientCAFile set to the cluster CA file (flag --client-ca-file). Managed node images set this by default, so a FAIL usually means a custom or old node image. EKS: fix the custom AMI, or set it in the nodeadm NodeConfig (spec.kubelet.config) of the launch template, then roll the node group. AKS and GKE do not expose this setting: upgrade the node pool to a current node image (az aks nodepool upgrade --node-image-only, gcloud container clusters upgrade CLUSTER --node-pool POOL). Then re-scan."
+    caution: "Rolling a node group or upgrading a node pool drains and replaces its nodes."
+  - scanner: prowler
+    provider: kubernetes
+    check_id: kubelet_disable_read_only_port
+    title: Kubelet read-only port is open
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.9"]
+    guidance: "No code is generated: the kubelet config belongs to the node image of a managed node group, not to your Terraform. First check the node, because kube-bench also reports FAIL when it cannot read the kubelet config file. The kubelet config needs readOnlyPort: 0 (flag --read-only-port=0). Managed node images set this by default, so a FAIL usually means a custom or old node image. EKS: fix the custom AMI, or set it in the nodeadm NodeConfig (spec.kubelet.config) of the launch template, then roll the node group. GKE: gcloud container node-pools update POOL --cluster CLUSTER --no-enable-insecure-kubelet-readonly-port. AKS does not expose this setting: upgrade the node pool to a current node image (az aks nodepool upgrade --node-image-only). Then re-scan."
+    caution: "Rolling a node group or upgrading a node pool drains and replaces its nodes."
+  - scanner: prowler
+    provider: kubernetes
+    check_id: rbac_cluster_admin_usage
+    title: cluster-admin is bound more than needed
+    articles: ["NIS2 Art.21(2)(i)", "DORA Art.9", "ISO27001:2022 A.8.2"]
+    guidance: "No code is generated: removing a binding can lock out people or break controllers. List the cluster-admin bindings: kubectl get clusterrolebindings -o json | jq -r '.items[] | select(.roleRef.name==\"cluster-admin\") | .metadata.name + \": \" + ([.subjects[]? | .kind + \"/\" + .name] | join(\", \"))'. Keep the system: bindings of the provider. For each other subject, bind a narrower role, then remove the old binding: kubectl delete clusterrolebinding NAME. On EKS also check access entries with AmazonEKSClusterAdminPolicy (aws eks list-access-entries --cluster-name CLUSTER)."
+  - scanner: prowler
+    provider: kubernetes
+    check_id: rbac_minimize_wildcard_use_roles
+    title: Roles use wildcards
+    articles: ["NIS2 Art.21(2)(i)", "DORA Art.9", "ISO27001:2022 A.5.15", "ISO27001:2022 A.5.18"]
+    guidance: "List the roles with * in apiGroups, resources or verbs: kubectl get roles,clusterroles -A -o json | jq -r '.items[] | select(any(.rules[]?; ((.apiGroups // []) + (.resources // []) + (.verbs // [])) | index(\"*\"))) | .kind + \" \" + (.metadata.namespace // \"-\") + \" \" + .metadata.name'. Leave cluster-admin and the built-in system: roles. In your own roles, replace * with the API groups, resources and verbs the subjects use, then re-scan."
+  - scanner: prowler
+    provider: kubernetes
+    check_id: apiserver_audit_log_path_set
+    title: API server audit logging is not configured
+    articles: ["NIS2 Art.21(2)(b)", "DORA Art.10", "DORA RTS 2024/1774 Art.12", "NIS2 CIR 2024/2690 Annex 3.2", "ISO27001:2022 A.8.15", "ISO27001:2022 A.8.16"]
+    guidance: 'No code is generated because the API server runs as a static pod or a managed control plane, not as Terraform code. Start the API server with --audit-log-path=/var/log/kubernetes/audit.log, --audit-log-maxage=30, --audit-log-maxbackup=10 and --audit-log-maxsize=100, and give it an audit policy file with --audit-policy-file. On kubeadm clusters edit /etc/kubernetes/manifests/kube-apiserver.yaml or set apiServer.extraArgs in the kubeadm ClusterConfiguration, then run kubeadm upgrade apply. On managed clusters use the audit logging setting of the provider. Ship the audit log off the node, because rotation deletes the files.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: apiserver_audit_log_maxage_set
+    title: API server audit logs are kept for too long or not rotated
+    articles: ["NIS2 Art.21(2)(b)", "DORA Art.10", "DORA RTS 2024/1774 Art.12", "NIS2 CIR 2024/2690 Annex 3.2", "ISO27001:2022 A.8.15", "ISO27001:2022 A.8.16"]
+    guidance: 'Set --audit-log-maxage=30 on the API server so old audit logs are removed and the audit trail cannot fill the disk. On kubeadm clusters edit /etc/kubernetes/manifests/kube-apiserver.yaml or set apiServer.extraArgs in the kubeadm ClusterConfiguration. Keep the value in line with your retention policy, then re-scan.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: apiserver_audit_log_maxbackup_set
+    title: API server keeps too few audit log backups
+    articles: ["NIS2 Art.21(2)(b)", "DORA Art.10", "DORA RTS 2024/1774 Art.12", "NIS2 CIR 2024/2690 Annex 3.2", "ISO27001:2022 A.8.15", "ISO27001:2022 A.8.16"]
+    guidance: 'Set --audit-log-maxbackup=10 on the API server so rotated audit logs are kept. On kubeadm clusters edit the static pod manifest or set apiServer.extraArgs. Pick the number from your retention policy, then re-scan.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: apiserver_audit_log_maxsize_set
+    title: API server audit log files are not size limited
+    articles: ["NIS2 Art.21(2)(b)", "DORA Art.10", "DORA RTS 2024/1774 Art.12", "NIS2 CIR 2024/2690 Annex 3.2", "ISO27001:2022 A.8.15", "ISO27001:2022 A.8.16"]
+    guidance: 'Set --audit-log-maxsize=100 on the API server so audit logs rotate before they grow too large. On kubeadm clusters edit the static pod manifest or set apiServer.extraArgs. Pick the size from your log pipeline, then re-scan.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: apiserver_encryption_provider_config_set
+    title: Kubernetes secrets are not encrypted at rest
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "DORA RTS 2024/1774 Art.6", "NIS2 CIR 2024/2690 Annex 9.1", "ISO27001:2022 A.8.24"]
+    guidance: 'No code is generated because enabling secrets encryption changes etcd contents and cannot be turned off again. Write an EncryptionConfiguration file with the aescbc or kms provider, start the API server with --encryption-provider-config pointing at it, then rewrite the existing secrets so etcd stores them encrypted: kubectl get secrets --all-namespaces -o json | kubectl replace -f -. Store the config and its key safely: etcd cannot read the secrets back without them.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: apiserver_disable_profiling
+    title: API server profiling endpoints are enabled
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.9"]
+    guidance: 'Start the API server with --profiling=false. On kubeadm clusters set apiServer.extraArgs.profiling: false in the kubeadm ClusterConfiguration or edit /etc/kubernetes/manifests/kube-apiserver.yaml. The profiling endpoints help debugging only and leak runtime data.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: apiserver_service_account_lookup_true
+    title: API server does not validate service account tokens
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.5", "ISO27001:2022 A.8.9"]
+    guidance: 'Start the API server with --service-account-lookup=true so tokens are checked against the API objects and deleted tokens stop working. On kubeadm clusters set apiServer.extraArgs.serviceAccountLookup: true or edit the static pod manifest.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: apiserver_always_pull_images_plugin
+    title: AlwaysPullImages admission plugin is not enabled
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.9"]
+    guidance: 'No code is generated because the admission configuration is cluster specific. Enable the AlwaysPullImages admission plugin in the API server admission configuration so pod specs cannot downgrade the image pull policy to IfNotPresent or Never. Mind the registry load: every pod start then pulls the image. On managed clusters check whether the provider exposes an admission configuration before changing it.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: apiserver_anonymous_requests
+    title: API server accepts anonymous requests
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.5", "ISO27001:2022 A.8.9"]
+    guidance: 'Start the API server with --anonymous-auth=false and keep --authorization-mode=Node,RBAC so every request is authenticated and authorized. On kubeadm clusters set apiServer.extraArgs or edit /etc/kubernetes/manifests/kube-apiserver.yaml. Workloads that call the API without credentials fail after this change; give them their own service accounts first.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: apiserver_auth_mode_not_always_allow
+    title: API server authorization mode does not include RBAC and Node
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.5", "ISO27001:2022 A.8.9"]
+    guidance: 'Set --authorization-mode=Node,RBAC on the API server. AlwaysAllow gives every request full rights and disables all RBAC checks. On kubeadm clusters set apiServer.extraArgs or edit the static pod manifest, restart the API server and check that kubelet and controller connections still pass.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: apiserver_client_ca_file_set
+    title: API server has no client certificate CA file
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.5", "ISO27001:2022 A.8.9"]
+    guidance: 'Start the API server with --client-ca-file pointing at the cluster CA bundle so client certificates can authenticate. On kubeadm clusters the CA is in /etc/kubernetes/pki and kubeadm sets the flag; a FAIL means the flag was removed. Check who authenticates with client certificates before you change the CA.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: apiserver_strong_ciphers_only
+    title: API server allows weak TLS ciphers
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "DORA RTS 2024/1774 Art.6", "NIS2 CIR 2024/2690 Annex 9.1", "ISO27001:2022 A.8.24"]
+    guidance: 'Start the API server with --tls-cipher-suites listing only the modern suites of your platform policy, for example TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384 and the ECDHE suites with GCM. On kubeadm clusters set apiServer.extraArgs. Old clients fail after this change, so test them first.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: apiserver_tls_config
+    title: API server TLS certificate and key are not set
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "DORA RTS 2024/1774 Art.6", "NIS2 CIR 2024/2690 Annex 9.1", "ISO27001:2022 A.8.24"]
+    guidance: 'Start the API server with --tls-cert-file and --tls-private-key-file pointing at a real certificate and key. Without them the API server falls back to a self-signed certificate and clients skip verification, which invites man in the middle attacks. On kubeadm clusters set apiServer.extraArgs.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: etcd_client_cert_auth
+    title: etcd does not require client certificates
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.5", "ISO27001:2022 A.8.9"]
+    guidance: 'Start etcd with --client-cert-auth=true and point the API server at its client certificate with --etcd-certfile and --etcd-keyfile. On kubeadm clusters the flags live in /etc/kubernetes/manifests/etcd.yaml and kube-apiserver.yaml. Restart etcd first, then the API server, or the API server loses its etcd connection.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: etcd_no_auto_tls
+    title: etcd uses self-signed auto generated certificates
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "DORA RTS 2024/1774 Art.6", "NIS2 CIR 2024/2690 Annex 9.1", "ISO27001:2022 A.8.24"]
+    guidance: 'Serve etcd with real certificates: --cert-file and --key-file on etcd, and --etcd-cafile, --etcd-certfile and --etcd-keyfile on the API server. Auto TLS creates a certificate nobody can verify, so clients cannot tell they talk to the real etcd. Put the files on a host path that survives the pod restart.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: etcd_tls_encryption
+    title: etcd traffic is not encrypted with TLS
+    articles: ["NIS2 Art.21(2)(h)", "DORA Art.9", "DORA RTS 2024/1774 Art.6", "NIS2 CIR 2024/2690 Annex 9.1", "ISO27001:2022 A.8.24"]
+    guidance: 'Configure TLS for client and peer traffic: --cert-file, --key-file, --peer-cert-file and --peer-key-file on etcd, plus --trusted-ca-file and --peer-trusted-ca-file. Unencrypted etcd traffic can be read or altered on the host network. On kubeadm clusters edit /etc/kubernetes/manifests/etcd.yaml, then restart etcd and the API server.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: etcd_peer_client_cert_auth
+    title: etcd peer traffic does not require client certificates
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.5", "ISO27001:2022 A.8.9"]
+    guidance: 'Start etcd with --peer-client-cert-auth=true and --peer-trusted-ca-file so only the cluster members join the peer port. The peer port speaks the etcd protocol and accepts writes, so leaving it open lets anyone change the cluster state. Restart etcd members one at a time.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: etcd_unique_ca
+    title: etcd does not use its own certificate authority
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.5", "ISO27001:2022 A.8.9"]
+    guidance: 'Give etcd its own certificate authority, separate from the cluster CA, and point --trusted-ca-file and --peer-trusted-ca-file at it. With a shared CA, any component certificate can authenticate against etcd. Plan a certificate rollout: a new CA means new server and peer certificates for etcd and a new client certificate for the API server.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: controllermanager_bind_address
+    title: Controller manager listens on all interfaces
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.9"]
+    guidance: 'Start the controller manager with --bind-address=127.0.0.1 so its metrics and health endpoints are not reachable from other hosts. On kubeadm clusters edit /etc/kubernetes/manifests/kube-controller-manager.yaml or set controllerManager.extraArgs in the kubeadm ClusterConfiguration.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: controllermanager_disable_profiling
+    title: Controller manager profiling endpoints are enabled
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.9"]
+    guidance: 'Start the controller manager with --profiling=false. The profiling endpoints help debugging only and leak runtime data. On kubeadm clusters edit the static pod manifest or set controllerManager.extraArgs.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: controllermanager_root_ca_file_set
+    title: Controller manager has no root CA file
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.5", "ISO27001:2022 A.8.9"]
+    guidance: 'Start the controller manager with --root-ca-file pointing at the cluster CA, so service account tokens can verify the API server. On kubeadm clusters the flag is set from /etc/kubernetes/pki/ca.crt; a FAIL means it was removed.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: controllermanager_service_account_credentials
+    title: Controller manager does not use per service account credentials
+    articles: ["NIS2 Art.21(2)(i)", "DORA Art.9", "ISO27001:2022 A.8.2"]
+    guidance: 'Start the controller manager with --use-service-account-credentials=true so each controller runs with its own service account instead of full rights. On kubeadm clusters set controllerManager.extraArgs.useServiceAccountCredentials: true. Check the role bindings of the system controllers afterwards with kubectl get clusterrolebindings.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: scheduler_bind_address
+    title: Scheduler listens on all interfaces
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.9"]
+    guidance: 'Start the scheduler with --bind-address=127.0.0.1 so its metrics and health endpoints are not reachable from other hosts. On kubeadm clusters edit /etc/kubernetes/manifests/kube-scheduler.yaml or set scheduler.extraArgs in the kubeadm ClusterConfiguration.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: scheduler_profiling
+    title: Scheduler profiling endpoints are enabled
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.9"]
+    guidance: 'Start the scheduler with --profiling=false. The profiling endpoints help debugging only and leak runtime data. On kubeadm clusters edit the static pod manifest or set scheduler.extraArgs.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: core_readonly_root_filesystem_enabled
+    title: Containers can write to their root filesystem
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.9"]
+    guidance: 'Set securityContext.readOnlyRootFilesystem: true on every container and mount emptyDir volumes on the paths the container writes to, such as tmp, logs or cache. Roll the pods after the change: kubectl rollout restart deployment NAME. Containers that break need their writable paths as volumes; do not turn the setting back off.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: core_seccomp_profile_docker_default
+    title: Containers do not use a seccomp profile
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.9"]
+    guidance: 'Set securityContext.seccompProfile.type: RuntimeDefault on every container, or the localhost profile your nodes ship. Pods that crash under the profile need documented exceptions in their own spec, not seccomp off. Roll the pods after the change and watch the container logs.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: core_minimize_admission_hostport_containers
+    title: Containers may declare host ports
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "DORA RTS 2024/1774 Art.13", "NIS2 CIR 2024/2690 Annex 6.8", "ISO27001:2022 A.8.22"]
+    guidance: 'No code is generated because host ports are declared per workload. Find the pods that set hostPort on their container ports with kubectl get pods -A -o json and a filter on the hostPort field. Publish services through a Service object or an ingress instead of ports on the host. A hostPort also pins the pod to a node with a free port, so it can break scheduling.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: core_minimize_containers_added_capabilities
+    title: Containers add Linux capabilities
+    articles: ["NIS2 Art.21(2)(i)", "NIS2 Art.21(2)(g)", "DORA Art.9", "ISO27001:2022 A.8.9"]
+    guidance: 'Set securityContext.capabilities.drop: [ALL] on every container and add back only what it really needs, for example NET_BIND_SERVICE for low ports. Find the pods that add capabilities with kubectl get pods -A -o json. Roll the workloads after the change and watch for permission errors.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: rbac_minimize_secret_access
+    title: Roles grant broad access to secrets
+    articles: ["NIS2 Art.21(2)(i)", "DORA Art.9", "ISO27001:2022 A.8.2", "ISO27001:2022 A.5.15"]
+    guidance: 'No code is generated because removing rights can break controllers. List the roles that touch secrets: kubectl get roles,clusterroles -A -o json and a filter on rules with secrets in resources. Keep secret access for the controllers that need it, scope it to one namespace, and prefer get on named resources over list and watch. Check who holds those roles with kubectl get rolebindings,clusterrolebindings -A -o json, then re-scan.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: rbac_minimize_pod_creation_access
+    title: Roles grant broad pod creation rights
+    articles: ["NIS2 Art.21(2)(i)", "DORA Art.9", "ISO27001:2022 A.8.2"]
+    guidance: 'No code is generated because removing rights can break controllers. A user who can create pods in a namespace can run privileged containers or mount host paths unless admission policies stop it. Keep the pod security policies of this tool active, and give pod creation only to controllers and to trusted operators, scoped to their namespaces.'
+  - scanner: prowler
+    provider: kubernetes
+    check_id: rbac_minimize_service_account_token_creation
+    title: Roles grant rights to create service account tokens
+    articles: ["NIS2 Art.21(2)(i)", "DORA Art.9", "ISO27001:2022 A.8.2"]
+    guidance: 'The serviceaccounts/token subresource mints tokens for any service account in its namespace. Find the roles that allow create on serviceaccounts/token with kubectl get roles,clusterroles -A -o json, and remove the right from roles that do not mint tokens on purpose. Callers of TokenRequest need it only for their own namespace.'
   - scanner: kube-bench
     benchmark_ids:
       ack-1.0: "5.2.1"
