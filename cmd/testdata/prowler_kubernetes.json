@@ -1,0 +1,4005 @@
+[
+  {
+    "message": "Pod bad-privileged contains a privileged container c.",
+    "metadata": {
+      "event_code": "core_minimize_privileged_containers",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Pod bad-privileged contains a privileged container c.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "container-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/tasks/configure-pod-container/security-context/",
+        "https://kubernetes.io/docs/tasks/configure-pod-container/enforce-standards-admission-controller/",
+        "https://kubernetes.io/docs/setup/best-practices/enforcing-pod-security-standards/",
+        "https://kubernetes.io/docs/concepts/security/pod-security-standards/",
+        "https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/"
+      ],
+      "notes": "Exceptions for privileged containers should be clearly defined and monitored.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.8.2",
+          "A.8.3"
+        ],
+        "PCI-4.0": [
+          "7.2.1.3",
+          "7.2.1.6",
+          "7.2.1.28",
+          "7.2.2.3",
+          "7.2.2.6",
+          "7.2.2.28",
+          "7.2.3.1",
+          "7.2.3.3",
+          "7.2.3.9"
+        ],
+        "CIS-2.0.1": [
+          "5.2.2"
+        ],
+        "CIS-1.11.1": [
+          "5.2.2"
+        ],
+        "CIS-1.8": [
+          "5.2.2"
+        ],
+        "CIS-1.12.0": [
+          "5.2.2"
+        ],
+        "CIS-1.10": [
+          "5.2.2"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "1.3.2"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "core",
+        "name": "Pod does not contain a privileged container",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "core_minimize_privileged_containers"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Pods** are evaluated for regular, init, and ephemeral containers configured with `securityContext.privileged: true`.",
+      "title": "Pod does not contain a privileged container",
+      "types": [],
+      "uid": "prowler-kubernetes-core_minimize_privileged_containers-kind-demo-namespace: nis2demo-bad-privileged"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "core"
+        },
+        "labels": [],
+        "name": "bad-privileged",
+        "namespace": "nis2demo",
+        "type": "Pod",
+        "uid": "6bcadebd-79b7-4596-9dfe-4bdfe88dec4e"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Block `privileged: true` using **Pod Security Admission** at `restricted`. Apply **least privilege**:\n- Run unprivileged; set `allowPrivilegeEscalation: false`\n- Drop capabilities; avoid host access\n- Restrict who can deploy privileged pods with **RBAC**\n- Use short-lived, audited exceptions only when strictly required",
+      "references": [
+        "https://hub.prowler.com/check/core_minimize_privileged_containers"
+      ]
+    },
+    "risk_details": "**Privileged containers** can control the host and bypass isolation, enabling:\n- Secret theft (confidentiality)\n- Workload/node tampering (integrity)\n- Service disruption (availability)\nCompromise of one pod can drive lateral movement across the cluster.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Pod kube-proxy-kgdcn contains a privileged container kube-proxy.",
+    "metadata": {
+      "event_code": "core_minimize_privileged_containers",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Pod kube-proxy-kgdcn contains a privileged container kube-proxy.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "container-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/tasks/configure-pod-container/security-context/",
+        "https://kubernetes.io/docs/tasks/configure-pod-container/enforce-standards-admission-controller/",
+        "https://kubernetes.io/docs/setup/best-practices/enforcing-pod-security-standards/",
+        "https://kubernetes.io/docs/concepts/security/pod-security-standards/",
+        "https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/"
+      ],
+      "notes": "Exceptions for privileged containers should be clearly defined and monitored.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.8.2",
+          "A.8.3"
+        ],
+        "PCI-4.0": [
+          "7.2.1.3",
+          "7.2.1.6",
+          "7.2.1.28",
+          "7.2.2.3",
+          "7.2.2.6",
+          "7.2.2.28",
+          "7.2.3.1",
+          "7.2.3.3",
+          "7.2.3.9"
+        ],
+        "CIS-2.0.1": [
+          "5.2.2"
+        ],
+        "CIS-1.11.1": [
+          "5.2.2"
+        ],
+        "CIS-1.8": [
+          "5.2.2"
+        ],
+        "CIS-1.12.0": [
+          "5.2.2"
+        ],
+        "CIS-1.10": [
+          "5.2.2"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "1.3.2"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "core",
+        "name": "Pod does not contain a privileged container",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "core_minimize_privileged_containers"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Pods** are evaluated for regular, init, and ephemeral containers configured with `securityContext.privileged: true`.",
+      "title": "Pod does not contain a privileged container",
+      "types": [],
+      "uid": "prowler-kubernetes-core_minimize_privileged_containers-kind-demo-namespace: kube-system-kube-proxy-kgdcn"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "core"
+        },
+        "labels": [],
+        "name": "kube-proxy-kgdcn",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "3e0d8738-c938-4571-b452-85f97723be48"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Block `privileged: true` using **Pod Security Admission** at `restricted`. Apply **least privilege**:\n- Run unprivileged; set `allowPrivilegeEscalation: false`\n- Drop capabilities; avoid host access\n- Restrict who can deploy privileged pods with **RBAC**\n- Use short-lived, audited exceptions only when strictly required",
+      "references": [
+        "https://hub.prowler.com/check/core_minimize_privileged_containers"
+      ]
+    },
+    "risk_details": "**Privileged containers** can control the host and bypass isolation, enabling:\n- Secret theft (confidentiality)\n- Workload/node tampering (integrity)\n- Service disruption (availability)\nCompromise of one pod can drive lateral movement across the cluster.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Pod kindnet-nvsmq does not contain a privileged container.",
+    "metadata": {
+      "event_code": "core_minimize_privileged_containers",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "PASS",
+    "status_detail": "Pod kindnet-nvsmq does not contain a privileged container.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "container-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/tasks/configure-pod-container/security-context/",
+        "https://kubernetes.io/docs/tasks/configure-pod-container/enforce-standards-admission-controller/",
+        "https://kubernetes.io/docs/setup/best-practices/enforcing-pod-security-standards/",
+        "https://kubernetes.io/docs/concepts/security/pod-security-standards/",
+        "https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/"
+      ],
+      "notes": "Exceptions for privileged containers should be clearly defined and monitored.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.8.2",
+          "A.8.3"
+        ],
+        "PCI-4.0": [
+          "7.2.1.3",
+          "7.2.1.6",
+          "7.2.1.28",
+          "7.2.2.3",
+          "7.2.2.6",
+          "7.2.2.28",
+          "7.2.3.1",
+          "7.2.3.3",
+          "7.2.3.9"
+        ],
+        "CIS-2.0.1": [
+          "5.2.2"
+        ],
+        "CIS-1.11.1": [
+          "5.2.2"
+        ],
+        "CIS-1.8": [
+          "5.2.2"
+        ],
+        "CIS-1.12.0": [
+          "5.2.2"
+        ],
+        "CIS-1.10": [
+          "5.2.2"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "1.3.2"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "core",
+        "name": "Pod does not contain a privileged container",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "core_minimize_privileged_containers"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Pods** are evaluated for regular, init, and ephemeral containers configured with `securityContext.privileged: true`.",
+      "title": "Pod does not contain a privileged container",
+      "types": [],
+      "uid": "prowler-kubernetes-core_minimize_privileged_containers-kind-demo-namespace: kube-system-kindnet-nvsmq"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "core"
+        },
+        "labels": [],
+        "name": "kindnet-nvsmq",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "4bac9bc1-e190-41bd-a393-bcb5a1e2ab5c"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Block `privileged: true` using **Pod Security Admission** at `restricted`. Apply **least privilege**:\n- Run unprivileged; set `allowPrivilegeEscalation: false`\n- Drop capabilities; avoid host access\n- Restrict who can deploy privileged pods with **RBAC**\n- Use short-lived, audited exceptions only when strictly required",
+      "references": [
+        "https://hub.prowler.com/check/core_minimize_privileged_containers"
+      ]
+    },
+    "risk_details": "**Privileged containers** can control the host and bypass isolation, enabling:\n- Secret theft (confidentiality)\n- Workload/node tampering (integrity)\n- Service disruption (availability)\nCompromise of one pod can drive lateral movement across the cluster.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Pod bad-hostpid is using hostPID.",
+    "metadata": {
+      "event_code": "core_minimize_hostPID_containers",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Pod bad-hostpid is using hostPID.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "container-security",
+        "trust-boundaries"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+      ],
+      "notes": "Exceptions for hostPID containers should be clearly defined and monitored.",
+      "compliance": {
+        "PCI-4.0": [
+          "1.4.5.2"
+        ],
+        "CIS-2.0.1": [
+          "5.2.3"
+        ],
+        "CIS-1.11.1": [
+          "5.2.3"
+        ],
+        "CIS-1.8": [
+          "5.2.3"
+        ],
+        "CIS-1.12.0": [
+          "5.2.3"
+        ],
+        "CIS-1.10": [
+          "5.2.3"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "1.3.9"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "core",
+        "name": "Pod does not use the host PID namespace",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "core_minimize_hostPID_containers"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Pods** configured with `hostPID: true` are identified, indicating the container shares the node's **host PID namespace**.",
+      "title": "Pod does not use the host PID namespace",
+      "types": [],
+      "uid": "prowler-kubernetes-core_minimize_hostPID_containers-kind-demo-namespace: nis2demo-bad-hostpid"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "core"
+        },
+        "labels": [],
+        "name": "bad-hostpid",
+        "namespace": "nis2demo",
+        "type": "Pod",
+        "uid": "ecfd725c-1968-4789-b15f-73007062686c"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Disallow `hostPID` for application Pods via **admission policies** aligned to **Pod Security Standards (Baseline/Restricted)**. Allow only for tightly controlled system workloads. Apply **least privilege**, isolate such Pods on dedicated nodes, and favor debug/observability methods that avoid host namespace sharing.",
+      "references": [
+        "https://hub.prowler.com/check/core_minimize_hostPID_containers"
+      ]
+    },
+    "risk_details": "Sharing the **host PID namespace** erodes isolation: containers can list host processes and read `/proc` metadata, enabling **credential exposure**, **privilege escalation**, and **lateral movement**. Limited process interaction can also threaten **integrity** and **availability**.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Pod bad-hostipc is using hostIPC.",
+    "metadata": {
+      "event_code": "core_minimize_hostIPC_containers",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Pod bad-hostipc is using hostIPC.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "container-security",
+        "trust-boundaries"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://support.icompaas.com/support/solutions/articles/62000234627-minimize-the-admission-of-containers-wishing-to-share-the-host-ipc-namespace",
+        "https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+      ],
+      "notes": "Exceptions for hostIPC containers should be clearly defined and monitored.",
+      "compliance": {
+        "CIS-2.0.1": [
+          "5.2.4"
+        ],
+        "CIS-1.11.1": [
+          "5.2.4"
+        ],
+        "CIS-1.8": [
+          "5.2.4"
+        ],
+        "CIS-1.12.0": [
+          "5.2.4"
+        ],
+        "CIS-1.10": [
+          "5.2.4"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "1.3.8"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "core",
+        "name": "Pod does not use the host IPC namespace",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "core_minimize_hostIPC_containers"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes pods** are evaluated for use of the host's IPC namespace via the `hostIPC` setting. Workloads declaring `hostIPC: true` share node IPC resources (shared memory, semaphores, message queues) instead of isolated container IPC.",
+      "title": "Pod does not use the host IPC namespace",
+      "types": [],
+      "uid": "prowler-kubernetes-core_minimize_hostIPC_containers-kind-demo-namespace: nis2demo-bad-hostipc"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "core"
+        },
+        "labels": [],
+        "name": "bad-hostipc",
+        "namespace": "nis2demo",
+        "type": "Pod",
+        "uid": "9855d6cb-0f29-419a-86db-f0a4703940a2"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Disallow `hostIPC` with **Pod Security Admission** enforcing **Pod Security Standards** (Baseline/Restricted) or equivalent policy engines. Apply **least privilege** and defense in depth: keep IPC namespaces isolated, grant tightly scoped exceptions only, and prefer app-level messaging or Services over host IPC.",
+      "references": [
+        "https://hub.prowler.com/check/core_minimize_hostIPC_containers"
+      ]
+    },
+    "risk_details": "Sharing the host IPC namespace erodes isolation, exposing host shared memory and semaphores. A compromised pod could snoop or tamper with IPC objects, leading to data disclosure, integrity violations, privilege escalation, and lateral movement across workloads.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Pod bad-hostnet is using hostNetwork.",
+    "metadata": {
+      "event_code": "core_minimize_hostNetwork_containers",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Pod bad-hostnet is using hostNetwork.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "container-security",
+        "trust-boundaries"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+      ],
+      "notes": "Exceptions for hostNetwork containers should be clearly defined and monitored.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.8.16"
+        ],
+        "PCI-4.0": [
+          "1.2.8.23",
+          "1.2.8.27",
+          "1.3.1.14",
+          "1.3.1.15",
+          "1.3.1.30",
+          "1.3.1.36",
+          "1.3.2.4",
+          "1.3.2.14",
+          "1.3.2.23",
+          "1.3.2.29",
+          "1.3.2.35",
+          "1.3.2.40",
+          "1.4.1.3",
+          "1.4.1.5",
+          "1.4.1.7",
+          "1.4.2.14",
+          "1.4.2.28",
+          "1.4.2.34",
+          "1.4.4.3",
+          "1.4.4.5",
+          "1.4.5.1",
+          "1.5.1.18",
+          "1.5.1.27",
+          "10.2.1.1.34",
+          "10.2.1.2.29",
+          "10.2.1.3.29",
+          "10.2.1.4.29",
+          "10.2.1.5.29",
+          "10.2.1.6.29",
+          "10.2.1.7.29",
+          "10.2.1.29",
+          "10.2.2.29",
+          "10.3.1.29",
+          "10.3.2.26",
+          "10.6.3.39",
+          "2.2.7.5",
+          "3.5.1.3.25",
+          "5.3.4.34",
+          "7.2.2.26",
+          "7.2.5.2",
+          "A1.1.2.14",
+          "A1.1.2.15",
+          "A1.1.3.7",
+          "A1.2.1.34",
+          "A3.4.1.2"
+        ],
+        "CIS-2.0.1": [
+          "5.2.5"
+        ],
+        "CIS-1.11.1": [
+          "5.2.5"
+        ],
+        "CIS-1.8": [
+          "5.2.5"
+        ],
+        "CIS-1.12.0": [
+          "5.2.5"
+        ],
+        "CIS-1.10": [
+          "5.2.5"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "2.1.3"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "core",
+        "name": "Pod does not use hostNetwork",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "core_minimize_hostNetwork_containers"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Pods** configured with `hostNetwork: true` are identified, meaning they share the node's network namespace and use the host's IP stack, interfaces, and ports.",
+      "title": "Pod does not use hostNetwork",
+      "types": [],
+      "uid": "prowler-kubernetes-core_minimize_hostNetwork_containers-kind-demo-namespace: nis2demo-bad-hostnet"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "core"
+        },
+        "labels": [],
+        "name": "bad-hostnet",
+        "namespace": "nis2demo",
+        "type": "Pod",
+        "uid": "cacedc45-5114-4f77-b23f-a454e31d1ab7"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Disallow `hostNetwork` by default. Enforce **least privilege** with admission policies that block it, allowing narrowly scoped exceptions only for trusted system workloads. Prefer standard pod networking with **NetworkPolicies**, and isolate node services for **defense in depth**.",
+      "references": [
+        "https://hub.prowler.com/check/core_minimize_hostNetwork_containers"
+      ]
+    },
+    "risk_details": "Using the **host network namespace** exposes node-local interfaces and traffic to the pod. A compromise can enable packet capture and request spoofing (**C/I**), access to node services (e.g., kubelet), and port binding conflicts, causing outages (**A**) and enabling **lateral movement** across the cluster.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Pod kindnet-nvsmq is using hostNetwork.",
+    "metadata": {
+      "event_code": "core_minimize_hostNetwork_containers",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Pod kindnet-nvsmq is using hostNetwork.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "container-security",
+        "trust-boundaries"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+      ],
+      "notes": "Exceptions for hostNetwork containers should be clearly defined and monitored.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.8.16"
+        ],
+        "PCI-4.0": [
+          "1.2.8.23",
+          "1.2.8.27",
+          "1.3.1.14",
+          "1.3.1.15",
+          "1.3.1.30",
+          "1.3.1.36",
+          "1.3.2.4",
+          "1.3.2.14",
+          "1.3.2.23",
+          "1.3.2.29",
+          "1.3.2.35",
+          "1.3.2.40",
+          "1.4.1.3",
+          "1.4.1.5",
+          "1.4.1.7",
+          "1.4.2.14",
+          "1.4.2.28",
+          "1.4.2.34",
+          "1.4.4.3",
+          "1.4.4.5",
+          "1.4.5.1",
+          "1.5.1.18",
+          "1.5.1.27",
+          "10.2.1.1.34",
+          "10.2.1.2.29",
+          "10.2.1.3.29",
+          "10.2.1.4.29",
+          "10.2.1.5.29",
+          "10.2.1.6.29",
+          "10.2.1.7.29",
+          "10.2.1.29",
+          "10.2.2.29",
+          "10.3.1.29",
+          "10.3.2.26",
+          "10.6.3.39",
+          "2.2.7.5",
+          "3.5.1.3.25",
+          "5.3.4.34",
+          "7.2.2.26",
+          "7.2.5.2",
+          "A1.1.2.14",
+          "A1.1.2.15",
+          "A1.1.3.7",
+          "A1.2.1.34",
+          "A3.4.1.2"
+        ],
+        "CIS-2.0.1": [
+          "5.2.5"
+        ],
+        "CIS-1.11.1": [
+          "5.2.5"
+        ],
+        "CIS-1.8": [
+          "5.2.5"
+        ],
+        "CIS-1.12.0": [
+          "5.2.5"
+        ],
+        "CIS-1.10": [
+          "5.2.5"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "2.1.3"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "core",
+        "name": "Pod does not use hostNetwork",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "core_minimize_hostNetwork_containers"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Pods** configured with `hostNetwork: true` are identified, meaning they share the node's network namespace and use the host's IP stack, interfaces, and ports.",
+      "title": "Pod does not use hostNetwork",
+      "types": [],
+      "uid": "prowler-kubernetes-core_minimize_hostNetwork_containers-kind-demo-namespace: kube-system-kindnet-nvsmq"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "core"
+        },
+        "labels": [],
+        "name": "kindnet-nvsmq",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "4bac9bc1-e190-41bd-a393-bcb5a1e2ab5c"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Disallow `hostNetwork` by default. Enforce **least privilege** with admission policies that block it, allowing narrowly scoped exceptions only for trusted system workloads. Prefer standard pod networking with **NetworkPolicies**, and isolate node services for **defense in depth**.",
+      "references": [
+        "https://hub.prowler.com/check/core_minimize_hostNetwork_containers"
+      ]
+    },
+    "risk_details": "Using the **host network namespace** exposes node-local interfaces and traffic to the pod. A compromise can enable packet capture and request spoofing (**C/I**), access to node services (e.g., kubelet), and port binding conflicts, causing outages (**A**) and enabling **lateral movement** across the cluster.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Pod bad-root is running as root user in container c.",
+    "metadata": {
+      "event_code": "core_minimize_root_containers_admission",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Pod bad-root is running as root user in container c.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "container-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/tutorials/security/cluster-level-pss/",
+        "https://kubernetes.io/docs/concepts/security/pod-security-standards/",
+        "https://kyverno.io/policies/pod-security/restricted/require-run-as-nonroot/require-run-as-nonroot/",
+        "https://support.icompaas.com/support/solutions/articles/62000234712-minimize-the-admission-of-root-containers"
+      ],
+      "notes": "Exceptions for root containers should be clearly defined and monitored.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.8.2"
+        ],
+        "PCI-4.0": [
+          "10.3.2.9",
+          "10.6.3.16",
+          "3.5.1.3.9",
+          "7.2.1.7",
+          "7.2.2.7",
+          "7.2.2.17",
+          "7.2.5.4",
+          "7.2.6.1",
+          "7.3.1.4",
+          "7.3.2.4",
+          "7.3.3.4",
+          "8.2.1.4",
+          "8.2.5.4",
+          "8.2.7.4",
+          "8.2.8.6",
+          "8.3.11.4",
+          "8.3.4.4",
+          "A1.1.2.5",
+          "A3.4.1.5"
+        ],
+        "CIS-2.0.1": [
+          "5.2.7"
+        ],
+        "CIS-1.11.1": [
+          "5.2.7"
+        ],
+        "CIS-1.8": [
+          "5.2.7"
+        ],
+        "CIS-1.12.0": [
+          "5.2.7"
+        ],
+        "CIS-1.10": [
+          "5.2.7"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "1.3.3"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "core",
+        "name": "Pod does not run any container as the root user",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "core_minimize_root_containers_admission"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Pods** are assessed for containers configured to run as the **root user**. The evaluation identifies containers whose security context sets `runAsUser: 0`.",
+      "title": "Pod does not run any container as the root user",
+      "types": [],
+      "uid": "prowler-kubernetes-core_minimize_root_containers_admission-kind-demo-namespace: nis2demo-bad-root"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "core"
+        },
+        "labels": [],
+        "name": "bad-root",
+        "namespace": "nis2demo",
+        "type": "Pod",
+        "uid": "2a6d30bb-fe1a-4983-9b8b-7d6fe2c0dd37"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Require non-root execution and enforce **least privilege**:\n- Set `runAsNonRoot: true` and a non-zero `runAsUser`\n- Use images with a defined non-root UID\n- Apply **Pod Security Standards - restricted** or policies to block UID `0`\n- Use `allowPrivilegeEscalation: false` and drop unnecessary capabilities",
+      "references": [
+        "https://hub.prowler.com/check/core_minimize_root_containers_admission"
+      ]
+    },
+    "risk_details": "Containers running as **root (UID 0)** enable **privilege escalation** and **container breakout**. Attackers can modify workloads (**integrity**), read sensitive data on mounted volumes (**confidentiality**), and disrupt nodes or services via kernel/daemon abuse (**availability**).",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Pod bad-privesc allows privilege escalation in container c.",
+    "metadata": {
+      "event_code": "core_minimize_allowPrivilegeEscalation_containers",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Pod bad-privesc allows privilege escalation in container c.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "container-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/tasks/configure-pod-container/security-context/",
+        "https://support.icompaas.com/support/solutions/articles/62000234205-minimize-the-admission-of-containers-with-allowprivilegeescalation",
+        "https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+      ],
+      "notes": "Exceptions for containers requiring allowPrivilegeEscalation should be clearly defined and monitored.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.5.15",
+          "A.8.14"
+        ],
+        "CIS-2.0.1": [
+          "5.2.6"
+        ],
+        "CIS-1.11.1": [
+          "5.2.6"
+        ],
+        "CIS-1.8": [
+          "5.2.6"
+        ],
+        "CIS-1.12.0": [
+          "5.2.6"
+        ],
+        "CIS-1.10": [
+          "5.2.6"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "1.3.7"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "core",
+        "name": "Pod does not allow privilege escalation in any container",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "core_minimize_allowPrivilegeEscalation_containers"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Pods** are evaluated for containers that enable `allowPrivilegeEscalation`. The finding highlights pods where any container permits processes to gain extra privileges; pods whose containers set `allowPrivilegeEscalation: false` are noted as not allowing escalation.",
+      "title": "Pod does not allow privilege escalation in any container",
+      "types": [],
+      "uid": "prowler-kubernetes-core_minimize_allowPrivilegeEscalation_containers-kind-demo-namespace: nis2demo-bad-privesc"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "core"
+        },
+        "labels": [],
+        "name": "bad-privesc",
+        "namespace": "nis2demo",
+        "type": "Pod",
+        "uid": "43ffed2f-5fe4-416b-92e8-d9eef43ab55c"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Set `allowPrivilegeEscalation: false` by default and apply **least privilege**:\n- run as non-root; drop caps (`drop: [\"ALL\"]`)\n- avoid `privileged`; use `readOnlyRootFilesystem`\n- enforce via namespace admission policies (e.g., PSA/OPA) and monitor exceptions",
+      "references": [
+        "https://hub.prowler.com/check/core_minimize_allowPrivilegeEscalation_containers"
+      ]
+    },
+    "risk_details": "Allowing privilege escalation lets processes acquire elevated rights, undermining container isolation. Attackers can abuse setuid paths and capabilities to tamper with workloads (**integrity**), read sensitive data (**confidentiality**), pivot within the cluster, or disrupt services (**availability**).",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Pod bad-hostpath uses hostPath volume h.",
+    "metadata": {
+      "event_code": "core_minimize_hostpath_volume_mounts",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Pod bad-hostpath uses hostPath volume h.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "container-security",
+        "trust-boundaries"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/concepts/storage/volumes/#hostpath",
+        "https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+      ],
+      "notes": "Exceptions for hostPath volumes should be narrowly scoped, read-only where possible, and monitored.",
+      "compliance": {},
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "core",
+        "name": "Pod does not use hostPath volumes",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "core_minimize_hostpath_volume_mounts"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Pods** are evaluated for volumes of type `hostPath`, which mount paths from the node filesystem into a pod.",
+      "title": "Pod does not use hostPath volumes",
+      "types": [],
+      "uid": "prowler-kubernetes-core_minimize_hostpath_volume_mounts-kind-demo-namespace: nis2demo-bad-hostpath"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "core"
+        },
+        "labels": [],
+        "name": "bad-hostpath",
+        "namespace": "nis2demo",
+        "type": "Pod",
+        "uid": "a70884fd-f1aa-46f2-8114-f365930e0df0"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Disallow `hostPath` volumes by default with Pod Security Admission or policy-as-code controls. Permit narrow, read-only exceptions only for trusted system workloads, and prefer Kubernetes-native volume types that do not expose the node filesystem.",
+      "references": [
+        "https://hub.prowler.com/check/core_minimize_hostpath_volume_mounts"
+      ]
+    },
+    "risk_details": "`hostPath` volumes weaken the container boundary by exposing node files to workloads. A compromised container can read sensitive host data, tamper with node files, or use writable mounts to escalate privileges and affect node availability.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Pod kube-proxy-kgdcn uses hostPath volume xtables-lock.",
+    "metadata": {
+      "event_code": "core_minimize_hostpath_volume_mounts",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Pod kube-proxy-kgdcn uses hostPath volume xtables-lock.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "container-security",
+        "trust-boundaries"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/concepts/storage/volumes/#hostpath",
+        "https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+      ],
+      "notes": "Exceptions for hostPath volumes should be narrowly scoped, read-only where possible, and monitored.",
+      "compliance": {},
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "core",
+        "name": "Pod does not use hostPath volumes",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "core_minimize_hostpath_volume_mounts"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Pods** are evaluated for volumes of type `hostPath`, which mount paths from the node filesystem into a pod.",
+      "title": "Pod does not use hostPath volumes",
+      "types": [],
+      "uid": "prowler-kubernetes-core_minimize_hostpath_volume_mounts-kind-demo-namespace: kube-system-kube-proxy-kgdcn"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "core"
+        },
+        "labels": [],
+        "name": "kube-proxy-kgdcn",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "3e0d8738-c938-4571-b452-85f97723be48"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Disallow `hostPath` volumes by default with Pod Security Admission or policy-as-code controls. Permit narrow, read-only exceptions only for trusted system workloads, and prefer Kubernetes-native volume types that do not expose the node filesystem.",
+      "references": [
+        "https://hub.prowler.com/check/core_minimize_hostpath_volume_mounts"
+      ]
+    },
+    "risk_details": "`hostPath` volumes weaken the container boundary by exposing node files to workloads. A compromised container can read sensitive host data, tamper with node files, or use writable mounts to escalate privileges and affect node availability.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Pod bad-privileged container c does not have readOnlyRootFilesystem set to true.",
+    "metadata": {
+      "event_code": "core_readonly_root_filesystem_enabled",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 3,
+    "severity": "Medium",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Pod bad-privileged container c does not have readOnlyRootFilesystem set to true.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "container-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/tasks/configure-pod-container/security-context/",
+        "https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+      ],
+      "notes": "Regular, init, and ephemeral containers are evaluated. Workloads that genuinely require root filesystem writes should mount writable volumes at specific paths and may be exempted via Prowler's mutelist.",
+      "compliance": {},
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "core",
+        "name": "Containers should run with a read-only root filesystem",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "core_readonly_root_filesystem_enabled"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Pods** are evaluated to ensure every container sets `readOnlyRootFilesystem: true` in its `securityContext`. A writable root filesystem lets an attacker who gains code execution modify binaries, drop tools, or persist malicious files inside the container.",
+      "title": "Containers should run with a read-only root filesystem",
+      "types": [],
+      "uid": "prowler-kubernetes-core_readonly_root_filesystem_enabled-kind-demo-namespace: nis2demo-bad-privileged"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "core"
+        },
+        "labels": [],
+        "name": "bad-privileged",
+        "namespace": "nis2demo",
+        "type": "Pod",
+        "uid": "6bcadebd-79b7-4596-9dfe-4bdfe88dec4e"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Set `readOnlyRootFilesystem: true` for every regular, init, and ephemeral container that is part of a Pod spec. Mount writable `emptyDir` volumes only at the specific paths that genuinely need write access (e.g., `/tmp`, `/var/cache`). Enforce this at admission time with custom admission policies such as ValidatingAdmissionPolicy or OPA/Gatekeeper.",
+      "references": [
+        "https://hub.prowler.com/check/core_readonly_root_filesystem_enabled"
+      ]
+    },
+    "risk_details": "Without a read-only root filesystem an attacker with code execution inside a container can tamper with binaries or libraries (**integrity**), write credential files or exfiltration tools (**confidentiality**), and persist across process restarts (**availability**).",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Pod coredns-674b8bbfcf-ks962 has read-only root filesystem enabled for all containers.",
+    "metadata": {
+      "event_code": "core_readonly_root_filesystem_enabled",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 3,
+    "severity": "Medium",
+    "status": "New",
+    "status_code": "PASS",
+    "status_detail": "Pod coredns-674b8bbfcf-ks962 has read-only root filesystem enabled for all containers.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "container-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/tasks/configure-pod-container/security-context/",
+        "https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+      ],
+      "notes": "Regular, init, and ephemeral containers are evaluated. Workloads that genuinely require root filesystem writes should mount writable volumes at specific paths and may be exempted via Prowler's mutelist.",
+      "compliance": {},
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "core",
+        "name": "Containers should run with a read-only root filesystem",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "core_readonly_root_filesystem_enabled"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Pods** are evaluated to ensure every container sets `readOnlyRootFilesystem: true` in its `securityContext`. A writable root filesystem lets an attacker who gains code execution modify binaries, drop tools, or persist malicious files inside the container.",
+      "title": "Containers should run with a read-only root filesystem",
+      "types": [],
+      "uid": "prowler-kubernetes-core_readonly_root_filesystem_enabled-kind-demo-namespace: kube-system-coredns-674b8bbfcf-ks962"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "core"
+        },
+        "labels": [],
+        "name": "coredns-674b8bbfcf-ks962",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "ae79cf71-6b3d-47ac-9f39-c2be8822f408"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Set `readOnlyRootFilesystem: true` for every regular, init, and ephemeral container that is part of a Pod spec. Mount writable `emptyDir` volumes only at the specific paths that genuinely need write access (e.g., `/tmp`, `/var/cache`). Enforce this at admission time with custom admission policies such as ValidatingAdmissionPolicy or OPA/Gatekeeper.",
+      "references": [
+        "https://hub.prowler.com/check/core_readonly_root_filesystem_enabled"
+      ]
+    },
+    "risk_details": "Without a read-only root filesystem an attacker with code execution inside a container can tamper with binaries or libraries (**integrity**), write credential files or exfiltration tools (**confidentiality**), and persist across process restarts (**availability**).",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Pod bad-privileged does not have docker/default seccomp profile enabled at both pod and container levels.",
+    "metadata": {
+      "event_code": "core_seccomp_profile_docker_default",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Pod bad-privileged does not have docker/default seccomp profile enabled at both pod and container levels.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "container-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/tutorials/clusters/seccomp/",
+        "https://docs.docker.com/engine/security/seccomp/"
+      ],
+      "notes": "The docker/default seccomp profile may need to be adjusted if it's too restrictive for certain applications.",
+      "compliance": {
+        "CIS-2.0.1": [
+          "5.6.2"
+        ],
+        "CIS-1.11.1": [
+          "5.6.2"
+        ],
+        "CIS-1.8": [
+          "5.7.2"
+        ],
+        "CIS-1.12.0": [
+          "5.6.2"
+        ],
+        "CIS-1.10": [
+          "5.7.2"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "1.3.11"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "core",
+        "name": "Pod has the docker/default (RuntimeDefault) seccomp profile at pod level or for all containers",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "core_seccomp_profile_docker_default"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Pods** and their containers specify the runtime default seccomp profile using `seccompProfile.type: RuntimeDefault` in the security context.\n\nThe evaluation looks for this setting at the Pod level or per container.",
+      "title": "Pod has the docker/default (RuntimeDefault) seccomp profile at pod level or for all containers",
+      "types": [],
+      "uid": "prowler-kubernetes-core_seccomp_profile_docker_default-kind-demo-namespace: nis2demo-bad-privileged"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "core"
+        },
+        "labels": [],
+        "name": "bad-privileged",
+        "namespace": "nis2demo",
+        "type": "Pod",
+        "uid": "6bcadebd-79b7-4596-9dfe-4bdfe88dec4e"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Enforce **least privilege** for syscalls:\n- Set `seccompProfile.type: RuntimeDefault` on Pods/containers\n- Use tailored profiles for sensitive workloads\n- Avoid privileged or unconfined containers; drop unused capabilities\n- Combine with AppArmor/SELinux and policy guardrails to enforce and audit",
+      "references": [
+        "https://hub.prowler.com/check/core_seccomp_profile_docker_default"
+      ]
+    },
+    "risk_details": "Without **seccomp RuntimeDefault**, containers may run unconfined and invoke risky syscalls, expanding the kernel attack surface.\n- Container escape, privilege escalation (integrity)\n- Data access or exfiltration (confidentiality)\n- Node or workload disruption (availability)",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Pod coredns-674b8bbfcf-ks962 has added capabilities in container coredns.",
+    "metadata": {
+      "event_code": "core_minimize_containers_added_capabilities",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Pod coredns-674b8bbfcf-ks962 has added capabilities in container coredns.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "container-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/concepts/security/pod-security-standards/"
+      ],
+      "notes": "Exceptions for adding capabilities should be explicitly defined and monitored.",
+      "compliance": {
+        "CIS-1.11.1": [
+          "5.2.9"
+        ],
+        "CIS-1.8": [
+          "5.2.9"
+        ],
+        "CIS-1.10": [
+          "5.2.9"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "1.3.5"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "core",
+        "name": "Pod has no containers with added capabilities",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "core_minimize_containers_added_capabilities"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "Kubernetes Pods and containers are evaluated for **added Linux capabilities** via `capabilities.add` in their security context; presence of added entries indicates elevated privileges beyond defaults.",
+      "title": "Pod has no containers with added capabilities",
+      "types": [],
+      "uid": "prowler-kubernetes-core_minimize_containers_added_capabilities-kind-demo-namespace: kube-system-coredns-674b8bbfcf-ks962"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "core"
+        },
+        "labels": [],
+        "name": "coredns-674b8bbfcf-ks962",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "ae79cf71-6b3d-47ac-9f39-c2be8822f408"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Apply **least privilege**: require containers to `drop: ALL` and avoid `capabilities.add` except when strictly justified (e.g., `NET_BIND_SERVICE`). Enforce with **admission policies** and separation of duties. Combine with **seccomp/AppArmor** and non-root execution for **defense in depth**.",
+      "references": [
+        "https://hub.prowler.com/check/core_minimize_containers_added_capabilities"
+      ]
+    },
+    "risk_details": "Extra capabilities expand the container's kernel-level permissions, enabling actions like raw socket use, file ownership changes, and mount operations. Compromise could enable node access, lateral movement, or tampering with workloads, impacting **confidentiality**, **integrity**, and **availability**.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Pod bad-privileged container c does not have a CPU limit configured.",
+    "metadata": {
+      "event_code": "core_cpu_limits_set",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 3,
+    "severity": "Medium",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Pod bad-privileged container c does not have a CPU limit configured.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "resilience"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+      ],
+      "notes": "Limits should be tuned per workload and monitored.",
+      "compliance": {},
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "core",
+        "name": "Pod containers have CPU limits set",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "core_cpu_limits_set"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "Ensure CPU limits are set for containers to prevent noisy neighbors and resource exhaustion.",
+      "title": "Pod containers have CPU limits set",
+      "types": [],
+      "uid": "prowler-kubernetes-core_cpu_limits_set-kind-demo-namespace: nis2demo-bad-privileged"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "core"
+        },
+        "labels": [],
+        "name": "bad-privileged",
+        "namespace": "nis2demo",
+        "type": "KubernetesPod",
+        "uid": "6bcadebd-79b7-4596-9dfe-4bdfe88dec4e"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Define CPU limits to bound a container's CPU usage and protect node stability.",
+      "references": [
+        "https://hub.prowler.com/check/core_cpu_limits_set"
+      ]
+    },
+    "risk_details": "Missing CPU limits can allow containers to consume unbounded CPU leading to performance issues.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Pod bad-privileged has fixed image tags on all containers.",
+    "metadata": {
+      "event_code": "core_image_tag_fixed",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 3,
+    "severity": "Medium",
+    "status": "New",
+    "status_code": "PASS",
+    "status_detail": "Pod bad-privileged has fixed image tags on all containers.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "container-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/concepts/containers/images/",
+        "https://kubernetes.io/docs/concepts/configuration/overview/#container-images"
+      ],
+      "notes": "Using fixed image tags ensures reproducible deployments and reduces supply-chain attack surface.",
+      "compliance": {},
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "core",
+        "name": "Container images use fixed tags",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "core_image_tag_fixed"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Pods** are evaluated for containers using images without a **fixed version tag**, such as `latest` or no tag at all, which results in unpredictable image versions being pulled.",
+      "title": "Container images use fixed tags",
+      "types": [],
+      "uid": "prowler-kubernetes-core_image_tag_fixed-kind-demo-namespace: nis2demo-bad-privileged"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "core"
+        },
+        "labels": [],
+        "name": "bad-privileged",
+        "namespace": "nis2demo",
+        "type": "Pod",
+        "uid": "6bcadebd-79b7-4596-9dfe-4bdfe88dec4e"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Pin all container images to a **specific version tag** or **digest** (`@sha256:...`) to ensure reproducible, auditable deployments.\n\n- Avoid `latest` and untagged images in production\n- Use **image digests** for maximum immutability\n- Enforce tag policies with **admission controllers** (e.g., OPA Gatekeeper, Kyverno)\n- Integrate image scanning into CI/CD pipelines for **defense in depth**",
+      "references": [
+        "https://hub.prowler.com/check/core_image_tag_fixed"
+      ]
+    },
+    "risk_details": "Using **`latest` or untagged images** breaks reproducibility and introduces risk:\n- Deployments may pull different image versions across nodes (integrity)\n- Rollbacks become unreliable when the exact image is unknown\n- Supply-chain attacks can inject malicious code via mutable tags\nCompromised or unexpected images can lead to **data breaches**, **lateral movement**, and **service disruption**.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Audit log path is not set in pod kube-apiserver-demo-control-plane.",
+    "metadata": {
+      "event_code": "apiserver_audit_log_path_set",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Audit log path is not set in pod kube-apiserver-demo-control-plane.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "logging",
+        "forensics-ready"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/",
+        "https://kubernetes.io/docs/concepts/cluster-administration/audit/"
+      ],
+      "notes": "Audit logs are not enabled by default in Kubernetes. Configuring them is essential for security monitoring and forensic analysis.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.5.1",
+          "A.8.10",
+          "A.8.12",
+          "A.8.13",
+          "A.8.15",
+          "A.8.20",
+          "A.8.21",
+          "A.8.22"
+        ],
+        "PCI-4.0": [
+          "10.2.1.1.7",
+          "10.2.1.1.13",
+          "10.2.1.1.14",
+          "10.2.1.1.17",
+          "10.2.1.1.20",
+          "10.2.1.1.21",
+          "10.2.1.1.23",
+          "10.2.1.1.27",
+          "10.2.1.1.33",
+          "10.2.1.2.4",
+          "10.2.1.2.7",
+          "10.2.1.2.17",
+          "10.2.1.2.18",
+          "10.2.1.2.20",
+          "10.2.1.2.24",
+          "10.2.1.3.7",
+          "10.2.1.3.11",
+          "10.2.1.3.17",
+          "10.2.1.3.18",
+          "10.2.1.3.23",
+          "10.2.1.3.24",
+          "10.2.1.4.4",
+          "10.2.1.4.7",
+          "10.2.1.4.11",
+          "10.2.1.4.14",
+          "10.2.1.4.18",
+          "10.2.1.4.20",
+          "10.2.1.4.22",
+          "10.2.1.5.4",
+          "10.2.1.5.7",
+          "10.2.1.5.11",
+          "10.2.1.5.12",
+          "10.2.1.5.17",
+          "10.2.1.5.18",
+          "10.2.1.5.20",
+          "10.2.1.5.22",
+          "10.2.1.5.24",
+          "10.2.1.6.4",
+          "10.2.1.6.6",
+          "10.2.1.6.11",
+          "10.2.1.6.12",
+          "10.2.1.6.14",
+          "10.2.1.6.17",
+          "10.2.1.6.18",
+          "10.2.1.6.20",
+          "10.2.1.6.22",
+          "10.2.1.6.24",
+          "10.2.1.7.7",
+          "10.2.1.7.14",
+          "10.2.1.7.15",
+          "10.2.1.7.17",
+          "10.2.1.7.18",
+          "10.2.1.7.20",
+          "10.2.1.7.24",
+          "10.2.1.4",
+          "10.2.1.7",
+          "10.2.1.14",
+          "10.2.1.17",
+          "10.2.1.18",
+          "10.2.1.20",
+          "10.2.2.4",
+          "10.2.2.7",
+          "10.2.2.11",
+          "10.2.2.12",
+          "10.2.2.14",
+          "10.2.2.18",
+          "10.2.2.20",
+          "10.2.2.23",
+          "10.2.2.24",
+          "10.3.1.4",
+          "10.3.1.7",
+          "10.3.1.14",
+          "10.3.1.17",
+          "10.3.1.18",
+          "10.3.1.20",
+          "10.3.1.22",
+          "10.3.1.23",
+          "10.3.1.24",
+          "10.3.2.2",
+          "10.3.2.5",
+          "10.3.3.4",
+          "10.3.3.7",
+          "10.3.4.3",
+          "10.3.4.6",
+          "10.4.1.1.3",
+          "10.4.1.6",
+          "10.5.1.3",
+          "10.5.1.10",
+          "10.6.3.4",
+          "10.6.3.7",
+          "10.6.3.13",
+          "10.6.3.14",
+          "10.6.3.22",
+          "10.6.3.23",
+          "10.6.3.25",
+          "10.6.3.29",
+          "10.6.3.30",
+          "11.5.2.4",
+          "11.6.1.4",
+          "12.10.5.4",
+          "5.3.4.4",
+          "5.3.4.7",
+          "5.3.4.8",
+          "5.3.4.13",
+          "5.3.4.14",
+          "5.3.4.16",
+          "5.3.4.20",
+          "5.3.4.21",
+          "5.3.4.23",
+          "5.3.4.25",
+          "5.3.4.29",
+          "A1.2.1.4",
+          "A1.2.1.7",
+          "A1.2.1.8",
+          "A1.2.1.12",
+          "A1.2.1.15",
+          "A1.2.1.16",
+          "A1.2.1.18",
+          "A1.2.1.22",
+          "A1.2.1.24",
+          "A1.2.1.26",
+          "A1.2.1.28",
+          "A3.3.1.6"
+        ],
+        "CIS-2.0.1": [
+          "1.2.16"
+        ],
+        "CIS-1.11.1": [
+          "1.2.16"
+        ],
+        "CIS-1.8": [
+          "1.2.17"
+        ],
+        "CIS-1.12.0": [
+          "1.2.16"
+        ],
+        "CIS-1.10": [
+          "1.2.16"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "3.1.1"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "apiserver",
+        "name": "API server pod has --audit-log-path set",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "apiserver_audit_log_path_set"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes API server** uses an **audit log path** configured via `--audit-log-path` on its containers to persist API request events",
+      "title": "API server pod has --audit-log-path set",
+      "types": [],
+      "uid": "prowler-kubernetes-apiserver_audit_log_path_set-kind-demo-namespace: kube-system-kube-apiserver-demo-control-plane"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "apiserver"
+        },
+        "labels": [],
+        "name": "kube-apiserver-demo-control-plane",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "e34ea33c-1372-439c-bf1f-3ecf841cb1d5"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Enable and harden **audit logging** by setting `--audit-log-path`. *If centralizing*, use a webhook backend. Define a focused audit policy, enforce **least privilege** to logs, rotate/retain them, forward to centralized monitoring, and regularly review events for **defense in depth**.",
+      "references": [
+        "https://hub.prowler.com/check/apiserver_audit_log_path_set"
+      ]
+    },
+    "risk_details": "Without a configured audit log path, API requests may not be recorded, weakening **accountability**. Gaps in logs hinder detection of unauthorized changes (**integrity**) and data access (**confidentiality**), and impede **forensics** and incident response.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Audit log max age is not set to 30 or as appropriate in pod kube-apiserver-demo-control-plane.",
+    "metadata": {
+      "event_code": "apiserver_audit_log_maxage_set",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 3,
+    "severity": "Medium",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Audit log max age is not set to 30 or as appropriate in pod kube-apiserver-demo-control-plane.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "logging",
+        "forensics-ready"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://rke.docs.rancher.com/config-options/audit-log",
+        "https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/",
+        "https://kubernetes.io/docs/concepts/cluster-administration/audit/",
+        "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/"
+      ],
+      "notes": "Ensure the audit log retention period is set appropriately to balance between storage constraints and the need for historical data.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.8.10",
+          "A.8.13",
+          "A.8.15"
+        ],
+        "PCI-4.0": [
+          "10.5.1.4",
+          "3.3.1.3.3",
+          "3.3.3.3",
+          "5.3.4.11"
+        ],
+        "CIS-2.0.1": [
+          "1.2.17"
+        ],
+        "CIS-1.11.1": [
+          "1.2.17"
+        ],
+        "CIS-1.8": [
+          "1.2.18"
+        ],
+        "CIS-1.12.0": [
+          "1.2.17"
+        ],
+        "CIS-1.10": [
+          "1.2.17"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "3.2.1"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "apiserver",
+        "name": "API server pod has --audit-log-maxage set to 30 (or the cluster-configured value)",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "apiserver_audit_log_maxage_set"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes API server** audit logging retention is governed by `--audit-log-maxage`. This evaluates whether the configured value (e.g., `30` days) is set consistently across API server containers to retain audit events for a sufficient period.",
+      "title": "API server pod has --audit-log-maxage set to 30 (or the cluster-configured value)",
+      "types": [],
+      "uid": "prowler-kubernetes-apiserver_audit_log_maxage_set-kind-demo-namespace: kube-system-kube-apiserver-demo-control-plane"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "apiserver"
+        },
+        "labels": [],
+        "name": "kube-apiserver-demo-control-plane",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "e34ea33c-1372-439c-bf1f-3ecf841cb1d5"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Set `--audit-log-maxage` to at least `30` days (or your policy) to support **forensics**. Align rotation with `--audit-log-maxbackup` and `--audit-log-maxsize`. Forward logs to a tamper-resistant central store, enforce **least privilege** on access, and periodically validate retention coverage.",
+      "references": [
+        "https://hub.prowler.com/check/apiserver_audit_log_maxage_set"
+      ]
+    },
+    "risk_details": "**Short audit retention** limits visibility into historical API actions. Credential abuse, privilege escalation, or cluster tampering may evade detection, and investigations lack evidence for timeline reconstruction-degrading data **integrity** and confidentiality through undetected unauthorized changes and exfiltration.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Audit log max backup is not set to 10 or as appropriate in pod kube-apiserver-demo-control-plane.",
+    "metadata": {
+      "event_code": "apiserver_audit_log_maxbackup_set",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 3,
+    "severity": "Medium",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Audit log max backup is not set to 10 or as appropriate in pod kube-apiserver-demo-control-plane.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "logging"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/concepts/cluster-administration/audit/",
+        "https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/",
+        "https://docs.kics.io/2.0.0/queries/kubernetes-queries/768aab52-2504-4a2f-a3e3-329d5a679848/"
+      ],
+      "notes": "Ensure the audit log backup retention period is set appropriately to balance between storage constraints and the need for historical data.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.8.10",
+          "A.8.13",
+          "A.8.15"
+        ],
+        "CIS-2.0.1": [
+          "1.2.18"
+        ],
+        "CIS-1.11.1": [
+          "1.2.18"
+        ],
+        "CIS-1.8": [
+          "1.2.19"
+        ],
+        "CIS-1.12.0": [
+          "1.2.18"
+        ],
+        "CIS-1.10": [
+          "1.2.18"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "3.2.2"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "apiserver",
+        "name": "API server pod has --audit-log-maxbackup set to 10 or the configured value",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "apiserver_audit_log_maxbackup_set"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes API server audit logging** uses `--audit-log-maxbackup` to set how many rotated audit log files are kept. This evaluates whether that value is explicitly configured as `10` or an approved organizational setting across API server containers.",
+      "title": "API server pod has --audit-log-maxbackup set to 10 or the configured value",
+      "types": [],
+      "uid": "prowler-kubernetes-apiserver_audit_log_maxbackup_set-kind-demo-namespace: kube-system-kube-apiserver-demo-control-plane"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "apiserver"
+        },
+        "labels": [],
+        "name": "kube-apiserver-demo-control-plane",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "e34ea33c-1372-439c-bf1f-3ecf841cb1d5"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Establish explicit **audit log retention**. Set `--audit-log-maxbackup` to `10` or higher based on data sensitivity, and align with `--audit-log-maxsize` and `--audit-log-maxage`. Forward logs to centralized, immutable storage, restrict access, and monitor rotation. Apply **defense in depth** and **least privilege** to audit systems.",
+      "references": [
+        "https://hub.prowler.com/check/apiserver_audit_log_maxbackup_set"
+      ]
+    },
+    "risk_details": "Insufficient **audit log retention** reduces **accountability** and hampers **forensics**. Limited backups cause older events to be overwritten, letting attackers hide activity until rotation. This undermines the **confidentiality**, **integrity**, and **availability** of evidence needed for incident response.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Audit log max size is not set to 100 MB or as appropriate in pod kube-apiserver-demo-control-plane.",
+    "metadata": {
+      "event_code": "apiserver_audit_log_maxsize_set",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 3,
+    "severity": "Medium",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Audit log max size is not set to 100 MB or as appropriate in pod kube-apiserver-demo-control-plane.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "logging"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/concepts/cluster-administration/audit/",
+        "https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/",
+        "https://docs.rke2.io/security/cis_self_assessment124",
+        "https://kubernetes.io/docs/tasks/debug/debug-cluster/audit/"
+      ],
+      "notes": "Adjust the audit log file size limit based on your organization's storage capabilities and logging requirements.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.8.10",
+          "A.8.13",
+          "A.8.15"
+        ],
+        "CIS-2.0.1": [
+          "1.2.19"
+        ],
+        "CIS-1.11.1": [
+          "1.2.19"
+        ],
+        "CIS-1.8": [
+          "1.2.20"
+        ],
+        "CIS-1.12.0": [
+          "1.2.19"
+        ],
+        "CIS-1.10": [
+          "1.2.19"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "3.2.3"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "apiserver",
+        "name": "API server pod has --audit-log-maxsize set to 100 MB or the configured value",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "apiserver_audit_log_maxsize_set"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes API server** uses `--audit-log-maxsize` to cap audit log files. The check expects `100 MB` or a policy-approved value, indicating rotation occurs when a log reaches that size.",
+      "title": "API server pod has --audit-log-maxsize set to 100 MB or the configured value",
+      "types": [],
+      "uid": "prowler-kubernetes-apiserver_audit_log_maxsize_set-kind-demo-namespace: kube-system-kube-apiserver-demo-control-plane"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "apiserver"
+        },
+        "labels": [],
+        "name": "kube-apiserver-demo-control-plane",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "e34ea33c-1372-439c-bf1f-3ecf841cb1d5"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Set `--audit-log-maxsize` to `100 MB` or your approved baseline to ensure predictable rotation.\n\nPair with sensible retention (`--audit-log-maxage`, `--audit-log-maxbackup`), forward to a central store, and monitor capacity. This enforces **defense in depth** and preserves reliable auditability.",
+      "references": [
+        "https://hub.prowler.com/check/apiserver_audit_log_maxsize_set"
+      ]
+    },
+    "risk_details": "Absent a proper cap, audit logs can grow unchecked, exhausting disk and degrading API server **availability**. Oversized or unbounded logs impede **forensics** and may overwrite recent events during rotation, undermining **integrity** and accountability of audit evidence.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Encryption provider config is not set in pod kube-apiserver-demo-control-plane.",
+    "metadata": {
+      "event_code": "apiserver_encryption_provider_config_set",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Encryption provider config is not set in pod kube-apiserver-demo-control-plane.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "encryption",
+        "cluster-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/#determining-whether-encryption-at-rest-is-already-enabled"
+      ],
+      "notes": "Ensure that the EncryptionConfig file is correctly configured and securely stored.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.5.1",
+          "A.5.2",
+          "A.8.1",
+          "A.8.11",
+          "A.8.12",
+          "A.8.20",
+          "A.8.21",
+          "A.8.22"
+        ],
+        "PCI-4.0": [
+          "10.3.2.3",
+          "10.3.2.4",
+          "10.3.3.6",
+          "10.3.4.5",
+          "3.5.1.5",
+          "3.5.1.19",
+          "3.5.1.21",
+          "3.5.1.24",
+          "3.5.1.35",
+          "8.3.2.3",
+          "8.3.2.9",
+          "8.3.2.23",
+          "8.3.2.25",
+          "8.3.2.46",
+          "A1.2.1.11"
+        ],
+        "CIS-2.0.1": [
+          "1.2.27"
+        ],
+        "CIS-1.11.1": [
+          "1.2.27"
+        ],
+        "CIS-1.8": [
+          "1.2.28"
+        ],
+        "CIS-1.12.0": [
+          "1.2.27"
+        ],
+        "CIS-1.10": [
+          "1.2.27"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "4.2.1"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "apiserver",
+        "name": "API server pod has the --encryption-provider-config argument set",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "apiserver_encryption_provider_config_set"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes API server** pods include `--encryption-provider-config`, supplying an EncryptionConfiguration to apply **encryption at rest** to selected API resources stored in etcd.",
+      "title": "API server pod has the --encryption-provider-config argument set",
+      "types": [],
+      "uid": "prowler-kubernetes-apiserver_encryption_provider_config_set-kind-demo-namespace: kube-system-kube-apiserver-demo-control-plane"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "apiserver"
+        },
+        "labels": [],
+        "name": "kube-apiserver-demo-control-plane",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "e34ea33c-1372-439c-bf1f-3ecf841cb1d5"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Enable **encryption at rest** with an `EncryptionConfiguration` and run with `--encryption-provider-config` using a non-`identity` provider (prefer `kms v2`). Apply **least privilege** to key/KMS access, rotate keys, restrict config file access, keep settings consistent across API servers, and re-encrypt existing objects.",
+      "references": [
+        "https://hub.prowler.com/check/apiserver_encryption_provider_config_set"
+      ]
+    },
+    "risk_details": "Absent an encryption provider, **Secrets and credentials** are stored in plaintext in etcd and backups. Access to etcd, control plane disks, or snapshots can expose keys and tokens, enabling unauthorized API calls and lateral movement, compromising **confidentiality** and **integrity**.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Profiling is enabled in pod kube-apiserver-demo-control-plane.",
+    "metadata": {
+      "event_code": "apiserver_disable_profiling",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 3,
+    "severity": "Medium",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Profiling is enabled in pod kube-apiserver-demo-control-plane.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "cluster-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/"
+      ],
+      "notes": "Profiling is enabled by default in Kubernetes. Disabling it when not needed helps in securing the cluster.",
+      "compliance": {
+        "CIS-2.0.1": [
+          "1.2.15"
+        ],
+        "CIS-1.11.1": [
+          "1.2.15"
+        ],
+        "CIS-1.8": [
+          "1.2.16"
+        ],
+        "CIS-1.12.0": [
+          "1.2.15"
+        ],
+        "CIS-1.10": [
+          "1.2.15"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "apiserver",
+        "name": "API server pod has profiling disabled (--profiling=false)",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "apiserver_disable_profiling"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes API server** runtime profiling is controlled by the `--profiling` flag. The evaluation inspects API server container arguments to confirm `--profiling=false` and that profiling endpoints (such as `/debug/pprof`) are not enabled.",
+      "title": "API server pod has profiling disabled (--profiling=false)",
+      "types": [],
+      "uid": "prowler-kubernetes-apiserver_disable_profiling-kind-demo-namespace: kube-system-kube-apiserver-demo-control-plane"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "apiserver"
+        },
+        "labels": [],
+        "name": "kube-apiserver-demo-control-plane",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "e34ea33c-1372-439c-bf1f-3ecf841cb1d5"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Keep API server profiling disabled by default. *If diagnostics are required*, enable it briefly in a controlled, isolated environment.\n\nApply **least privilege** to debug access, restrict exposure via network controls, and audit usage. Use **defense in depth** and separation of duties for any profiling enablement.",
+      "references": [
+        "https://hub.prowler.com/check/apiserver_disable_profiling"
+      ]
+    },
+    "risk_details": "With profiling enabled, `/debug/pprof` exposes stack traces, heap data, and request details that can leak secrets and topology, degrading **confidentiality**. Heavy profiling queries can exhaust CPU and memory, threatening **availability**. Insight into code paths and timings can aid exploitation, affecting **integrity** of the control plane.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Service account lookup is not set to true in pod kube-apiserver-demo-control-plane.",
+    "metadata": {
+      "event_code": "apiserver_service_account_lookup_true",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Service account lookup is not set to true in pod kube-apiserver-demo-control-plane.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "cluster-security",
+        "identity-access"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/",
+        "https://kubernetes.io/docs/reference/access-authn-authz/authentication/#service-account-tokens"
+      ],
+      "notes": "By default, this argument is set to true. It's critical to maintain this setting for security.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.5.1",
+          "A.5.2",
+          "A.5.15",
+          "A.5.18",
+          "A.8.12"
+        ],
+        "PCI-4.0": [
+          "7.2.5.13",
+          "7.3.1.12",
+          "7.3.2.13",
+          "7.3.3.13",
+          "8.4.2.4",
+          "A3.4.1.9"
+        ],
+        "CIS-2.0.1": [
+          "1.2.21"
+        ],
+        "CIS-1.11.1": [
+          "1.2.21"
+        ],
+        "CIS-1.8": [
+          "1.2.22"
+        ],
+        "CIS-1.12.0": [
+          "1.2.21"
+        ],
+        "CIS-1.10": [
+          "1.2.21"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "1.2.5"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "apiserver",
+        "name": "API server pod has --service-account-lookup set to true",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "apiserver_service_account_lookup_true"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "Kubernetes API server has **service account lookup** enabled via `--service-account-lookup=true`, validating presented service account tokens against currently existing ServiceAccounts during authentication.",
+      "title": "API server pod has --service-account-lookup set to true",
+      "types": [],
+      "uid": "prowler-kubernetes-apiserver_service_account_lookup_true-kind-demo-namespace: kube-system-kube-apiserver-demo-control-plane"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "apiserver"
+        },
+        "labels": [],
+        "name": "kube-apiserver-demo-control-plane",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "e34ea33c-1372-439c-bf1f-3ecf841cb1d5"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Enable `--service-account-lookup=true` so token validity depends on the ServiceAccount's current state. Apply **least privilege** to ServiceAccounts, favor short-lived tokens, and promptly remove unused accounts and secrets. Combine with strict **RBAC** and auditing for **defense in depth**.",
+      "references": [
+        "https://hub.prowler.com/check/apiserver_service_account_lookup_true"
+      ]
+    },
+    "risk_details": "Without **service account lookup**, tokens tied to deleted or renamed ServiceAccounts can still authenticate, enabling persistence with stale credentials, unauthorized API access, and lateral movement, degrading **confidentiality** and **integrity** of cluster resources.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "AlwaysPullImages admission control plugin is not set in pod kube-apiserver-demo-control-plane.",
+    "metadata": {
+      "event_code": "apiserver_always_pull_images_plugin",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 3,
+    "severity": "Medium",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "AlwaysPullImages admission control plugin is not set in pod kube-apiserver-demo-control-plane.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "cluster-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://cjyabraham.gitlab.io/docs/reference/command-line-tools-reference/kube-apiserver/",
+        "https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers",
+        "https://blog.codefarm.me/2021/12/15/kubernetes-admission-controllers/",
+        "https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#alwayspullimages"
+      ],
+      "notes": "Enabling AlwaysPullImages can increase network and registry load and decrease container startup speed. It may not be suitable for all environments.",
+      "compliance": {
+        "CIS-2.0.1": [
+          "1.2.11"
+        ],
+        "CIS-1.11.1": [
+          "1.2.11"
+        ],
+        "CIS-1.8": [
+          "1.2.11"
+        ],
+        "CIS-1.12.0": [
+          "1.2.11"
+        ],
+        "CIS-1.10": [
+          "1.2.11"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "2.3.1"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "apiserver",
+        "name": "API server pod has AlwaysPullImages admission control plugin enabled",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "apiserver_always_pull_images_plugin"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes API server** admission configuration includes **AlwaysPullImages**, which mutates new Pods to set `imagePullPolicy=Always` so container images are fetched from the registry at startup using the pod's credentials.",
+      "title": "API server pod has AlwaysPullImages admission control plugin enabled",
+      "types": [],
+      "uid": "prowler-kubernetes-apiserver_always_pull_images_plugin-kind-demo-namespace: kube-system-kube-apiserver-demo-control-plane"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "apiserver"
+        },
+        "labels": [],
+        "name": "kube-apiserver-demo-control-plane",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "e34ea33c-1372-439c-bf1f-3ecf841cb1d5"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Enable `AlwaysPullImages` on the API server.\n\nApply defense in depth: restrict pulls to trusted registries, enforce least-privilege image pull secrets, sign and scan images, and prefer immutable digests to prevent drift and ensure verified content.",
+      "references": [
+        "https://hub.prowler.com/check/apiserver_always_pull_images_plugin"
+      ]
+    },
+    "risk_details": "Without **AlwaysPullImages**, nodes can run cached images without a fresh registry pull, bypassing credential checks.\n- Unauthorized use of private images (confidentiality)\n- Stale or tampered images deployed (integrity)\n- Vulnerable images persist, widening attack surface (availability)",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "API Server does not have anonymous-auth enabled in pod kube-apiserver-demo-control-plane.",
+    "metadata": {
+      "event_code": "apiserver_anonymous_requests",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "PASS",
+    "status_detail": "API Server does not have anonymous-auth enabled in pod kube-apiserver-demo-control-plane.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "cluster-security",
+        "identity-access"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://cloud.hacktricks.wiki/en/pentesting-cloud/kubernetes-security/pentesting-kubernetes-services/index.html",
+        "https://docs.kics.io/develop/queries/kubernetes-queries/1de5cc51-f376-4638-a940-20f2e85ae238/",
+        "https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/"
+      ],
+      "notes": "While anonymous access can be useful for health checks and discovery, consider the security implications for your specific environment.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.5.1",
+          "A.5.15",
+          "A.5.18",
+          "A.8.2",
+          "A.8.12",
+          "A.8.20",
+          "A.8.21",
+          "A.8.22"
+        ],
+        "CIS-2.0.1": [
+          "1.2.1"
+        ],
+        "CIS-1.11.1": [
+          "1.2.1"
+        ],
+        "CIS-1.8": [
+          "1.2.1"
+        ],
+        "CIS-1.12.0": [
+          "1.2.1"
+        ],
+        "CIS-1.10": [
+          "1.2.1"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "1.1.1"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "apiserver",
+        "name": "API server pod has anonymous-auth disabled",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "apiserver_anonymous_requests"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes API server** anonymous authentication configuration, identified by `--anonymous-auth=true`. With this setting, unauthenticated requests are mapped to `system:anonymous` and processed by the server.",
+      "title": "API server pod has anonymous-auth disabled",
+      "types": [],
+      "uid": "prowler-kubernetes-apiserver_anonymous_requests-kind-demo-namespace: kube-system-kube-apiserver-demo-control-plane"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "apiserver"
+        },
+        "labels": [],
+        "name": "kube-apiserver-demo-control-plane",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "e34ea33c-1372-439c-bf1f-3ecf841cb1d5"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Require **authenticated access** for all API requests and avoid reliance on anonymous users. Enforce **least privilege RBAC** for explicit principals only. *If health checks must be public*, restrict to minimal paths and methods. Add **network segmentation**, mutual TLS, and **audit logging** for defense in depth.",
+      "references": [
+        "https://hub.prowler.com/check/apiserver_anonymous_requests"
+      ]
+    },
+    "risk_details": "**Anonymous API access** exposes cluster details for **reconnaissance** and enumeration, eroding confidentiality.\n\nIf **RBAC** is misconfigured, unauthenticated users may read sensitive data or trigger actions, impacting integrity. Floods of anonymous requests can also reduce **availability**.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Controller Manager has profiling enabled in pod kube-controller-manager-demo-control-plane.",
+    "metadata": {
+      "event_code": "controllermanager_disable_profiling",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 3,
+    "severity": "Medium",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Controller Manager has profiling enabled in pod kube-controller-manager-demo-control-plane.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "cluster-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/#options"
+      ],
+      "notes": "Profiling should be turned off unless it is explicitly required for troubleshooting performance issues.",
+      "compliance": {
+        "CIS-2.0.1": [
+          "1.3.2"
+        ],
+        "CIS-1.11.1": [
+          "1.3.2"
+        ],
+        "CIS-1.8": [
+          "1.3.2"
+        ],
+        "CIS-1.12.0": [
+          "1.3.2"
+        ],
+        "CIS-1.10": [
+          "1.3.2"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "controllermanager",
+        "name": "Controller Manager pod has --profiling=false configured",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "controllermanager_disable_profiling"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Controller Manager** is evaluated for the `--profiling` argument. `--profiling=false` disables runtime profiling; absence or a different value means profiling is enabled.",
+      "title": "Controller Manager pod has --profiling=false configured",
+      "types": [],
+      "uid": "prowler-kubernetes-controllermanager_disable_profiling-kind-demo-namespace: kube-system-kube-controller-manager-demo-control-plane"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "controllermanager"
+        },
+        "labels": [],
+        "name": "kube-controller-manager-demo-control-plane",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "67771208-9883-4f28-a106-7a5e0639b0e1"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Set `--profiling=false` on the **controller manager** to remove debug endpoints.\n\n*If profiling is needed temporarily*:\n- Limit access using **least privilege** and network controls\n- Use isolated environments and monitor closely\n- Disable promptly to uphold **defense in depth**",
+      "references": [
+        "https://hub.prowler.com/check/controllermanager_disable_profiling"
+      ]
+    },
+    "risk_details": "With profiling enabled, debug endpoints expose **runtime internals** (stacks, memory, file paths), weakening confidentiality. Abusing profiling can raise CPU/memory use and degrade **availability**. Detailed insights accelerate reconnaissance and can aid escalation when combined with RBAC gaps.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Scheduler has profiling enabled in pod kube-scheduler-demo-control-plane.",
+    "metadata": {
+      "event_code": "scheduler_profiling",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 3,
+    "severity": "Medium",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Scheduler has profiling enabled in pod kube-scheduler-demo-control-plane.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "cluster-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/admin/kube-scheduler/"
+      ],
+      "notes": "By default, profiling is enabled in Kubernetes Scheduler. Disabling it is a good security practice if profiling data is not needed for regular operations.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.8.14"
+        ],
+        "CIS-2.0.1": [
+          "1.4.1"
+        ],
+        "CIS-1.11.1": [
+          "1.4.1"
+        ],
+        "CIS-1.8": [
+          "1.4.1"
+        ],
+        "CIS-1.12.0": [
+          "1.4.1"
+        ],
+        "CIS-1.10": [
+          "1.4.1"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "scheduler",
+        "name": "Scheduler pod has profiling disabled",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "scheduler_profiling"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Scheduler** profiling configuration, specifically whether scheduler containers run with `--profiling=false` to keep the profiling API disabled.",
+      "title": "Scheduler pod has profiling disabled",
+      "types": [],
+      "uid": "prowler-kubernetes-scheduler_profiling-kind-demo-namespace: kube-system-kube-scheduler-demo-control-plane"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "scheduler"
+        },
+        "labels": [],
+        "name": "kube-scheduler-demo-control-plane",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "9240f16b-d1ac-402e-863e-59811697f218"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Disable by default: set `--profiling=false` on the Scheduler.\n\nIf profiling is required, enable it only temporarily, restrict access with **network policies**, bind to loopback, and log/monitor usage. Apply **least privilege** and **defense in depth** to limit exposure.",
+      "references": [
+        "https://hub.prowler.com/check/scheduler_profiling"
+      ]
+    },
+    "risk_details": "With **profiling enabled**, the pprof endpoints can expose **runtime internals** (stack traces, memory, goroutines), aiding reconnaissance and credential discovery, harming **confidentiality**.\n\nExtra CPU/heap usage can be abused for **DoS**, impacting **availability**.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Etcd uses a different CA file from the Kubernetes cluster CA in pod etcd-demo-control-plane, but verify if the content is the same.",
+    "metadata": {
+      "event_code": "etcd_unique_ca",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "MANUAL",
+    "status_detail": "Etcd uses a different CA file from the Kubernetes cluster CA in pod etcd-demo-control-plane, but verify if the content is the same.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "encryption",
+        "cluster-security",
+        "trust-boundaries"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://etcd.io/docs/latest/op-guide/security/",
+        "https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/#limiting-access-of-etcd-clusters"
+      ],
+      "notes": "This check is particularly important in environments where strict access control to the etcd database is required.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.5.1"
+        ],
+        "CIS-2.0.1": [
+          "2.7"
+        ],
+        "CIS-1.11.1": [
+          "2.8"
+        ],
+        "CIS-1.8": [
+          "2.7"
+        ],
+        "CIS-1.12.0": [
+          "2.7"
+        ],
+        "CIS-1.10": [
+          "2.7"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "1.1.12"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "etcd",
+        "name": "Etcd pod uses a unique Certificate Authority distinct from the Kubernetes API server CA",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "etcd_unique_ca"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Etcd** configuration is assessed to ensure it trusts a **unique Certificate Authority** via `--trusted-ca-file`, distinct from the API server's `--client-ca-file`. If the same CA file is used, etcd shares the cluster CA; differing files imply separation, though CA content should still be verified.",
+      "title": "Etcd pod uses a unique Certificate Authority distinct from the Kubernetes API server CA",
+      "types": [],
+      "uid": "prowler-kubernetes-etcd_unique_ca-kind-demo-namespace: kube-system-etcd-demo-control-plane"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "etcd"
+        },
+        "labels": [],
+        "name": "etcd-demo-control-plane",
+        "namespace": "kube-system",
+        "type": "Pod",
+        "uid": "5ffce316-4ec1-4b2d-bdbb-ff8f162978dc"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Adopt a **separate PKI** for etcd: issue client and peer certs from an etcd-only CA and trust only that CA. Enforce mTLS (`--client-cert-auth`, `--peer-client-cert-auth`), avoid `--auto-tls`, rotate keys independently, and apply **least privilege** to CA issuance with regular certificate audits.",
+      "references": [
+        "https://hub.prowler.com/check/etcd_unique_ca"
+      ]
+    },
+    "risk_details": "Using the Kubernetes CA for etcd allows any cert signed by that CA to authenticate to the datastore. Theft or mis-issuance enables unauthorized reads/writes, causing secret exposure (confidentiality), state tampering (integrity), and potential control-plane disruption (availability).",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Cluster Role Binding cluster-admin uses cluster-admin role.",
+    "metadata": {
+      "event_code": "rbac_cluster_admin_usage",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 5,
+    "severity": "Critical",
+    "status": "New",
+    "status_code": "MANUAL",
+    "status_detail": "Cluster Role Binding cluster-admin uses cluster-admin role.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "identity-access",
+        "cluster-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles",
+        "https://kubernetes.io/docs/reference/access-authn-authz/rbac/#clusterrolebinding-example"
+      ],
+      "notes": "Modifying ClusterRoleBindings should be done with caution to avoid unintended access issues. Always ensure that critical system components have the necessary permissions to operate effectively.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.5.1",
+          "A.5.2",
+          "A.5.3",
+          "A.5.15",
+          "A.5.18",
+          "A.8.12"
+        ],
+        "PCI-4.0": [
+          "10.6.3.35",
+          "3.5.1.1.8",
+          "3.6.1.3.8",
+          "3.7.4.9",
+          "7.2.1.12",
+          "7.2.1.14",
+          "7.2.1.15",
+          "7.2.2.12",
+          "7.2.2.14",
+          "7.2.2.15",
+          "7.2.2.19",
+          "7.2.5.8",
+          "7.2.5.10",
+          "7.2.5.11",
+          "7.2.5.12",
+          "7.2.5.20",
+          "7.2.6.3",
+          "7.3.1.6",
+          "7.3.1.8",
+          "7.3.1.10",
+          "7.3.1.11",
+          "7.3.1.20",
+          "7.3.2.8",
+          "7.3.2.10",
+          "7.3.2.11",
+          "7.3.3.7",
+          "7.3.3.8",
+          "7.3.3.10",
+          "7.3.3.11",
+          "7.3.3.21",
+          "8.2.5.2",
+          "8.2.7.8",
+          "8.2.7.10",
+          "8.2.7.11",
+          "8.2.8.8",
+          "8.2.8.10",
+          "8.2.8.12",
+          "8.2.8.13",
+          "8.2.8.14",
+          "8.3.11.5",
+          "8.3.4.8",
+          "8.3.4.10",
+          "8.3.4.11"
+        ],
+        "CIS-2.0.1": [
+          "5.1.1"
+        ],
+        "CIS-1.11.1": [
+          "5.1.1"
+        ],
+        "CIS-1.8": [
+          "5.1.1"
+        ],
+        "CIS-1.12.0": [
+          "5.1.1"
+        ],
+        "CIS-1.10": [
+          "5.1.1"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "1.2.8"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "rbac",
+        "name": "Cluster role binding does not grant the cluster-admin role",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "rbac_cluster_admin_usage"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "RBAC ClusterRoleBindings that bind to the `cluster-admin` ClusterRole are identified, showing where subjects receive super-user permissions across all namespaces.",
+      "title": "Cluster role binding does not grant the cluster-admin role",
+      "types": [],
+      "uid": "prowler-kubernetes-rbac_cluster_admin_usage-kind-demo-namespace: cluster-wide-cluster-admin"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "rbac"
+        },
+        "labels": [],
+        "name": "cluster-admin",
+        "namespace": "cluster-wide",
+        "type": "ClusterRoleBinding",
+        "uid": "940e5385-fbad-48da-8e1d-c5ead722b695"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Apply **least privilege**: replace `cluster-admin` with narrowly scoped Roles/ClusterRoles and bind per namespace. Reserve super-user access for break-glass, time-bound with approval and audit. Enforce **separation of duties**, review RBAC regularly, and monitor role/binding changes for **defense in depth**.",
+      "references": [
+        "https://hub.prowler.com/check/rbac_cluster_admin_usage"
+      ]
+    },
+    "risk_details": "**Excessive `cluster-admin` grants** give full API control, risking:\n- Secret exfiltration (confidentiality)\n- RBAC tampering (integrity)\n- Destructive actions causing outages (availability)\n\nA compromised subject can escalate, persist via new bindings, and laterally impact all namespaces.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "ClusterRole cluster-admin uses wildcards.",
+    "metadata": {
+      "event_code": "rbac_minimize_wildcard_use_roles",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "ClusterRole cluster-admin uses wildcards.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "identity-access",
+        "cluster-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/reference/access-authn-authz/rbac/",
+        "https://kubernetes.io/docs/reference/access-authn-authz/rbac/#referring-to-resources"
+      ],
+      "notes": "Care should be taken to ensure that replacing wildcards does not disrupt normal operations of the cluster.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.5.1",
+          "A.5.2",
+          "A.5.3",
+          "A.8.2"
+        ],
+        "PCI-4.0": [
+          "7.2.3.7"
+        ],
+        "CIS-2.0.1": [
+          "5.1.3"
+        ],
+        "CIS-1.11.1": [
+          "5.1.3"
+        ],
+        "CIS-1.8": [
+          "5.1.3"
+        ],
+        "CIS-1.12.0": [
+          "5.1.3"
+        ],
+        "CIS-1.10": [
+          "5.1.3"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "1.2.9"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "rbac",
+        "name": "Role or ClusterRole does not use wildcard resources or verbs",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "rbac_minimize_wildcard_use_roles"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes RBAC Roles/ClusterRoles** are evaluated for wildcard use in rule `resources` or `verbs`. The presence of `*` means all resources or all actions are granted. This finding highlights roles whose rules include such wildcards.",
+      "title": "Role or ClusterRole does not use wildcard resources or verbs",
+      "types": [],
+      "uid": "prowler-kubernetes-rbac_minimize_wildcard_use_roles-kind-demo-namespace: cluster-wide-cluster-admin"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "rbac"
+        },
+        "labels": [],
+        "name": "cluster-admin",
+        "namespace": "cluster-wide",
+        "type": "ClusterRole",
+        "uid": "32d3c5cb-a263-4164-8a1f-b3473ba71227"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Apply **least privilege**: replace `*` with explicit `resources`, `verbs`, and `resourceNames`. Split read/write duties, scope Roles to namespaces, use ClusterRoles only when needed, and bind to specific subjects. Periodically review roles to prevent privilege creep as part of **defense in depth**.",
+      "references": [
+        "https://hub.prowler.com/check/rbac_minimize_wildcard_use_roles"
+      ]
+    },
+    "risk_details": "Using `*` broadens access beyond intent:\n- Confidentiality: unrestricted reads of sensitive data\n- Integrity/Availability: create/update/delete across resources\n- Privilege escalation and lateral movement\n- Future drift: new APIs/verbs inherit access automatically",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "ClusterRole cluster-admin has secret access.",
+    "metadata": {
+      "event_code": "rbac_minimize_secret_access",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "ClusterRole cluster-admin has secret access.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "identity-access",
+        "secrets",
+        "cluster-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/reference/access-authn-authz/rbac/",
+        "https://kubernetes.io/docs/concepts/configuration/secret/"
+      ],
+      "notes": "Care should be taken to avoid disrupting system components that require access to secrets for proper functioning.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.5.1",
+          "A.5.2",
+          "A.5.3",
+          "A.5.15",
+          "A.5.18",
+          "A.8.2",
+          "A.8.3",
+          "A.8.12"
+        ],
+        "PCI-4.0": [
+          "1.3.1.38",
+          "1.3.2.34",
+          "1.4.2.35",
+          "10.2.1.3.25",
+          "10.2.1.4.25",
+          "10.3.1.25",
+          "10.6.3.31",
+          "12.4.2.1.1",
+          "3.5.1.1.7",
+          "3.6.1.2.7",
+          "3.6.1.3.7",
+          "3.7.6.8",
+          "4.2.1.1.20",
+          "7.2.1.9",
+          "7.2.2.10",
+          "7.2.3.5",
+          "7.2.5.5",
+          "7.2.5.21",
+          "7.3.1.5",
+          "7.3.3.5",
+          "8.3.4.5",
+          "8.3.6.1",
+          "8.6.3.2",
+          "A1.1.2.19",
+          "A3.2.5.1.3",
+          "A3.4.1.25"
+        ],
+        "CIS-2.0.1": [
+          "5.1.2"
+        ],
+        "CIS-1.11.1": [
+          "5.1.2"
+        ],
+        "CIS-1.8": [
+          "5.1.2"
+        ],
+        "CIS-1.12.0": [
+          "5.1.2"
+        ],
+        "CIS-1.10": [
+          "5.1.2"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "1.3.12",
+          "2.2.2"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "rbac",
+        "name": "Role or ClusterRole does not grant get, list, or watch access to Kubernetes Secrets",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "rbac_minimize_secret_access"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "RBAC Roles and ClusterRoles granting read permissions to **Kubernetes Secrets** are identified. The evaluation looks for rules that allow `get`, `list`, or `watch` on `secrets`, either namespace-scoped or cluster-wide.",
+      "title": "Role or ClusterRole does not grant get, list, or watch access to Kubernetes Secrets",
+      "types": [],
+      "uid": "prowler-kubernetes-rbac_minimize_secret_access-kind-demo-namespace: cluster-wide-cluster-admin"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "rbac"
+        },
+        "labels": [],
+        "name": "cluster-admin",
+        "namespace": "cluster-wide",
+        "type": "ClusterRole",
+        "uid": "32d3c5cb-a263-4164-8a1f-b3473ba71227"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Apply **least privilege**: avoid granting `get`, `list`, or `watch` on `secrets` except to narrowly scoped subjects. Constrain by namespace and `resourceNames` where feasible, use dedicated service accounts, avoid wildcards, and enforce **separation of duties** with policy and reviews.",
+      "references": [
+        "https://hub.prowler.com/check/rbac_minimize_secret_access"
+      ]
+    },
+    "risk_details": "Excessive Secret read access compromises confidentiality of tokens, keys, and credentials. Attackers can harvest service account tokens to impersonate workloads, pivot across namespaces, and modify resources, threatening integrity and availability via lateral movement.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Kubelet is missing TLS certificate and/or private key configuration in config file kubelet-config.",
+    "metadata": {
+      "event_code": "kubelet_tls_cert_and_key",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "FAIL",
+    "status_detail": "Kubelet is missing TLS certificate and/or private key configuration in config file kubelet-config.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "encryption",
+        "cluster-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/reference/access-authn-authz/kubelet-tls-bootstrapping/"
+      ],
+      "notes": "Ensure each kubelet has a unique TLS certificate and key for enhanced security.",
+      "compliance": {
+        "ISO27001-2022": [
+          "A.5.1",
+          "A.8.2",
+          "A.8.5",
+          "A.8.11",
+          "A.8.12",
+          "A.8.20",
+          "A.8.21",
+          "A.8.22",
+          "A.8.24"
+        ],
+        "CIS-2.0.1": [
+          "4.2.9"
+        ],
+        "CIS-1.11.1": [
+          "4.2.9"
+        ],
+        "CIS-1.8": [
+          "4.2.9"
+        ],
+        "CIS-1.12.0": [
+          "4.2.9"
+        ],
+        "CIS-1.10": [
+          "4.2.9"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "4.1.7"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "kubelet",
+        "name": "Kubelet has TLS certificate and private key files configured",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "kubelet_tls_cert_and_key"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Kubelet** configuration includes a TLS serving certificate and private key defined by `tlsCertFile` and `tlsPrivateKeyFile` to secure its HTTPS endpoint.",
+      "title": "Kubelet has TLS certificate and private key files configured",
+      "types": [],
+      "uid": "prowler-kubernetes-kubelet_tls_cert_and_key-kind-demo-namespace: kube-system-kubelet-config"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "kubelet"
+        },
+        "labels": [],
+        "name": "kubelet-config",
+        "namespace": "kube-system",
+        "type": "ConfigMap",
+        "uid": "bddc8f76-a090-4190-b1f6-2ec7824b50f3"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Provision a **CA-signed, node-unique** serving certificate and private key for each kubelet and set `tlsCertFile` and `tlsPrivateKeyFile`. Prefer automated issuance and rotation. Ensure clients validate the certificate and limit kubelet API exposure with network controls and RBAC, applying **least privilege** and **defense in depth**.",
+      "references": [
+        "https://hub.prowler.com/check/kubelet_tls_cert_and_key"
+      ]
+    },
+    "risk_details": "Without a verifiable TLS serving cert/key, kubelet traffic may fall back to self-signed or skipped verification, enabling **MITM** and endpoint **spoofing**. Attackers could read logs or pod data, run **exec/attach**, and alter node interactions, compromising **confidentiality** and **integrity**, and risking **availability**.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Kubelet does not have the argument `readOnlyPort` in config file kubelet-config, verify it in the node's arguments.",
+    "metadata": {
+      "event_code": "kubelet_disable_read_only_port",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 3,
+    "severity": "Medium",
+    "status": "New",
+    "status_code": "MANUAL",
+    "status_detail": "Kubelet does not have the argument `readOnlyPort` in config file kubelet-config, verify it in the node's arguments.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "cluster-security",
+        "node-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/"
+      ],
+      "notes": "Ensure that any services relying on the read-only port are reconfigured to use the main Kubelet API.",
+      "compliance": {
+        "CIS-2.0.1": [
+          "4.2.4"
+        ],
+        "CIS-1.11.1": [
+          "4.2.4"
+        ],
+        "CIS-1.8": [
+          "4.2.4"
+        ],
+        "CIS-1.12.0": [
+          "4.2.4"
+        ],
+        "CIS-1.10": [
+          "4.2.4"
+        ],
+        "ProwlerThreatScore-1.0": [
+          "2.1.4"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "kubelet",
+        "name": "Kubelet read-only port is disabled (set to 0)",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "kubelet_disable_read_only_port"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Kubelet** configuration is inspected for the `readOnlyPort` setting and whether it is set to `0` to disable the unauthenticated HTTP endpoint.",
+      "title": "Kubelet read-only port is disabled (set to 0)",
+      "types": [],
+      "uid": "prowler-kubernetes-kubelet_disable_read_only_port-kind-demo-namespace: kube-system-kubelet-config"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "kubelet"
+        },
+        "labels": [],
+        "name": "kubelet-config",
+        "namespace": "kube-system",
+        "type": "ConfigMap",
+        "uid": "bddc8f76-a090-4190-b1f6-2ec7824b50f3"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Disable the unauthenticated endpoint by setting `readOnlyPort: 0`.\n\nApply **least privilege**: expose only the TLS-authenticated kubelet endpoint, enforce authorization, and restrict network access to kubelet with host firewalls or network policies. Monitor nodes for unexpected open ports.",
+      "references": [
+        "https://hub.prowler.com/check/kubelet_disable_read_only_port"
+      ]
+    },
+    "risk_details": "An open **kubelet read-only port** allows unauthenticated queries to node and pod metadata and metrics, causing **information disclosure**. Attackers can map workloads, discover endpoints, and prepare **lateral movement**, undermining **confidentiality** and enabling targeted exploitation of weak configurations.",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  },
+  {
+    "message": "Prowler is not being executed inside Node demo-control-plane, please verify kubelet.conf file permissions manually.",
+    "metadata": {
+      "event_code": "kubelet_conf_file_permissions",
+      "product": {
+        "name": "Prowler",
+        "uid": "prowler",
+        "vendor_name": "Prowler",
+        "version": "5.51.0"
+      },
+      "profiles": [
+        "container",
+        "datetime"
+      ],
+      "version": "1.5.0"
+    },
+    "severity_id": 4,
+    "severity": "High",
+    "status": "New",
+    "status_code": "MANUAL",
+    "status_detail": "Prowler is not being executed inside Node demo-control-plane, please verify kubelet.conf file permissions manually.",
+    "status_id": 1,
+    "unmapped": {
+      "related_url": "",
+      "categories": [
+        "node-security"
+      ],
+      "depends_on": [],
+      "related_to": [],
+      "additional_urls": [
+        "https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration/",
+        "https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/"
+      ],
+      "notes": "Regular checks of kubelet.conf file permissions are essential for maintaining node security.",
+      "compliance": {
+        "CIS-2.0.1": [
+          "4.1.5"
+        ],
+        "CIS-1.11.1": [
+          "4.1.5"
+        ],
+        "CIS-1.8": [
+          "4.1.5"
+        ],
+        "CIS-1.12.0": [
+          "4.1.5"
+        ],
+        "CIS-1.10": [
+          "4.1.5"
+        ]
+      },
+      "scan_id": "01a1fe1e-399a-7a00-a072-c4c8be469df5",
+      "provider_uid": "kind-demo",
+      "provider": "kubernetes"
+    },
+    "activity_name": "Create",
+    "activity_id": 1,
+    "finding_info": {
+      "analytic": {
+        "category": "kubelet",
+        "name": "Node kubelet.conf file permissions are set to 600 or more restrictive",
+        "type": "Rule",
+        "type_id": 1,
+        "uid": "kubelet_conf_file_permissions"
+      },
+      "created_time": 1795264756,
+      "created_time_dt": "2026-11-21T12:39:16.122776",
+      "desc": "**Kubernetes Kubelet kubeconfig** at `/etc/kubernetes/kubelet.conf` must have **owner-only** permissions (`0600` or stricter). The check evaluates the file mode to ensure it is not more permissive than `0600`.",
+      "title": "Node kubelet.conf file permissions are set to 600 or more restrictive",
+      "types": [],
+      "uid": "prowler-kubernetes-kubelet_conf_file_permissions-kind-demo-namespace: cluster-wide-demo-control-plane"
+    },
+    "resources": [
+      {
+        "group": {
+          "name": "kubelet"
+        },
+        "labels": [],
+        "name": "demo-control-plane",
+        "namespace": "cluster-wide",
+        "type": "Node",
+        "uid": "13e78882-983a-4712-a656-599b8f66756d"
+      }
+    ],
+    "category_name": "Findings",
+    "category_uid": 2,
+    "class_name": "Detection Finding",
+    "class_uid": 2004,
+    "remediation": {
+      "desc": "Apply **least privilege** to `/etc/kubernetes/kubelet.conf`:\n- Set permissions to `0600` or stricter\n- Restrict ownership to the kubelet user; no group/world access\n- Limit shell access and monitor file changes\n- Layer controls with **RBAC** and certificate/key rotation",
+      "references": [
+        "https://hub.prowler.com/check/kubelet_conf_file_permissions"
+      ]
+    },
+    "risk_details": "**Overly permissive `kubelet.conf`** exposes kubelet credentials, allowing local users or malware to act as the node.\n- Integrity: modify workloads or node state\n- Confidentiality: access secrets/metadata\n- Availability: disrupt scheduling or drain nodes",
+    "time": 1795264756,
+    "time_dt": "2026-11-21T12:39:16.122776",
+    "type_uid": 200401,
+    "type_name": "Detection Finding: Create"
+  }
+]
