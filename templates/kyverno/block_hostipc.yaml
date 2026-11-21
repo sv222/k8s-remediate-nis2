@@ -1,5 +1,8 @@
 # NIS2/DORA remediation: disallow hostIPC pods (CIS Kubernetes pod security).
 # Needs Kyverno 1.17 or later. Starts in Audit mode. Review the policy reports, then change validationActions to Deny.
+{{- if .Resources}}
+# Generated for: {{range $i, $r := .Resources}}{{if $i}}, {{end}}{{$r}}{{end}}
+{{- end}}
 apiVersion: policies.kyverno.io/v1
 kind: ValidatingPolicy
 metadata:

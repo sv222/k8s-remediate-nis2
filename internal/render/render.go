@@ -138,13 +138,38 @@ func Render(e mapping.Entry, f finding.Finding) ([]RenderedFile, error) {
 		}
 	}
 	for _, rel := range e.SharedTemplates {
-		content, err := execute(rel, struct{}{})
+		sd := sharedDataFor(e, f)
+		content, err := execute(rel, sd)
 		if err != nil {
 			return nil, err
 		}
-		out = append(out, RenderedFile{RelPath: rel, Content: content, tpl: rel, data: struct{}{}})
+		out = append(out, RenderedFile{RelPath: rel, Content: content, tpl: rel, data: sd})
 	}
 	return out, nil
+}
+
+// sharedData carries data for shared templates, which are written once for all
+// findings of an entry. Kubernetes policies list the affected resources in the
+// file header; other shared templates stay empty.
+type sharedData struct {
+	Resources []string
+}
+
+func sharedDataFor(e mapping.Entry, f finding.Finding) sharedData {
+	if e.Scanner != "prowler" || e.EffectiveProvider() != "kubernetes" || f.ResourceID == "" {
+		return sharedData{}
+	}
+	return sharedData{Resources: []string{displayResourceID(f.ResourceID)}}
+}
+
+// displayResourceID turns namespace/kind/name into the namespace/name form
+// used in file headers. Cluster level ids are shown as they are.
+func displayResourceID(id string) string {
+	parts := strings.Split(id, "/")
+	if len(parts) == 3 {
+		return parts[0] + "/" + parts[2]
+	}
+	return id
 }
 
 func execute(rel string, data any) (string, error) {
@@ -190,6 +215,22 @@ func (s *Set) Add(files []RenderedFile) {
 		a, okA := cur.data.(resourceData)
 		b, okB := f.data.(resourceData)
 		if !okA || !okB {
+			aS, okAS := cur.data.(sharedData)
+			bS, okBS := f.data.(sharedData)
+			if !okAS || !okBS {
+				continue
+			}
+			mergedS := false
+			for _, r := range bS.Resources {
+				if !contains(aS.Resources, r) {
+					aS.Resources = append(aS.Resources, r)
+					mergedS = true
+				}
+			}
+			if mergedS {
+				cur.data = aS
+				s.dirty[f.RelPath] = true
+			}
 			continue
 		}
 		merged := false
@@ -227,6 +268,10 @@ func (s *Set) Files() ([]RenderedFile, error) {
 	hasTerraform := false
 	for rel, f := range s.files {
 		if s.dirty[rel] {
+			if sd, ok := f.data.(sharedData); ok {
+				sort.Strings(sd.Resources)
+				f.data = sd
+			}
 			content, err := execute(f.tpl, f.data)
 			if err != nil {
 				return nil, err

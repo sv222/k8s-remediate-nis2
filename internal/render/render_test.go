@@ -215,6 +215,68 @@ func TestSharedTemplatesRenderOnce(t *testing.T) {
 	}
 }
 
+func TestKubernetesPolicyHeaderListsResources(t *testing.T) {
+	e := mapping.Entry{
+		Scanner: "prowler", Provider: "kubernetes",
+		Title:           "Privileged containers may be admitted",
+		Articles:        []string{"NIS2 Art.21(2)(i)"},
+		SharedTemplates: []string{"kyverno/block_privileged.yaml"},
+	}
+	set := NewSet()
+	for _, id := range []string{"nis2demo/Pod/bad-privileged", "kube-system/Pod/kube-proxy-kgdcn", "nis2demo/Pod/bad-privileged"} {
+		files, err := Render(e, finding.Finding{ResourceID: id})
+		if err != nil {
+			t.Fatal(err)
+		}
+		set.Add(files)
+	}
+	files := setFiles(t, set)
+	if len(files) != 1 {
+		t.Fatalf("files = %+v, want one policy", files)
+	}
+	want := "# Generated for: kube-system/kube-proxy-kgdcn, nis2demo/bad-privileged"
+	if !strings.Contains(files[0].Content, want) {
+		t.Errorf("header lacks %q:\n%s", want, files[0].Content)
+	}
+	if strings.Contains(files[0].Content, "Pod/") {
+		t.Errorf("kind leaked into the header:\n%s", files[0].Content)
+	}
+}
+
+func TestKubernetesHeaderAbsentForAWSAndKubeBench(t *testing.T) {
+	aws := mapping.Entry{Scanner: "prowler", Title: "x", Articles: []string{"a"}, SharedTemplates: []string{"kyverno/require_nonroot.yaml"}}
+	files, err := Render(aws, finding.Finding{ResourceID: "bucket"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(files[0].Content, "Generated for") {
+		t.Errorf("AWS shared file got a resource header:\n%s", files[0].Content)
+	}
+	bench := mapping.Entry{Scanner: "kube-bench", Title: "x", Articles: []string{"a"}, SharedTemplates: []string{"kyverno/require_nonroot.yaml"}}
+	files, err = Render(bench, finding.Finding{ResourceID: "cluster"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(files[0].Content, "Generated for") {
+		t.Errorf("kube-bench shared file got a resource header:\n%s", files[0].Content)
+	}
+}
+
+func TestDisplayResourceID(t *testing.T) {
+	cases := map[string]string{
+		"nis2demo/Pod/bad-privileged":                 "nis2demo/bad-privileged",
+		"kube-system/ConfigMap/kubelet-config":         "kube-system/kubelet-config",
+		"kind-demo":                                    "kind-demo",
+		"cluster":                                      "cluster",
+		"":                                             "",
+	}
+	for in, want := range cases {
+		if got := displayResourceID(in); got != want {
+			t.Errorf("displayResourceID(%q) = %q, want %q", in, got, want)
+		}
+	}
+}
+
 func TestSecurityGroupRulesUseFixedPortAndPerGroupCIDR(t *testing.T) {
 	cases := []struct {
 		check, tpl, port, variable string
@@ -382,7 +444,17 @@ func TestAllTemplatesParseAndExecute(t *testing.T) {
 		if err != nil || d.IsDir() {
 			return err
 		}
-		if _, err := execute(strings.TrimPrefix(p, "templates/"), resourceData{ResourceID: "x", SanitizedResourceID: "x", Title: "t", Articles: []string{"a"}}); err != nil {
+		rel := strings.TrimPrefix(p, "templates/")
+		if strings.HasPrefix(rel, "kyverno/") {
+			if _, err := execute(rel, sharedData{Resources: []string{"ns/pod"}}); err != nil {
+				t.Errorf("%s: %v", p, err)
+			}
+			if _, err := execute(rel, sharedData{}); err != nil {
+				t.Errorf("%s: %v", p, err)
+			}
+			return nil
+		}
+		if _, err := execute(rel, resourceData{ResourceID: "x", SanitizedResourceID: "x", Title: "t", Articles: []string{"a"}}); err != nil {
 			t.Errorf("%s: %v", p, err)
 		}
 		return nil
