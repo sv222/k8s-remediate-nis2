@@ -74,6 +74,7 @@ func TestGolden(t *testing.T) {
 		{"iam_policy", []string{"--prowler", "testdata/prowler_iam_policy.json"}},
 		{"s3_account", []string{"--prowler", "testdata/prowler_s3_account.json"}},
 		{"prowler_kubernetes", []string{"--prowler", "testdata/prowler_kubernetes.json"}},
+		{"mixed_providers", []string{"--prowler", "testdata/prowler_mixed_providers.json"}},
 		{"kube_bench_eks", []string{"--kube-bench", "testdata/kube_bench_eks.json"}},
 		{"kube_bench_aks", []string{"--kube-bench", "testdata/kube_bench_aks.json"}},
 		{"kube_bench_gke", []string{"--kube-bench", "testdata/kube_bench_gke.json"}},
@@ -215,6 +216,7 @@ func TestMarkdownGolden(t *testing.T) {
 		{"legacy_and_bench", []string{"--prowler", "testdata/prowler_ocsf.json", "--kube-bench", "testdata/kube_bench.json"}},
 		{"two_buckets", []string{"--prowler", "testdata/prowler_two_buckets.json"}},
 		{"prowler_kubernetes", []string{"--prowler", "testdata/prowler_kubernetes.json"}},
+		{"mixed_providers", []string{"--prowler", "testdata/prowler_mixed_providers.json"}},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -402,6 +404,32 @@ func TestProwlerKubernetesFixes(t *testing.T) {
 	}
 	if noMapping < 2 {
 		t.Errorf("mapping.md lists only %d no mapping rows", noMapping)
+	}
+}
+
+func TestMixedProvidersSkipAzureWithNotice(t *testing.T) {
+	out := filepath.Join(t.TempDir(), "remediation")
+	output, err := execute(t, "remediate", "--prowler", "testdata/prowler_mixed_providers.json", "--out", out)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(output, "provider azure is not supported yet") {
+		t.Errorf("stderr does not report the unsupported provider:\n%s", output)
+	}
+	if strings.Count(output, "is not supported yet") != 1 {
+		t.Errorf("the notice is not reported exactly once:\n%s", output)
+	}
+	files := tree(t, out)
+	if files["kyverno/block_privileged.yaml"] == "" || files["kyverno/block_hostnet.yaml"] == "" {
+		t.Errorf("kubernetes policies missing: %v", sortedKeys(files))
+	}
+	if files["terraform/s3_public_access_block__acme-public-logs.tf"] == "" || files["terraform/ebs_default_encryption__000000000000_us-east-1.tf"] == "" {
+		t.Errorf("aws files missing: %v", sortedKeys(files))
+	}
+	for rel, content := range files {
+		if strings.Contains(content, "storage_container_public_access") || strings.Contains(content, "nis2storageaccount") {
+			t.Errorf("%s mentions the skipped azure finding:\n%s", rel, content)
+		}
 	}
 }
 
