@@ -25,6 +25,7 @@ type doc struct {
 
 type Entry struct {
 	Scanner         string            `json:"scanner"`
+	Provider        string            `json:"provider"`
 	CheckID         string            `json:"check_id"`
 	BenchmarkIDs    map[string]string `json:"benchmark_ids"`
 	Title           string            `json:"title"`
@@ -38,6 +39,15 @@ type Entry struct {
 	Caution         string            `json:"caution"`
 	Group           string            `json:"group"`
 	Rank            int               `json:"rank"`
+}
+
+// EffectiveProvider is the Prowler provider an entry matches: the provider
+// field, or aws when the entry has none.
+func (e Entry) EffectiveProvider() string {
+	if e.Provider == "" {
+		return "aws"
+	}
+	return e.Provider
 }
 
 var (
@@ -100,10 +110,18 @@ func validate(entries []Entry) error {
 			if e.CheckID == "" || len(e.BenchmarkIDs) > 0 {
 				return fmt.Errorf("entry %d (%s): prowler entries need check_id only", i, e.Title)
 			}
-			keys = append(keys, "prowler|"+e.CheckID)
+			switch e.Provider {
+			case "", "aws", "kubernetes":
+			default:
+				return fmt.Errorf("entry %d (%s): unknown provider %q: use aws or kubernetes", i, e.Title, e.Provider)
+			}
+			keys = append(keys, "prowler|"+e.EffectiveProvider()+"|"+e.CheckID)
 		case "kube-bench":
 			if e.CheckID != "" || len(e.BenchmarkIDs) == 0 {
 				return fmt.Errorf("entry %d (%s): kube-bench entries need benchmark_ids only", i, e.Title)
+			}
+			if e.Provider != "" {
+				return fmt.Errorf("entry %d (%s): kube-bench entries do not take a provider", i, e.Title)
 			}
 			for b, id := range e.BenchmarkIDs {
 				if b == "" || id == "" {
@@ -135,7 +153,11 @@ func For(f finding.Finding) (Entry, bool, error) {
 		}
 		switch e.Scanner {
 		case "prowler":
-			if e.CheckID == f.CheckID {
+			provider := f.Provider
+			if provider == "" {
+				provider = "aws"
+			}
+			if e.CheckID == f.CheckID && e.EffectiveProvider() == provider {
 				return e, true, nil
 			}
 		case "kube-bench":

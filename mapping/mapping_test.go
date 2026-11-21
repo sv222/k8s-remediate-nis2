@@ -175,22 +175,74 @@ func TestValidateRejectsBadEntries(t *testing.T) {
 	}
 }
 
-func TestProwlerCheckIDsExistInProwler5(t *testing.T) {
-	data, err := os.ReadFile("testdata/prowler_5.45.0_checks.txt")
-	if err != nil {
-		t.Fatal(err)
+func TestValidateRejectsBadProvider(t *testing.T) {
+	bad := [][]Entry{
+		{{Scanner: "prowler", CheckID: "x", Provider: "gcp", Articles: []string{"a"}, Guidance: "g"}},
+		{{Scanner: "prowler", CheckID: "x", Provider: "Azure", Articles: []string{"a"}, Guidance: "g"}},
+		{{Scanner: "kube-bench", BenchmarkIDs: map[string]string{"cis-1.8": "5.2.2"}, Provider: "aws", Articles: []string{"a"}, Guidance: "g"}},
 	}
-	known := map[string]bool{}
-	for _, id := range strings.Fields(string(data)) {
-		known[id] = true
+	for i, entries := range bad {
+		if err := validate(entries); err == nil {
+			t.Errorf("case %d: expected a validation error", i)
+		}
 	}
+	good := []Entry{
+		{Scanner: "prowler", CheckID: "x", Articles: []string{"a"}, Guidance: "g"},
+		{Scanner: "prowler", CheckID: "x", Provider: "kubernetes", Articles: []string{"a"}, Guidance: "g"},
+		{Scanner: "prowler", CheckID: "y", Articles: []string{"a"}, Guidance: "g"},
+		{Scanner: "prowler", CheckID: "y", Provider: "aws", Articles: []string{"a"}, Guidance: "g"},
+	}
+	// The fourth entry duplicates the third (both are aws), so this set must fail...
+	if err := validate(good); err == nil {
+		t.Error("duplicate (provider, check_id) pair: expected a validation error")
+	}
+	// ...while the same check_id under different providers is fine.
+	if err := validate(good[:3]); err != nil {
+		t.Errorf("same check_id under two providers: unexpected error %v", err)
+	}
+}
+
+func TestForMatchesProvider(t *testing.T) {
+	e, ok, err := For(finding.Finding{Scanner: "prowler", CheckID: "s3_bucket_level_public_access_block", Provider: "aws"})
+	if err != nil || !ok {
+		t.Fatalf("aws lookup failed: ok=%v err=%v", ok, err)
+	}
+	if e.EffectiveProvider() != "aws" {
+		t.Errorf("effective provider = %q", e.EffectiveProvider())
+	}
+	for _, p := range []string{"kubernetes", "azure", "gcp"} {
+		_, ok, err := For(finding.Finding{Scanner: "prowler", CheckID: "s3_bucket_level_public_access_block", Provider: p})
+		if err != nil || ok {
+			t.Errorf("%s lookup: ok=%v err=%v, want no mapping", p, ok, err)
+		}
+	}
+}
+
+func TestProwlerCheckIDsExistInProwler(t *testing.T) {
+	known := map[string]map[string]bool{}
+	load := func(file, version string) {
+		data, err := os.ReadFile(file)
+		if err != nil {
+			t.Fatal(err)
+		}
+		m := map[string]bool{}
+		for _, id := range strings.Fields(string(data)) {
+			m[id] = true
+		}
+		known[version] = m
+	}
+	load("testdata/prowler_5.45.0_checks.txt", "aws")
+	load("testdata/prowler_5.51.0_kubernetes_checks.txt", "kubernetes")
 	entries, err := Load()
 	if err != nil {
 		t.Fatal(err)
 	}
 	for _, e := range entries {
-		if e.Scanner == "prowler" && !known[e.CheckID] {
-			t.Errorf("check %s is not in `prowler aws --list-checks` of Prowler 5.45.0", e.CheckID)
+		if e.Scanner != "prowler" {
+			continue
+		}
+		if !known[e.EffectiveProvider()][e.CheckID] {
+			t.Errorf("check %s (%s) is not in the `prowler %s --list-checks` list of the pinned Prowler version", e.CheckID, e.EffectiveProvider(), e.EffectiveProvider())
 		}
 	}
 }
